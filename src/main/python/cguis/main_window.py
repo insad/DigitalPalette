@@ -155,6 +155,8 @@ class Ui_MainWindow(object):
         self.actionExtract.setObjectName("actionExtract")
         self.actionAbout = QtWidgets.QAction(MainWindow)
         self.actionAbout.setObjectName("actionAbout")
+        self.actionUpdate = QtWidgets.QAction(MainWindow)
+        self.actionUpdate.setObjectName("actionUpdate")
         self.menuFile.addAction(self.actionCreate)
         self.menuFile.addAction(self.actionImport)
         self.menuFile.addSeparator()
@@ -162,6 +164,7 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit)
         self.menuEdit.addAction(self.actionExtract)
+        self.menuHelp.addAction(self.actionUpdate)
         self.menuHelp.addAction(self.actionAbout)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
@@ -205,5 +208,6 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         self.actionExtract.setText(_translate("MainWindow", "Extract"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
+        self.actionUpdate.setText(_translate("MainWindow", "Update"))
 
 

@@ -22,7 +22,7 @@ class Square(QWidget):
     selected_s = pyqtSignal(float)
     selected_v = pyqtSignal(float)
 
-    selected_rgb = pyqtSignal(np.ndarray)
+    selected_hsv = pyqtSignal(np.ndarray)
     selected_hex = pyqtSignal(str)
 
     selected_active = pyqtSignal(bool) # to wheel.
@@ -47,7 +47,7 @@ class Square(QWidget):
 
         self._emit_rgb = False   # emit selected_r, selected_g, selected_b
         self._emit_hsv = False   # emit selected_h, selected_s, selected_v
-        self._emit_color = False # emit selected_rgb.
+        self._emit_color = False # emit selected_hsv.
 
         self._acitvated_state = False   # acitvate state.
         self._emit_activated = True     # emit selected_active to wheel.
@@ -87,7 +87,7 @@ class Square(QWidget):
                 self._emit_hsv = False
 
             if self._emit_color:
-                self.selected_rgb.emit(self._color.rgb)
+                self.selected_hsv.emit(self._color.hsv)
                 self._emit_color = False
 
             self.selected_hex.emit(self._color.hex_code)
@@ -159,13 +159,13 @@ class Square(QWidget):
             self._emit_activated = True
             self.update()
 
-    def slot_change_color(self, rgb):
+    def slot_change_color(self, hsv):
         """
-        Slot func. Change square's color (rgb).
+        Slot func. Change square's color (hsv).
         """
 
-        if not (rgb == self._color.rgb).all():
-            self._color.rgb = rgb
+        if not self._color.hsv_eq(hsv, acr=1E-3):
+            self._color.hsv = hsv
 
             self._emit_rgb = True
             self._emit_hsv = True
@@ -183,7 +183,8 @@ class Square(QWidget):
                 self._color.setti(tag, value)
                 self._emit_rgb = False
                 self._emit_hsv = True
-                self._emit_color = True
+                # keep similar with slot_change_hsv.
+                self.selected_hsv.emit(self._color.hsv)
                 self.update()
         return _func_
 
@@ -198,7 +199,8 @@ class Square(QWidget):
                 self._color.setti(tag, value)
                 self._emit_rgb = True
                 self._emit_hsv = False
-                self._emit_color = True
+                # paint event would not triggered when rgb color not changed (even hsv changed).
+                self.selected_hsv.emit(self._color.hsv)
                 self.update()
         return _func_
 

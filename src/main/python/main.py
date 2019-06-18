@@ -5,20 +5,26 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QHBoxLayout,
 from cguis.main_window import Ui_MainWindow
 from cguis.scroll_result_form import Ui_scroll_result
 from cwgts.wheel import Wheel
-from clibs.color import Color
 from cwgts.square import Square
-from PyQt5.QtGui import QIcon
+from clibs.color import Color
+from clibs import info as dpinfo
+from PyQt5.QtGui import QIcon, QDesktopServices
+from PyQt5.QtCore import QUrl
 import sys
 
+
 __info__ = """
-DigitalPalette
---------------
-Version: v1.0.0-beta
-Author: Liu Jia
-Update: 2019.06.18
---------------
-DigitalPalette is distributed under GPL v3 license.
-"""
+    DigitalPalette Info
+
+    --------------
+    Version: {}
+    Author: Liu Jia
+    Update: {}
+    Website: {}
+    --------------
+
+    DigitalPalette is distributed under GPL v3 license.
+""".format(dpinfo.current_version(), dpinfo.update_date(), dpinfo.website())
 
 
 class DigitalPalette(QMainWindow, Ui_MainWindow):
@@ -26,7 +32,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.setWindowTitle("DigitalPalette v1.0.0-beta")
+        self.setWindowTitle("DigitalPalette {}".format(dpinfo.current_version()))
         self.setWindowIcon(QIcon("./src/main/icons/base/128.png"))
 
         self._setting_env = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set. For create.py. By wheel.py.
@@ -51,6 +57,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     def _setup_msg(self):
         self.actionAbout.triggered.connect(self._show_info_)
+        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.website())))
 
     def _setup_default_env(self):
         # setup default harmony rule.
@@ -89,7 +96,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self._cube_squares.append(cube_square)
 
             # init cube square colors by color set of wheel.
-            cube_square.slot_change_color(self._cwgt_wheel.color_set[idx].rgb)
+            cube_square.slot_change_color(self._cwgt_wheel.color_set[idx].hsv)
 
             # set rgb gbox visibility.
             rgb_gbox = getattr(scroll_result, "gbox_RGB_{}".format(idx))
@@ -140,7 +147,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 cube_selected.connect(self._func_set_value_(scroll_result, "dp_HSV_{}_{}".format(ctype, idx)))
 
             # set connection from cube square to corresponding wheel color.
-            cube_square.selected_rgb.connect(self._cwgt_wheel.slot_modify_color(idx))
+            cube_square.selected_hsv.connect(self._cwgt_wheel.slot_modify_color(idx))
 
             # set connection from wheel color to corresponding cube square.
             wheel_selected_color = getattr(self._cwgt_wheel, "selected_color_{}".format(idx))

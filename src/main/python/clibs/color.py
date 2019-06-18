@@ -574,13 +574,22 @@ class Color(object):
         b = int("0x{}".format(hex_b), 16)
 
         return cls.fmt_rgb((r, g, b))
+    
+    def hsv_eq(self, hsv, acr=1E-5):
+        if (np.abs(self._hsv - np.array(hsv)) < acr).all():
+            return True
+        else:
+            return False
+    
+    def rgb_eq(self, rgb):
+        if (self._rgb == np.array(rgb)).all():
+            return True
+        else:
+            return False
 
     def __eq__(self, other):
         if isinstance(other, Color):
-            if (self._rgb == other.rgb).all():
-                return True
-            else:
-                return False
+            return self.rgb_eq(other.rgb)
         else:
             raise ValueError("expect the other color in Color object.")
 
@@ -589,3 +598,30 @@ class Color(object):
             return False
         else:
             return True
+
+
+if __name__ == "__main__":
+    for r in range(256):
+        print(r)
+        for g in range(256):
+            for b in range(256):
+                rgb = np.array([r, g, b])
+                hsv = Color.rgb_to_hsv(rgb)
+                _rgb = Color.hsv_to_rgb(hsv)
+                _hsv = Color.rgb_to_hsv(_rgb)
+                
+                if not (hsv == _hsv).all():
+                    raise ValueError("{}, {}, {}, {}".format(hsv, rgb, _hsv, _rgb))
+
+    for h in range(361):
+        print(h)
+        for s in range(101):
+            for v in range(101):
+                hsv = np.array([h, s / 100, v / 100])
+                rgb = Color.hsv_to_rgb(hsv)
+                _hsv = Color.rgb_to_hsv(rgb)
+                _rgb = Color.hsv_to_rgb(_hsv)
+
+                if not (rgb == _rgb).all():
+                    raise ValueError("{}, {}, {}, {}".format(rgb, hsv, _rgb, _hsv))
+    

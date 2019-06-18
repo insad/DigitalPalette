@@ -48,8 +48,8 @@ class Create(object):
     def rotate(self, delta_h, delta_s, delta_v):
         for idx in range(5):
             self._color_set[idx].h += delta_h
-            self._color_set[idx].overflow_s(self._color_set[1].s + delta_s)
-            self._color_set[idx].overflow_v(self._color_set[1].v + delta_v)
+            self._color_set[idx].overflow_s(self._color_set[idx].s + delta_s)
+            self._color_set[idx].overflow_v(self._color_set[idx].v + delta_v)
 
     def _analogous_create(self):
         """
@@ -74,7 +74,7 @@ class Create(object):
             delta_h = pr_color.h - self._color_set[0].h
             delta_s = pr_color.s - self._color_set[0].s
             delta_v = pr_color.v - self._color_set[0].v
-            
+
             self.rotate(delta_h, delta_s, delta_v)
 
         elif idx < 5:
@@ -403,8 +403,16 @@ class Create(object):
         return binascii.a2b_hex(swatch_chars)
 
     def import_color_set(self, color_dict):
+        color_set = []
+
+        color_cmp = False
         for i in range(5):
             try:
-                self._color_set[i] = Color(color_dict["color_{}".format(i)]["hsv"], ctp="hsv")
+                color_set.append(Color(color_dict["color_{}".format(i)]["hsv"], ctp="hsv"))
+                color_cmp = True
             except:
+                color_cmp = False
                 raise ValueError("Can not import hsv color {}: {}.".format(i, color_dict["color_{}".format(i)]["hsv"]))
+
+        if color_cmp:
+            self._color_set = color_set

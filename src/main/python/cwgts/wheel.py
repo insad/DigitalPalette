@@ -4,10 +4,12 @@ from PyQt5.QtWidgets import QWidget, QFileDialog, QMessageBox
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal
 from clibs.create import Create
-import numpy as np
-from clibs.trans2d import get_outer_box, rotate_point_center, get_theta_center
 from clibs.color import Color
+from clibs import info as dpinfo
+from clibs.trans2d import get_outer_box, rotate_point_center, get_theta_center
+import numpy as np
 import json
+import re
 
 
 class Wheel(QWidget):
@@ -177,18 +179,20 @@ class Wheel(QWidget):
 
         painter.end()
 
-        if self._emit_other_color:
-            for i in range(5):
-                if self._create.color_set[i] != self._ori_color_set[i] and i != self._active_color_idx:
-                    selected_other_color = getattr(self, "selected_color_{}".format(i))
-                    selected_other_color.emit(self._create.color_set[i].rgb)
-            self._emit_other_color = False
-
         if self._emit_color:
             for i in range(5):
-                if self._create.color_set[i] != self._ori_color_set[i]:
+                if not self._create.color_set[i].hsv_eq(self._ori_color_set[i].hsv):
                     selected_color = getattr(self, "selected_color_{}".format(i))
-                    selected_color.emit(self._create.color_set[i].rgb)
+                    selected_color.emit(self._create.color_set[i].hsv)
+            # self._emit_color can only closed by mouse release event.
+            # self._emit_color = False
+            self._emit_other_color = False
+
+        if self._emit_other_color:
+            for i in range(5):
+                if i != self._active_color_idx and not self._create.color_set[i].hsv_eq(self._ori_color_set[i].hsv):
+                    selected_color = getattr(self, "selected_color_{}".format(i))
+                    selected_color.emit(self._create.color_set[i].hsv)
             self._emit_other_color = False
 
         if self._color_actived or self._emit_activate:
@@ -320,8 +324,8 @@ class Wheel(QWidget):
         """
 
         def _func_(color):
-            if self._receive_color and (not (color == self._create.color_set[index].rgb).all()):
-                self._create.modify(self._env["hm_rule"], index, Color(color))
+            if self._receive_color and not self._create.color_set[index].hsv_eq(color, acr=1E-3):
+                self._create.modify(self._env["hm_rule"], index, Color(color, ctp="hsv"))
                 self._active_color_idx = int(index)
 
                 self._emit_color = False
@@ -348,7 +352,7 @@ class Wheel(QWidget):
         """
 
         def _func_(state):
-            if (not self._color_actived) and state and index != self._active_color_idx:
+            if not self._color_actived and state and index != self._active_color_idx:
                 self._active_color_idx = int(index)
 
                 self._emit_color = False
@@ -365,7 +369,7 @@ class Wheel(QWidget):
             if cb_file[0].split(".")[-1].lower() == "json":
                 color_dict = self._create.export_color_set()
                 color_dict["harmony_rule"] = self._env["hm_rule"]
-                color_dict["version"] = "v1.0.0-beta"
+                color_dict["version"] = dpinfo.current_version()
 
                 with open(cb_file[0], "w") as f:
                     json.dump(color_dict, f, indent=4)
@@ -385,38 +389,36 @@ class Wheel(QWidget):
             with open(cb_file[0], "r") as f:
                 color_dict = json.load(f)
 
-                color_backup = self._create.export_color_set()
-                hm_backup = self._env["hm_rule"]
-
                 version_cmp = False
                 if "version" in color_dict:
-                    if color_dict["version"][:4] == "v1.0":
-                        version_cmp = True
-
-                    else:
+                    for vre in dpinfo.compatible_versions():
+                        if re.match(vre, color_dict["version"]):
+                            version_cmp = True
+                            break
+                
+                    if not version_cmp:
                         QMessageBox.warning(self, "Error", "Unstatisfied version: {}.".format(color_dict["version"]))
                 else:
                     QMessageBox.warning(self, "Error", "Unknown version.")
 
-                hm_cmp = False
+                color_cmp = False
                 if version_cmp:
+                    try:
+                        self._create.import_color_set(color_dict)
+                        color_cmp = True
+                    except Exception as err:
+                        color_cmp = False
+                        QMessageBox.warning(self, "Error", str(err))
+
+                if color_cmp:
                     if "harmony_rule" in color_dict:
                         if color_dict["harmony_rule"] in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
                             self._env["hm_rule"] = color_dict["harmony_rule"]
-                            hm_cmp = True
                         else:
                             QMessageBox.warning(self, "Error", "Unknown harmony rule: {}.".format(color_dict["harmony_rule"]))
                     else:
                         QMessageBox.warning(self, "Error", "Harmony rule doesn't exist in file.")
 
-                if hm_cmp:
-                    try:
-                        self._create.import_color_set(color_dict)
-                    except Exception as err:
-                        self._create.import_color_set(color_backup)
-                        self._env["hm_rule"] = hm_backup
-                        QMessageBox.warning(self, "Error", str(err))
-
-                    self._emit_color = True
-                    self.selected_hm_rule.emit(self._env["hm_rule"])
-                    self.update()
+                self._emit_color = True
+                self.selected_hm_rule.emit(self._env["hm_rule"])
+                self.update()
