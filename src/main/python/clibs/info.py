@@ -2,7 +2,7 @@
 
 
 def current_version():
-    return "v1.0.1-beta"
+    return "v1.0.2-beta"
 
 def compatible_versions():
     return (r"^v1.0*", )

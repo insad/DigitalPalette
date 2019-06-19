@@ -10,6 +10,7 @@ from clibs.trans2d import get_outer_box, rotate_point_center, get_theta_center
 import numpy as np
 import json
 import re
+import time
 
 
 class Wheel(QWidget):
@@ -145,10 +146,11 @@ class Wheel(QWidget):
         current_v = current_color.v
         current_color.v = 1
 
-        re_wid = wid * (1 - self._env["radius"]) / 2 * 0.8
+        re_wid = wid * (1 - self._env["radius"]) / 2 * self._env["bar_widratio"]
+        re_wid = self._color_radius * 3 if self._color_radius * 3 < re_wid else re_wid
 
-        bar_1_center = (re_wid / 2, hig / 2)
-        self._bar_1_box = (bar_1_center[0] - re_wid * self._env["bar_widratio"] / 2, bar_1_center[1] - hig * self._env["bar_widratio"] / 2, re_wid * self._env["bar_widratio"], hig * self._env["bar_widratio"])
+        bar_1_center = (wid * (1 - self._env["radius"]) / 4, hig / 2)
+        self._bar_1_box = (bar_1_center[0] - re_wid / 2, bar_1_center[1] - hig * self._env["bar_widratio"] / 2, re_wid, hig * self._env["bar_widratio"])
         painter.setPen(QPen(QColor(*self._env["vb_color"]), 3))
         lgrad = QLinearGradient(self._bar_1_box[0], self._bar_1_box[1], self._bar_1_box[0], self._bar_1_box[3])
         lgrad.setColorAt(1.0, Qt.white)
@@ -162,8 +164,8 @@ class Wheel(QWidget):
         painter.setBrush(QBrush(Qt.NoBrush))
         painter.drawEllipse(*cir_1_box)
 
-        bar_2_center = (wid - re_wid / 2, hig / 2)
-        self._bar_2_box = (bar_2_center[0] - re_wid * self._env["bar_widratio"] / 2, bar_2_center[1] - hig * self._env["bar_widratio"] / 2, re_wid * self._env["bar_widratio"], hig * self._env["bar_widratio"])
+        bar_2_center = (wid - wid * (1 - self._env["radius"]) / 4, hig / 2)
+        self._bar_2_box = (bar_2_center[0] - re_wid / 2, bar_2_center[1] - hig * self._env["bar_widratio"] / 2, re_wid, hig * self._env["bar_widratio"])
         painter.setPen(QPen(QColor(*self._env["vb_color"]), 3))
         lgrad = QLinearGradient(self._bar_2_box[0], self._bar_2_box[1], self._bar_2_box[0], self._bar_2_box[3])
         lgrad.setColorAt(1.0, QColor(*current_color.rgb))
@@ -362,17 +364,25 @@ class Wheel(QWidget):
         return _func_
 
     def slot_export(self):
-        cb_file = QFileDialog.getSaveFileName(filter="DigitalPalette Json File (*.dp.json);; \
+        default_name = "{}".format(time.strftime("digipal_%Y_%m_%d", time.localtime()))
+        cb_file = QFileDialog.getSaveFileName(None, "Export", default_name, filter="DigitalPalette Json File (*.json);; \
+                                                      Plain Text (*.txt);; \
                                                       Swatch File (*.aco)")
 
         if cb_file[0]:
             if cb_file[0].split(".")[-1].lower() == "json":
-                color_dict = self._create.export_color_set()
-                color_dict["harmony_rule"] = self._env["hm_rule"]
-                color_dict["version"] = dpinfo.current_version()
+                color_dict = {"version": dpinfo.current_version(), "harmony_rule": self._env["hm_rule"]}
+                color_dict.update(self._create.export_color_set())
 
                 with open(cb_file[0], "w") as f:
                     json.dump(color_dict, f, indent=4)
+            
+            elif cb_file[0].split(".")[-1].lower() == "txt":
+                with open(cb_file[0], "w") as f:
+                    f.write("# DigitalPalette Color Export.\n")
+                    f.write("# Version: {}.\n".format(dpinfo.current_version()))
+                    f.write("# Harmony Rule: {}.\n".format(self._env["hm_rule"]))
+                    f.write(self._create.export_text())                    
 
             elif cb_file[0].split(".")[-1].lower() == "aco":
                 color_swatch = self._create.export_swatch()
@@ -383,7 +393,7 @@ class Wheel(QWidget):
                 QMessageBox.warning(self, "Error", "Unknown file extension: {}.".format(cb_file[0]))
 
     def slot_import(self):
-        cb_file = QFileDialog.getOpenFileName(filter="DigitalPalette Json File (*.dp.json)")
+        cb_file = QFileDialog.getOpenFileName(filter="DigitalPalette Json File (*.json)")
 
         if cb_file[0]:
             with open(cb_file[0], "r") as f:

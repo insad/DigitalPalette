@@ -3,12 +3,13 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QHBoxLayout, QWidget, QMessageBox
 from cguis.main_window import Ui_MainWindow
+from cguis.resource import view_rc
 from cguis.scroll_result_form import Ui_scroll_result
 from cwgts.wheel import Wheel
 from cwgts.square import Square
 from clibs.color import Color
 from clibs import info as dpinfo
-from PyQt5.QtGui import QIcon, QDesktopServices
+from PyQt5.QtGui import QIcon, QDesktopServices, QPixmap
 from PyQt5.QtCore import QUrl
 import sys
 
@@ -33,14 +34,16 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.setWindowTitle("DigitalPalette {}".format(dpinfo.current_version()))
-        self.setWindowIcon(QIcon("./src/main/icons/base/128.png"))
+        app_icon = QIcon()
+        app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
+        self.setWindowIcon(app_icon)
 
         self._setting_env = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set. For create.py. By wheel.py.
-                             "s_range": (0.8, 1.0),       # S range for initial random HSV color set. For create.py. By wheel.py.
-                             "v_range": (0.8, 1.0),       # V range for initial random HSV color set. For create.py. By wheel.py.
+                             "s_range": (0.68, 1.0),       # S range for initial random HSV color set. For create.py. By wheel.py.
+                             "v_range": (0.68, 1.0),       # V range for initial random HSV color set. For create.py. By wheel.py.
                              "radius": 0.8,               # Color wheel radius (ratio) compared with work space width. For wheel.py. By wheel.py.
                              "color_radius": 0.05,        # Color tag radius (ratio)  compared with work space width. For wheel.py. By wheel.py.
-                             "bar_widratio": 0.65,        # V value bar width / height ratio compared with work space. For wheel.py. By wheel.py.
+                             "bar_widratio": 0.8,         # V value bar width / height ratio compared with work space. For wheel.py. By wheel.py.
                              "hm_rule": "analogous",      # Initial harmony rule. For create.py. By wheel.py.
                              "press_move": True,          # Press anywhere in wheel will move activated color tag to the selected color. For wheel.py. By wheel.py.
                              "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py. By wheel.py and square.py.

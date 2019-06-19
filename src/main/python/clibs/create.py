@@ -401,6 +401,16 @@ class Create(object):
         swatch_chars = swatch_chars_v1 + swatch_chars_v2
 
         return binascii.a2b_hex(swatch_chars)
+    
+    def export_text(self):
+        color_text = "{:<10}{:<8}{:<8}{:<8}{:<12}{:<12}{:<12}{:<8}\n".format("# Index", "R", "G", "B", "H", "S", "V", "Hex")
+        for i in (2, 1, 0, 3, 4):
+            r, g, b = self._color_set[i].rgb
+            h, s, v = self._color_set[i].hsv
+            hex_code = self._color_set[i].hex_code
+            color_text += "  {:<8}{:<8}{:<8}{:<8}{:<12.3f}{:<12.3f}{:<12.3f}{:<8}\n".format(i, r, g, b, h, s, v, hex_code)
+        
+        return color_text
 
     def import_color_set(self, color_dict):
         color_set = []
