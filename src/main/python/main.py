@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QHBoxLayout, QWidget, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QHBoxLayout, QMessageBox
 from cguis.main_window import Ui_MainWindow
 from cguis.resource import view_rc
 from cguis.scroll_result_form import Ui_scroll_result
 from cwgts.wheel import Wheel
+from cwgts.graph import Graph
 from cwgts.square import Square
 from clibs.color import Color
 from clibs import info as dpinfo
@@ -38,18 +39,32 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
 
-        self._setting_env = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set. For create.py. By wheel.py.
-                             "s_range": (0.68, 1.0),       # S range for initial random HSV color set. For create.py. By wheel.py.
-                             "v_range": (0.68, 1.0),       # V range for initial random HSV color set. For create.py. By wheel.py.
-                             "radius": 0.8,               # Color wheel radius (ratio) compared with work space width. For wheel.py. By wheel.py.
-                             "color_radius": 0.05,        # Color tag radius (ratio)  compared with work space width. For wheel.py. By wheel.py.
-                             "bar_widratio": 0.8,         # V value bar width / height ratio compared with work space. For wheel.py. By wheel.py.
-                             "hm_rule": "analogous",      # Initial harmony rule. For create.py. By wheel.py.
-                             "press_move": True,          # Press anywhere in wheel will move activated color tag to the selected color. For wheel.py. By wheel.py.
-                             "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py. By wheel.py and square.py.
-                             "ia_color": (200, 200, 200), # inactivated color for color tags in wheel and squares. For wheel.py and square.py. By wheel.py and square.py.
-                             "vb_color": (230, 230, 230), # V value bar color. For wheel.py. By wheel.py.
-                             "widratio": 0.9,             # Color square width / height ratio compared with cube size. For square.py. By square.py.
+        self._setting_env = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set.
+                             "s_range": (0.68, 1.0),      # S range for initial random HSV color set.
+                             "v_range": (0.68, 1.0),      # V range for initial random HSV color set.
+
+                             "hm_rule": "analogous",      # Initial harmony rule.
+
+                             "radius": 0.8,               # Color wheel radius (ratio) compared with work space width.
+                             "color_radius": 0.05,        # Color tag radius (ratio)  compared with work space width.
+                             "tip_radius": 20,            # Circle tip radius in graph view.
+                             "auto_hide": False,           # Auto hide circle tip in graph view.
+
+                             "widratio": 0.9,             # Color square width / height ratio compared with cube size.
+                             "bar_widratio": 0.8,         # V value bar height ratio compared with work space.
+
+                             "press_move": True,          # Press anywhere in wheel will move activated color tag to the selected color.
+
+                             "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py.
+                             "ia_color": (200, 200, 200), # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
+                             "vb_color": (230, 230, 230), # V value bar edge color.
+                             "vs_color": (100, 100, 100), # View window segments color.
+                             
+                             "view_method": "overall",    # View method for graph displaying.
+                             "graph_types": ["rgb", "vtl", "hrz", "fnl"],
+                             "graph_chls": [4, 4, 4, 4],  # Graph types and channels corresponding to temporary files.
+
+                             "temp_dir": "./temp",        # temporary directory.
                              }
 
         self._setup_default_env()
@@ -62,24 +77,47 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionAbout.triggered.connect(self._show_info_)
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.website())))
 
+        self.pbtn_Create.clicked.connect(self._resetup_wheel)
+        self.pbtn_Extract.clicked.connect(self._resetup_graph)
+
     def _setup_default_env(self):
-        # setup default harmony rule.
+        """
+        Setup default harmony rule.
+        """
+
         hm_rules = getattr(self, "rbtn_{}".format(self._setting_env["hm_rule"]))
         hm_rules.setChecked(True)
 
     def _setup_wheel(self):
-        grid_layout = QGridLayout(self.workspace)
-        grid_layout.setContentsMargins(2, 2, 2, 2)
-        self._cwgt_wheel = Wheel(setting=self._setting_env)
-        grid_layout.addWidget(self._cwgt_wheel)
-        self.workspace.setLayout(grid_layout)
+        """
+        Setup work area (wheel or graph).
+        """
 
+        self._work_grid_layout = QGridLayout(self.workspace)
+        self._work_grid_layout.setContentsMargins(2, 2, 2, 2)
+
+        self._cwgt_wheel = Wheel(setting=self._setting_env)
+        self._work_grid_layout.addWidget(self._cwgt_wheel)
+
+        self._cwgt_graph = Graph(setting=self._setting_env)
+        self._work_grid_layout.addWidget(self._cwgt_graph)
+        self._cwgt_graph.hide()
+
+        self.workspace.setLayout(self._work_grid_layout)
+
+        self.gbox_View.hide()
+
+        # set connections between button hm rule and wheel hm rule.
         for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
             rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
-            rbtn_hm_rule.clicked.connect(self._cwgt_wheel.slot_modify_hm_rule(hm_rule.lower()))
+            rbtn_hm_rule.clicked.connect(self._cwgt_wheel.slot_modify_hm_rule(hm_rule))
 
         self._cwgt_wheel.selected_hm_rule.connect(self._func_set_hm_rule_buttons)
-        self.pbtn_Create.clicked.connect(self._cwgt_wheel.slot_recreate)
+
+        # set connection from button view to graph view method.
+        for view_method in ("individual", "referential", "overall"):
+            rbtn_view = getattr(self, "rbtn_{}".format(view_method))
+            rbtn_view.clicked.connect(self._cwgt_graph.slot_change_view_method(view_method))
 
     def _setup_scroll_result(self):
         scroll_result = Ui_scroll_result()
@@ -222,6 +260,28 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
     # show DigitalPalette information.
     def _show_info_(self):
         QMessageBox.information(self, "About", __info__)
+    
+    def _resetup_wheel(self):
+        if self._cwgt_wheel.isVisible():
+            self._cwgt_wheel.slot_recreate()
+        else:
+            self._cwgt_wheel.show()
+            self._cwgt_graph.hide()
+            self.gbox_View.hide()
+            for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
+                rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
+                rbtn_hm_rule.show()
+
+    def _resetup_graph(self):
+        if self._cwgt_graph.isVisible():
+            self._cwgt_graph.slot_reextract()
+        else:
+            self._cwgt_wheel.hide()
+            self._cwgt_graph.show()
+            self.gbox_View.show()
+            for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
+                rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
+                rbtn_hm_rule.hide()
 
 
 if __name__ == "__main__":

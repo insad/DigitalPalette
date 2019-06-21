@@ -60,9 +60,9 @@ class Square(QWidget):
         painter = QPainter()
         painter.begin(self)
 
-        # painter.setRenderHint(QPainter.Antialiasing, True)
-        # painter.setRenderHint(QPainter.TextAntialiasing, True)
-        # painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.TextAntialiasing, True)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         if self._acitvated_state:
             painter.setPen(QPen(QColor(*self._env["at_color"]), 5))

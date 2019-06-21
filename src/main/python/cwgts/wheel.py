@@ -366,8 +366,8 @@ class Wheel(QWidget):
     def slot_export(self):
         default_name = "{}".format(time.strftime("digipal_%Y_%m_%d", time.localtime()))
         cb_file = QFileDialog.getSaveFileName(None, "Export", default_name, filter="DigitalPalette Json File (*.json);; \
-                                                      Plain Text (*.txt);; \
-                                                      Swatch File (*.aco)")
+                                                                                    Plain Text (*.txt);; \
+                                                                                    Swatch File (*.aco)")
 
         if cb_file[0]:
             if cb_file[0].split(".")[-1].lower() == "json":
