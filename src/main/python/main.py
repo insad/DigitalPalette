@@ -61,8 +61,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                              "vs_color": (100, 100, 100), # View window segments color.
                              
                              "view_method": "overall",    # View method for graph displaying.
-                             "graph_types": ["rgb", "vtl", "hrz", "fnl"],
-                             "graph_chls": [4, 4, 4, 4],  # Graph types and channels corresponding to temporary files.
+                             "graph_types": [0, 1, 2, 3], # Graph types corresponding to temporary files.
+                             "graph_chls": [0, 0, 0, 0],  # Graph channels corresponding to temporary files.
 
                              "temp_dir": "./temp",        # temporary directory.
                              }
@@ -105,19 +105,12 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self.workspace.setLayout(self._work_grid_layout)
 
-        self.gbox_View.hide()
-
         # set connections between button hm rule and wheel hm rule.
         for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
             rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
             rbtn_hm_rule.clicked.connect(self._cwgt_wheel.slot_modify_hm_rule(hm_rule))
 
         self._cwgt_wheel.selected_hm_rule.connect(self._func_set_hm_rule_buttons)
-
-        # set connection from button view to graph view method.
-        for view_method in ("individual", "referential", "overall"):
-            rbtn_view = getattr(self, "rbtn_{}".format(view_method))
-            rbtn_view.clicked.connect(self._cwgt_graph.slot_change_view_method(view_method))
 
     def _setup_scroll_result(self):
         scroll_result = Ui_scroll_result()
@@ -267,7 +260,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         else:
             self._cwgt_wheel.show()
             self._cwgt_graph.hide()
-            self.gbox_View.hide()
             for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
                 rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
                 rbtn_hm_rule.show()
@@ -278,10 +270,11 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         else:
             self._cwgt_wheel.hide()
             self._cwgt_graph.show()
-            self.gbox_View.show()
             for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
                 rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
                 rbtn_hm_rule.hide()
+            
+            self._cwgt_graph.slot_update()
 
 
 if __name__ == "__main__":

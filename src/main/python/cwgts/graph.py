@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from cguis.graph_work_form import Ui_graph_work
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout, QFrame, QGraphicsPixmapItem, QGraphicsScene
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage
-import numpy as np
 from clibs.color import Color
-from PIL import Image
 from clibs.trans2d import get_outer_box
+from cwgts.view import View
+import numpy as np
+from PIL import Image
 import os
 
 
-class Graph(QWidget, Ui_graph_work):
+class Graph(QWidget):
     def __init__(self, setting={}):
         """
         Init the graph work area.
@@ -21,10 +21,8 @@ class Graph(QWidget, Ui_graph_work):
         """
 
         super().__init__()
-        self.setupUi(self)
 
         self._env = {}
-        self._env["view_method"] = setting["view_method"]
         self._env["vs_color"] = setting["vs_color"]
         self._env["auto_hide"] = setting["auto_hide"]
         self._env["tip_radius"] = setting["tip_radius"]
@@ -43,51 +41,46 @@ class Graph(QWidget, Ui_graph_work):
         self._label.setText("Double click here to open a graph.")
         self._label.setWordWrap(True)
 
-        self._graph_labels = []
-        for i in range(4):
-            graph_ctx = getattr(self, "graph_ctx_{}".format(i))
-            graph_label = QLabel(graph_ctx)
-            graph_label.setAlignment(Qt.AlignCenter)
-            self._graph_labels.append(graph_label)
-
-            grid_layout = QGridLayout()
-            grid_layout.addWidget(graph_label)
-            grid_layout.setContentsMargins(1, 1, 1, 1)
-            graph_ctx.setLayout(grid_layout)
-
-            graph = getattr(self, "graph_{}".format(i))
-            graph.hide()
-
-        self._first = True          # initialize graph views.
-        self._imported = False      # image is opend.
-        self._changed = False       # changing graph or view.
-        self._ori_wid = 0           # original width.
-        self._ori_hig = 0           # original height.
-
-        # according to temporary files.
-        self._graph_files = [None, None, None, None]
-
-        graph_value = {"rgb": 0, "vtl": 1, "hrz": 2, "fnl": 3}
-        channel_value = {4: 0, 0: 1, 1: 2, 2: 3}
+        self._graph_views = []
+        grid_layout = QGridLayout()
+        grid_layout.setContentsMargins(0, 0, 0, 0)
+        grid_layout.setSpacing(0)
+        self.setLayout(grid_layout)
 
         for i in range(4):
+            graph_view = View()
+            grid_layout.addWidget(graph_view, i // 2, i % 2, 1, 1)
+
+            self._graph_views.append(graph_view)
+            graph_view.hide()
+
             # set connections from co box to graph types.
-            cobox_gph = getattr(self, "cobox_gph_{}".format(i))
-            cobox_gph.currentIndexChanged.connect(self.slot_change_graph_type(i))
+            graph_view.selected_gph.connect(self.slot_change_gph(i))
+
+            # set connections from co box to channels.
+            graph_view.selected_chl.connect(self.slot_change_chl(i))
 
             # setup graph type default values.
-            cobox_gph.setCurrentIndex(graph_value[self._env["graph_types"][i]])
-        
-            # set connections from co box to channels.
-            cobox_chl = getattr(self, "cobox_chl_{}".format(i))
-            cobox_chl.currentIndexChanged.connect(self.slot_change_channel(i))
+            graph_view.slot_change_gph(self._env["graph_types"][i])
 
             # setup channel default values.
-            cobox_chl.setCurrentIndex(channel_value[self._env["graph_chls"][i]])
+            graph_view.slot_change_chl(self._env["graph_chls"][i])
 
-        # for func update.
-        self._view_seq = {"individual": (0,), "referential": (0, 1,), "overall": (0, 1, 2, 3,)}
-        self._x_y_pos_rto = {"individual": (1.0, 1.0), "referential": (0.5, 1.0), "overall": (0.5, 0.5)}
+        self._image_imported = False      # image is opend.
+        self._graph_changed = True        # changing graphs.
+        self._init = True                 # init graphs.
+        self._ori_wid = 0                 # original width.
+        self._ori_hig = 0                 # original height.
+        self._ori_gph = [5, 5, 5, 5]      # original graph type.
+        self._ori_chl = [5, 5, 5, 5]      # original channel.
+        self._zoom = [1.0, 1.0, 1.0, 1.0] # zoom size ratios.
+
+        # for func resize.
+        self._pos_rto = np.array([0.5, 0.5])
+        self._pos_moving = False
+
+        # for func show.
+        self._view_seq = [0, 1, 2, 3]
 
     def paintEvent(self, event):
         self._wid = self.geometry().width()
@@ -95,20 +88,37 @@ class Graph(QWidget, Ui_graph_work):
         self._box = (self._wid * 0.2, self._hig * 0.2, self._wid * 0.6, self._hig * 0.6)
 
         # paint analysis interface.
-        if self._imported:
-            if self._first:
-                self._label.hide()
-                self._func_review_()
-                self._first = False
+        if self._image_imported:
+            self._label.hide()
 
-            if self._wid != self._ori_wid or self._hig != self._ori_hig or self._changed:
+            if not self._env["auto_hide"]:
+                painter = QPainter()
+                painter.begin(self)
+
+                painter.setRenderHint(QPainter.Antialiasing, True)
+                painter.setRenderHint(QPainter.TextAntialiasing, True)
+                painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+
+                tip_center = np.array((self._wid, self._hig)) * self._pos_rto
+                tip_box = get_outer_box(tip_center, self._env["tip_radius"])
+                painter.setPen(QPen(QColor(*self._env["vs_color"]), 3))
+                painter.setBrush(QBrush(Qt.NoBrush))
+                painter.drawEllipse(*tip_box)
+
+                painter.end()
+
+            if self._wid != self._ori_wid or self._hig != self._ori_hig or self._graph_changed:
+                self._func_show()
                 self._func_resize_()
-                self._func_update_()
+                self._func_update_view_()
                 
-                self._ori_wid = self._wid
-                self._ori_hig = self._hig
-                self._changed = False
-        
+                self._ori_wid = int(self._wid)
+                self._ori_hig = int(self._hig)
+                self._ori_gph = list(self._env["graph_types"])
+                self._ori_chl = list(self._env["graph_chls"])
+                
+                self._graph_changed = False
+
         # paint open image interface.
         else:
             self._label.show()
@@ -135,7 +145,7 @@ class Graph(QWidget, Ui_graph_work):
             p_x = event.x()
             p_y = event.y()
 
-            if not self._imported:
+            if not self._image_imported:
                 if self._box[0] < p_x < (self._box[0] + self._box[2]) and self._box[1] < p_y < (self._box[1] + self._box[3]):
                     self._func_open_graph_()
                     
@@ -145,6 +155,51 @@ class Graph(QWidget, Ui_graph_work):
                     event.ignore()
             else:
                 event.ignore()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            point = np.array((event.x(), event.y()))
+
+            tip_center = np.array((self._wid, self._hig)) * self._pos_rto
+            if np.linalg.norm(point - tip_center) < self._env["tip_radius"]:
+                pos_rto = point / np.array((self._wid, self._hig))
+                pos_rto, show_list = self._func_pos_absorp_(pos_rto)
+                self._pos_moving = True
+
+                if (np.abs(pos_rto - self._pos_rto) > 1E-4).any():
+                    self._pos_rto = pos_rto
+                    self._view_seq = show_list
+                    self._graph_changed = True
+
+                    event.accept()
+                    self.update()
+                else:
+                    event.ignore()
+            else:
+                event.ignore()
+        else:
+            event.ignore()
+
+    def mouseMoveEvent(self, event):
+        if self._pos_moving:
+            point = np.array((event.x(), event.y()))
+            pos_rto = point / np.array((self._wid, self._hig))
+            pos_rto, show_list = self._func_pos_absorp_(pos_rto)
+
+            if (np.abs(pos_rto - self._pos_rto) > 1E-4).any():
+                self._pos_rto = pos_rto
+                self._view_seq = show_list
+                self._graph_changed = True
+
+                event.accept()
+                self.update()
+            else:
+                event.ignore()
+        else:
+            event.ignore()
+
+    def mouseReleaseEvent(self, event):
+        self._pos_moving = False
 
 
     # ===== ===== ===== inner functions ===== ===== =====
@@ -159,7 +214,7 @@ class Graph(QWidget, Ui_graph_work):
 
         # import rgb data.
         rgb_data = np.array(Image.open(image_file).convert("RGB"), dtype=np.uint8)
-        self._func_save_data_(rgb_data, "rgb")
+        self._func_save_data_(rgb_data, "0")
 
         # transform from rgb to hsv.
         hsv_data = np.zeros(rgb_data.shape, dtype=np.uint16) # = hsv * 65535 (/ 360)
@@ -194,9 +249,9 @@ class Graph(QWidget, Ui_graph_work):
         # final.
         fnl_results = vtl_results + hrz_results
 
-        self._func_save_data_(vtl_results, "vtl")
-        self._func_save_data_(hrz_results, "hrz")
-        self._func_save_data_(fnl_results, "fnl")
+        self._func_save_data_(vtl_results, "1")
+        self._func_save_data_(hrz_results, "2")
+        self._func_save_data_(fnl_results, "3")
 
     def _func_read_channels_(self, rgb_data):
         """
@@ -217,18 +272,18 @@ class Graph(QWidget, Ui_graph_work):
     
     def _func_save_data_(self, rgb_data, prefix):
         rgb = QImage(rgb_data, rgb_data.shape[1], rgb_data.shape[0], rgb_data.shape[1] * 3, QImage.Format_RGB888)
-        rgb.save(self._env["temp_dir"] + os.sep + "{}_4.png".format(prefix))
+        rgb.save(self._env["temp_dir"] + os.sep + "{}_0.png".format(prefix))
 
         r_chl, g_chl, b_chl = self._func_read_channels_(rgb_data)
 
         r_chl = QImage(r_chl, r_chl.shape[1], r_chl.shape[0], r_chl.shape[1] * 3, QImage.Format_RGB888)
-        r_chl.save(self._env["temp_dir"] + os.sep + "{}_0.png".format(prefix))
+        r_chl.save(self._env["temp_dir"] + os.sep + "{}_1.png".format(prefix))
 
         g_chl = QImage(g_chl, g_chl.shape[1], g_chl.shape[0], g_chl.shape[1] * 3, QImage.Format_RGB888)
-        g_chl.save(self._env["temp_dir"] + os.sep + "{}_1.png".format(prefix))
+        g_chl.save(self._env["temp_dir"] + os.sep + "{}_2.png".format(prefix))
 
         b_chl = QImage(b_chl, b_chl.shape[1], b_chl.shape[0], b_chl.shape[1] * 3, QImage.Format_RGB888)
-        b_chl.save(self._env["temp_dir"] + os.sep + "{}_2.png".format(prefix))
+        b_chl.save(self._env["temp_dir"] + os.sep + "{}_3.png".format(prefix))
     
     def _func_open_graph_(self):
         """
@@ -243,62 +298,94 @@ class Graph(QWidget, Ui_graph_work):
 
         if cb_file[0]:
             self._func_import_image_(cb_file[0])
-            self._imported = True
+            self._image_imported = True
 
-    def _func_update_(self):
+    def _func_update_view_(self):
+        """
+        Update graph view.
+        """
+
         for i in range(4):
-            graph_ctx = getattr(self, "graph_ctx_{}".format(i))
-
-            if i in self._view_seq[self._env["view_method"]]:
-                if self._graph_files[i] == None:
+            if i in self._view_seq:
+                if self._env["graph_types"][i] != self._ori_gph[i] or self._env["graph_chls"][i] != self._ori_chl[i]:
                     img_name = "{}_{}.png".format(self._env["graph_types"][i], self._env["graph_chls"][i])
-                    self._graph_files[i] = QImage(self._env["temp_dir"] + os.sep + img_name)
-                
-                resized_img = self._graph_files[i].scaled(graph_ctx.geometry().width(), graph_ctx.geometry().height(), Qt.KeepAspectRatio)
-                self._graph_labels[i].setPixmap(QPixmap.fromImage(resized_img))
+                    img = QPixmap(self._env["temp_dir"] + os.sep + img_name)
+                    item = QGraphicsPixmapItem(img)
+                    scene = QGraphicsScene()
+                    scene.addItem(item)
+                    self._graph_views[i].gview.setScene(scene)
 
     def _func_resize_(self):
         """
-        Change view geometry size according to setting view method.
+        Change view geometry size according to position ratio.
         """
 
-        pos_x = self._wid * self._x_y_pos_rto[self._env["view_method"]][0]
-        pos_y = self._hig * self._x_y_pos_rto[self._env["view_method"]][1]
+        pos_x = int(self._wid * self._pos_rto[0])
+        pos_y = int(self._hig * self._pos_rto[1])
+        
+        if self._graph_views[0].geometry().width() != pos_x or self._graph_views[0].geometry().height != pos_y:
+            self._graph_views[0].setGeometry(0, 0, pos_x, pos_y)
+            self._graph_views[1].setGeometry(pos_x, 0, self._wid - pos_x, pos_y)
+            self._graph_views[2].setGeometry(0, pos_y, pos_x, self._hig - pos_y)
+            self._graph_views[3].setGeometry(pos_x, pos_y, self._wid - pos_x, self._hig - pos_y)
 
-        self.graph_0.setGeometry(0, 0, pos_x, pos_y)
-        self.graph_1.setGeometry(pos_x, 0, self._wid - pos_x, pos_y)
-        self.graph_2.setGeometry(0, pos_y, pos_x, self._hig - pos_y)
-        self.graph_3.setGeometry(pos_x, pos_y, self._wid - pos_x, self._hig - pos_y)
-    
-    def _func_review_(self):
+    def _func_show(self):
         """
-        Change views visibility according to setting view method.
+        Change view visibility according to view sequence.
         """
-
+        
         for i in range(4):
-            graph = getattr(self, "graph_{}".format(i))
-            if i in self._view_seq[self._env["view_method"]]:
-                graph.show()
+            if i in self._view_seq:
+                self._graph_views[i].show()
             else:
-                graph.hide()
+                self._graph_views[i].hide()
+
+    def _func_pos_absorp_(self, pos_rto):
+        """
+        The absorption of tip on special positions.
+        """
+
+        tip_wid = self._wid * pos_rto[0]
+        tip_hig = self._hig * pos_rto[1]
+
+        hide_list = [] # view hide list.
+
+        if tip_wid < 50:
+            pos_rto[0] = 0.0
+            hide_list += [0, 2]
+        elif self._wid - tip_wid < 50:
+            pos_rto[0] = 1.0
+            hide_list += [1, 3]
+        
+        if tip_hig < 50:
+            pos_rto[1] = 0.0
+            hide_list += [0, 1]
+        elif self._hig - tip_hig < 50:
+            pos_rto[1] = 1.0
+            hide_list += [2, 3]
+        
+        if pos_rto[0] not in (0.0, 1.0) and pos_rto[1] not in (0.0, 1.0):
+            if np.sqrt((tip_wid - self._wid / 2) ** 2 + (tip_hig - self._hig / 2) ** 2) < 25:
+                pos_rto[0] = 0.5
+                pos_rto[1] = 0.5
+        
+        if pos_rto[0] not in (0.0, 1.0) and pos_rto[1] in (0.0, 1.0):
+            if np.sqrt((tip_wid - self._wid / 2) ** 2 + (tip_hig - pos_rto[1] * self._hig) ** 2) < 25:
+                pos_rto[0] = 0.5
+        
+        if pos_rto[0] in (0.0, 1.0) and pos_rto[1] not in (0.0, 1.0):
+            if np.sqrt((tip_wid - pos_rto[0] * self._wid) ** 2 + (tip_hig - self._hig / 2) ** 2) < 25:
+                pos_rto[1] = 0.5
+
+        show_list = [] # view show list (view seq).
+        for i in range(4):
+            if i not in hide_list:
+                show_list.append(i)
+
+        return pos_rto, tuple(show_list)
 
 
     # ===== ===== ===== slot functions ===== ===== =====
-
-    def slot_change_view_method(self, method):
-        """
-        Slot func. Change the view method "individual", "referential" and "overall".
-        """
-
-        def _func_(value):
-            if method != self._env["view_method"]:
-                self._env["view_method"] = method
-                self._func_review_()
-                
-                self._changed = True
-                self.update()
-        
-        return _func_
 
     def slot_reextract(self):
         """
@@ -306,40 +393,43 @@ class Graph(QWidget, Ui_graph_work):
         """
 
         self._func_open_graph_()
-        self._graph_files = [None, None, None, None]
 
-        self._changed = True
+        self._graph_changed = True
+        self._ori_gph = [5, 5, 5, 5]
+        self._ori_chl = [5, 5, 5, 5]
         self.update()
 
-    def slot_change_graph_type(self, graph_idx):
+    def slot_change_gph(self, graph_idx):
         """
         Slot func. Change graph type by co box.
         """
 
-        def _func_(select_idx):
-            value = {0: "rgb", 1: "vtl", 2: "hrz", 3: "fnl"}
-            if value[select_idx] != self._env["graph_types"][graph_idx]:
-                self._env["graph_types"][graph_idx] = value[select_idx]
-                self._graph_files[graph_idx] = None
+        def _func_(graph_type):
+            if graph_type != self._env["graph_types"][graph_idx]:
+                self._env["graph_types"][graph_idx] = graph_type
 
-                self._changed = True
+                self._graph_changed = True
                 self.update()
 
         return _func_
     
-    def slot_change_channel(self, graph_idx):
+    def slot_change_chl(self, graph_idx):
         """
         Slot func. Change channel by co box.
         """
 
-        def _func_(select_idx):
-            value = {0: 4, 1: 0, 2: 1, 3: 2}
-            if value[select_idx] != self._env["graph_chls"][graph_idx]:
-                self._env["graph_chls"][graph_idx] = value[select_idx]
-                self._graph_files[graph_idx] = None
+        def _func_(channel):
+            if channel != self._env["graph_chls"][graph_idx]:
+                self._env["graph_chls"][graph_idx] = channel
 
-                self._changed = True
+                self._graph_changed = True
                 self.update()
 
         return _func_
-    
+
+    def slot_update(self):
+        """
+        Update graph view when changing from wheel to graph.
+        """
+
+        self._graph_changed = True

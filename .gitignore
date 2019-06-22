@@ -112,3 +112,10 @@ venv.bak/
 !src/build/
 crefs/
 temp/
+
+# test
+*.test
+test.*
+test_*
+*_bak.py
+*_bak.ui
