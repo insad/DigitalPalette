@@ -65,6 +65,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                              "graph_types": [0, 1, 2, 3], # Graph types corresponding to temporary files.
                              "graph_chls": [0, 0, 0, 0],  # Graph channels corresponding to temporary files.
 
+                             "zoom_step": 1.3,            # zoom ratio for each step.
+
                              "temp_dir": "./temp",        # temporary directory.
                              }
 

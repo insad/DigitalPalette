@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from cguis.graph_view_form import Ui_graph_view
-from PyQt5.QtWidgets import QWidget, QGridLayout
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QPainter, QPen, QBrush
 
 
 class View(QWidget, Ui_graph_view):
@@ -32,6 +33,13 @@ class View(QWidget, Ui_graph_view):
         grid_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(grid_layout)
 
+        self.graph_label = QLabel(self.gview)
+
+        grid_layout = QGridLayout()
+        grid_layout.addWidget(self.graph_label)
+        grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.gview.setLayout(grid_layout)
+
         self.cobox_gph.setGeometry(20, 0, 35, 20)
         self.cobox_chl.setGeometry(55, 0, 35, 20)
 
@@ -57,6 +65,17 @@ class View(QWidget, Ui_graph_view):
         self.pbtn_zoom_in.clicked.connect(lambda x: self.selected_zoom.emit("i"))
         self.pbtn_zoom_out.clicked.connect(lambda x: self.selected_zoom.emit("o"))
 
+    def paintEvent(self, event):
+        painter = QPainter()
+        painter.begin(self)
+
+        painter.setPen(QPen(Qt.NoPen))
+        painter.setBrush(Qt.white)
+
+        painter.drawRect(self.geometry())
+
+        painter.end()
+
 
     # ===== ===== ===== slot functions ===== ===== =====
 
@@ -69,3 +88,8 @@ class View(QWidget, Ui_graph_view):
         if channel != self.cobox_chl.currentIndex():
             self.cobox_chl.setCurrentIndex(channel)
             self.update()
+    
+    def slot_resize(self):
+        print(self.geometry())
+        self.gview.setGeometry(self.geometry())
+        self.graph_label.setAlignment(Qt.AlignCenter)

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout, QFrame, QGraphicsPixmapItem, QGraphicsScene
+from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout
 from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage, QPalette
 from clibs.color import Color
 from clibs.trans2d import get_outer_box
-from cwgts.view import View
+from cguis.graph_views_form import Ui_graph_views
 import numpy as np
 from PIL import Image
 import os
 
 
-class Graph(QWidget):
+class Graph(QWidget, Ui_graph_views):
     def __init__(self, setting={}):
         """
         Init the graph work area.
@@ -21,6 +21,7 @@ class Graph(QWidget):
         """
 
         super().__init__()
+        self.setupUi(self)
 
         self._env = {}
         self._env["vs_color"] = setting["vs_color"]
@@ -30,6 +31,7 @@ class Graph(QWidget):
         self._env["graph_types"] = setting["graph_types"]
         self._env["graph_chls"] = setting["graph_chls"]
         self._env["half_sp"] = setting["half_sp"]
+        self._env["zoom_step"] = setting["zoom_step"]
 
         if not os.path.isdir(self._env["temp_dir"]):
             os.mkdir(self._env["temp_dir"])
@@ -38,36 +40,32 @@ class Graph(QWidget):
         self._label.setText("Double click here to open a graph.")
         self._label.setWordWrap(True)
 
-        self._graph_views = []
         grid_layout = QGridLayout()
         grid_layout.setContentsMargins(self._env["half_sp"], self._env["half_sp"], self._env["half_sp"], self._env["half_sp"])
         grid_layout.setSpacing(self._env["half_sp"] * 2)
         self.setLayout(grid_layout)
 
         for i in range(4):
-            graph_view = View()
+            graph_view = getattr(self, "graph_view_{}".format(i))
+            palette = QPalette()
+            palette.setColor(self.backgroundRole(), Qt.white)
+            graph_view.setPalette(palette)
             grid_layout.addWidget(graph_view, i // 2, i % 2, 1, 1)
-
-            self._graph_views.append(graph_view)
             graph_view.hide()
 
-            # set connections from view co box to graph types.
-            graph_view.selected_gph.connect(self.slot_change_gph(i))
+            cobox_gph = getattr(self, "cobox_gph_{}".format(i))
+            cobox_gph.setCurrentIndex(self._env["graph_types"][i])
+            cobox_gph.currentIndexChanged.connect(self.slot_change_gph(i))
 
-            # set connections from view co box to channels.
-            graph_view.selected_chl.connect(self.slot_change_chl(i))
+            cobox_chl = getattr(self, "cobox_chl_{}".format(i))
+            cobox_chl.setCurrentIndex(self._env["graph_chls"][i])
+            cobox_chl.currentIndexChanged.connect(self.slot_change_chl(i))
 
-            # set connections from view move button to move func.
-            graph_view.selected_move.connect(self.slot_move(i))
+            pbtn_zoom_in = getattr(self, "pbtn_zoom_in_{}".format(i))
+            pbtn_zoom_in.clicked.connect(self.slot_zoom(i, "i"))
 
-            # set connections from view zoom button to zoon func.
-            graph_view.selected_zoom.connect(self.slot_zoom(i))
-
-            # setup graph type default values.
-            graph_view.slot_change_gph(self._env["graph_types"][i])
-
-            # setup channel default values.
-            graph_view.slot_change_chl(self._env["graph_chls"][i])
+            pbtn_zoom_out = getattr(self, "pbtn_zoom_out_{}".format(i))
+            pbtn_zoom_out.clicked.connect(self.slot_zoom(i, "o"))
 
         self._image_imported = False    # image is opend.
         self._graph_changed = True      # changing graphs.
@@ -77,13 +75,11 @@ class Graph(QWidget):
         self._ori_gph = [5, 5, 5, 5]    # original graph type.
         self._ori_chl = [5, 5, 5, 5]    # original channel.
 
-        self._zoom = [1, 1, 1, 1]       # zoom size ratios.
-        self._move_x = [0, 0, 0, 0]     # move offset.
-        self._move_y = [0, 0, 0, 0]     # move offset.
+        self._images = [None, None, None, None]
 
-        # for graph zoom and move.
-        self._gph_zooming = False
-        self._gph_moving = False
+        self._zoom = [1.0, 1.0, 1.0, 1.0] # zoom size ratios.
+        self._move_x = [0, 0, 0, 0]       # move offset.
+        self._move_y = [0, 0, 0, 0]       # move offset.
 
         # for func resize.
         self._pos_rto = np.array([0.5, 0.5])
@@ -130,14 +126,6 @@ class Graph(QWidget):
                 self._ori_chl = list(self._env["graph_chls"])
                 
                 self._graph_changed = False
-            
-            if self._gph_moving:
-                self._func_move_()
-                self._gph_moving = False
-            
-            if self._gph_zooming:
-                self._func_zoom_()
-                self._gph_zooming = False
 
         # paint open image interface.
         else:
@@ -220,6 +208,17 @@ class Graph(QWidget):
 
     def mouseReleaseEvent(self, event):
         self._pos_moving = False
+    
+    def wheelEvent(self, event):
+        if self._image_imported:
+            point = np.array((event.x(), event.y()))
+            tip_center = np.array((self._wid, self._hig)) * self._pos_rto
+
+            ratio = (event.angleDelta() / 120).y()
+            if ratio:
+                ratio = ratio * self._env["zoom_step"] if ratio > 0 else -1 * ratio / self._env["zoom_step"]
+            else:
+                ratio = 1
 
 
     # ===== ===== ===== inner functions ===== ===== =====
@@ -328,35 +327,56 @@ class Graph(QWidget):
         for i in self._view_seq:
             if self._env["graph_types"][i] != self._ori_gph[i] or self._env["graph_chls"][i] != self._ori_chl[i]:
                 img_name = "{}_{}.png".format(self._env["graph_types"][i], self._env["graph_chls"][i])
-                img = QPixmap(self._env["temp_dir"] + os.sep + img_name)
-                item = QGraphicsPixmapItem(img)
-                scene = QGraphicsScene()
-                scene.addItem(item)
-                self._graph_views[i].gview.setScene(scene)
+                img = QImage(self._env["temp_dir"] + os.sep + img_name)
+                self._images[i] = img
+                
+            graph_view = getattr(self, "graph_view_{}".format(i))
+            gph_wid = graph_view.geometry().width()
+            gph_hig = graph_view.geometry().height()
+            resized_img = self._images[i].scaled(gph_wid, gph_hig, Qt.KeepAspectRatio)
+            img_wid = resized_img.size().width()
+            img_hig = resized_img.size().height()
+            graph_label = getattr(self, "graph_label_{}".format(i))
+            graph_label.setGeometry((gph_wid - img_wid) / 2, (gph_hig - img_hig) / 2, img_wid, img_hig)
+            graph_label.setPixmap(QPixmap.fromImage(resized_img))
 
-                wid_scale = self._graph_views[i].gview.size().width() / img.size().width()
-                hig_scale = self._graph_views[i].gview.size().height() / img.size().height()
-                fnl_scale = min(wid_scale, hig_scale) * 0.8
-                item.setScale(fnl_scale)
-
-    def _func_zoom_(self):
+    def _func_zoom_(self, idx, center, ratio):
         """
         Zoom graphs.
         """
 
-        for i in self._view_seq:
-            wid_scale = self._graph_views[i].gview.size().width() / self._graph_views[i].gview.items()[0].pixmap().size().width()
-            hig_scale = self._graph_views[i].gview.size().height() / self._graph_views[i].gview.items()[0].pixmap().size().height()
-            fnl_scale = min(wid_scale, hig_scale) * 0.8 * self._zoom[i]
-            self._graph_views[i].gview.items()[0].setScale(fnl_scale)
+        self._zoom[idx] *= ratio
+
+        print(self._zoom[idx])
+
+        graph_view = getattr(self, "graph_view_{}".format(idx))
+        gph_wid = graph_view.geometry().width()
+        gph_hig = graph_view.geometry().height()
+        print(gph_wid, gph_hig)
+        resized_img = self._images[idx].scaled(gph_wid * self._zoom[idx], gph_hig * self._zoom[idx], Qt.KeepAspectRatio)
+        img_wid = resized_img.size().width()
+        img_hig = resized_img.size().height()
+        print(img_wid, img_hig)
+        graph_label = getattr(self, "graph_label_{}".format(idx))
+        lab_x = graph_label.geometry().x()
+        lab_y = graph_label.geometry().y()
+        print(lab_x, lab_y)
+        z_lab_x = center[0] - ((center[0] - lab_x) * ratio)
+        z_lab_y = center[1] - ((center[1] - lab_y) * ratio)
+        print(z_lab_x, z_lab_y)
+        graph_label.setGeometry(z_lab_x, z_lab_y, img_wid, img_hig)
+        graph_label.setPixmap(QPixmap.fromImage(resized_img))
 
     def _func_move_(self):
         """
         Move graphs.
         """
+        pass
 
+        """
         for i in self._view_seq:
             self._graph_views[i].gview.items()[0].setOffset(self._move_x[i], self._move_y[i])
+        """
 
     def _func_resize_(self):
         """
@@ -366,15 +386,15 @@ class Graph(QWidget):
         pos_x = int(self._wid * self._pos_rto[0])
         pos_y = int(self._hig * self._pos_rto[1])
         
-        if self._graph_views[0].geometry().width() != (pos_x - self._env["half_sp"] * 2) or self._graph_views[0].geometry().height != (pos_y - self._env["half_sp"] * 2):
+        if self.graph_view_0.geometry().width() != (pos_x - self._env["half_sp"] * 2) or self.graph_view_0.geometry().height != (pos_y - self._env["half_sp"] * 2):
             if 0 in self._view_seq:
-                self._graph_views[0].setGeometry(self._env["half_sp"], self._env["half_sp"], (pos_x - self._env["half_sp"] * 2), (pos_y - self._env["half_sp"] * 2))
+                self.graph_view_0.setGeometry(self._env["half_sp"], self._env["half_sp"], (pos_x - self._env["half_sp"] * 2), (pos_y - self._env["half_sp"] * 2))
             if 1 in self._view_seq:
-                self._graph_views[1].setGeometry((pos_x + self._env["half_sp"]), self._env["half_sp"], (self._wid - pos_x - self._env["half_sp"] * 2), (pos_y - self._env["half_sp"] * 2))
+                self.graph_view_1.setGeometry((pos_x + self._env["half_sp"]), self._env["half_sp"], (self._wid - pos_x - self._env["half_sp"] * 2), (pos_y - self._env["half_sp"] * 2))
             if 2 in self._view_seq:
-                self._graph_views[2].setGeometry(self._env["half_sp"], (pos_y + self._env["half_sp"]), (pos_x -self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
+                self.graph_view_2.setGeometry(self._env["half_sp"], (pos_y + self._env["half_sp"]), (pos_x -self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
             if 3 in self._view_seq:
-                self._graph_views[3].setGeometry((pos_x + self._env["half_sp"]), (pos_y + self._env["half_sp"]), (self._wid - pos_x - self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
+                self.graph_view_3.setGeometry((pos_x + self._env["half_sp"]), (pos_y + self._env["half_sp"]), (self._wid - pos_x - self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
 
     def _func_show(self):
         """
@@ -382,10 +402,11 @@ class Graph(QWidget):
         """
         
         for i in range(4):
+            graph_view = getattr(self, "graph_view_{}".format(i))
             if i in self._view_seq:
-                self._graph_views[i].show()
+                graph_view.show()
             else:
-                self._graph_views[i].hide()
+                graph_view.hide()
 
     def _func_pos_absorp_(self, pos_rto):
         """
@@ -484,12 +505,12 @@ class Graph(QWidget):
         self._graph_changed = True
         self.update()
 
-    def slot_move(self, idx):
+    def slot_move(self, idx, direction):
         """
         Move buttons.
         """
 
-        def _func_(direction):
+        def _func_(value):
             step = 50
 
             if direction == "u":
@@ -508,22 +529,21 @@ class Graph(QWidget):
         
         return _func_
     
-    def slot_zoom(self, idx):
+    def slot_zoom(self, idx, direction):
         """
         Zoom buttons.
         """
 
-        def _func_(direction):
-            step = 0.5
-
-            if direction == "o":
-                self._zoom[idx] -= step
-            elif direction == "i":
-                self._zoom[idx] += step
+        def _func_(value):
+            if direction == "i":
+                ratio = self._env["zoom_step"]
+            elif direction == "o":
+                ratio = 1 / self._env["zoom_step"]
             else:
                 raise ValueError("uexpect zoom direction: {}.".format(direction))
 
-            self._gph_zooming = True
+            graph_view = getattr(self, "graph_view_{}".format(idx))
+            self._func_zoom_(idx, (graph_view.size().width() / 2, graph_view.size().height() / 2), ratio)
             self.update()
         
         return _func_
