@@ -2,7 +2,7 @@
 Digital palette for selecting harmony colors.
 
 # Version
-v1.0.4-beta
+v1.0.5-beta
 
 # Author
 Liu Jia
@@ -13,3 +13,4 @@ Liu Jia
 * 2019.06.19: Add plain text exportation method.
 * 2019.06.21: Add image extraction method.
 * 2019.06.22: Modify graph view interface.
+* 2019.06.23: Add move and zoom methods for graph views.
