@@ -61,11 +61,14 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                              "vs_color": (100, 100, 100), # View window segments color.
                              
                              "view_method": "overall",    # View method for graph displaying.
-                             "half_sp": 4,                # Half of spacing between two views in graph.
+                             "half_sp": 5,                # Half of spacing between two views in graph.
                              "graph_types": [0, 1, 2, 3], # Graph types corresponding to temporary files.
                              "graph_chls": [0, 0, 0, 0],  # Graph channels corresponding to temporary files.
 
                              "zoom_step": 1.3,            # zoom ratio for each step.
+                             "move_step": 5,              # graph move lengtho for each step.
+                             "select_dist": 5,            # minimal selecting distance.
+                             "st_color": (0, 0, 0),       # select circle color.
 
                              "temp_dir": "./temp",        # temporary directory.
                              }
