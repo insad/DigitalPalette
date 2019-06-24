@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout, QProgressBar
+from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout, QProgressBar, QMessageBox
 from PyQt5.QtCore import Qt, QRect, pyqtSignal
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage
 from cguis.resource import view_rc
 from clibs.trans2d import get_outer_box
 from clibs.image3c import Image3C
-from clibs.color import Color
 from cwgts.view import View
 import numpy as np
 
@@ -39,7 +38,6 @@ class Graph(QWidget):
         self._env["vs_color"] = setting["vs_color"]
         self._env["auto_hide"] = setting["auto_hide"]
         self._env["tip_radius"] = setting["tip_radius"]
-        self._env["temp_dir"] = setting["temp_dir"]
         self._env["graph_types"] = setting["graph_types"]
         self._env["graph_chls"] = setting["graph_chls"]
         self._env["half_sp"] = setting["half_sp"]
@@ -59,8 +57,8 @@ class Graph(QWidget):
         self._icon_label.hide()
 
 
-        self._image3c = Image3C(self._env)
-        self._load_finished = False # loading finished.
+        self._image3c = Image3C()
+        self._load_finished = True # loading finished. set False when loading.
         self._image3c.ref_rgb.connect(self.slot_set_ref_rgb)
         self._image3c.process.connect(self.slot_set_current_step)
         self._image3c.finished.connect(self.slot_set_loading_state)
@@ -124,6 +122,10 @@ class Graph(QWidget):
 
         # for func show.
         self._view_seq = [0, 1, 2, 3]
+
+        # drop image.
+        self.setAcceptDrops(True)
+        self._accepted_file = ""
 
     def paintEvent(self, event):
 
@@ -209,7 +211,7 @@ class Graph(QWidget):
                 box = (self._wid * 0.2, self._hig * 0.2, self._wid * 0.6, self._hig * 0.6)
 
                 if box[0] < p_x < (box[0] + box[2]) and box[1] < p_y < (box[1] + box[3]):
-                    self._func_open_graph_()
+                    self.slot_open_graph()
                     
                     event.accept()
                     self.update()
@@ -264,29 +266,24 @@ class Graph(QWidget):
         self._pos_moving = False
 
 
-    # ===== ===== ===== inner functions ===== ===== =====
+    def dragEnterEvent(self, event):
+        image = event.mimeData().text()
+        if self._load_finished and image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff") and image[:4] == "file":
+            self._accepted_file = image[8:]
+            event.accept()
+        else:
+            event.ignore()
     
-    def _func_open_graph_(self):
-        """
-        Slot func. Import a graph by double click label.
-        """
+    def dropEvent(self, event):
+        if self._accepted_file:
+            self.slot_open_image_file(self._accepted_file)
+            self._accepted_file = ""
+            event.accept()
+        else:
+            event.ignore()
 
-        cb_file = QFileDialog.getOpenFileName(filter="All Graphs (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; \
-                                                      PNG Graph (*.png);; \
-                                                      BMP Graph (*.bmp);; \
-                                                      JPEG Graph (*.jpg *.jpeg);; \
-                                                      TIFF Graph (*.tif *.tiff);;")
 
-        if cb_file[0]:
-            self._image3c.import_image(cb_file[0])
-            self._image3c.start()
-            self._label.show()
-            self._pro_bar.show()
-            self._icon_label.show()
-            self._view_seq = []
-            self._func_show_()
-            self._load_finished = False
-            self._image_imported = True
+    # ===== ===== ===== inner functions ===== ===== =====
 
     def _func_update_view_(self):
         """
@@ -375,22 +372,47 @@ class Graph(QWidget):
 
     # ===== ===== ===== slot functions ===== ===== =====
 
-    def slot_reextract(self):
+    def slot_open_graph(self, image=None):
         """
-        Slot func. Reextract color set.
+        Slot func. Import a graph by double click label.
         """
+        if self._load_finished:
+            cb_file = QFileDialog.getOpenFileName(filter="All Graphs (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; \
+                                                          PNG Graph (*.png);; \
+                                                          BMP Graph (*.bmp);; \
+                                                          JPEG Graph (*.jpg *.jpeg);; \
+                                                          TIFF Graph (*.tif *.tiff);;")
 
-        self._func_open_graph_()
+            if cb_file[0]:
+                self.slot_open_image_file(cb_file[0])
+        
+        else:
+            QMessageBox.warning(self, "Attention", "Please open one image once time.")
 
-        self._ori_gph = [5, 5, 5, 5]
-        self._ori_chl = [5, 5, 5, 5]
+    def slot_open_image_file(self, image):
+        if self._image3c.check_temp_dir():
+            self._ori_gph = [5, 5, 5, 5]
+            self._ori_chl = [5, 5, 5, 5]
 
-        for i in range(4):
-            graph_label = self._graph_views[i].graph_label
-            graph_label.slot_clear_all()
+            for i in range(4):
+                graph_label = self._graph_views[i].graph_label
+                graph_label.slot_clear_all()
+            
+            self._image3c.import_image(image)
+            self._image3c.start()
 
-        self._graph_changed = True
-        self.update()
+            self._label.show()
+            self._pro_bar.show()
+            self._icon_label.show()
+            self._view_seq = []
+            self._func_show_()
+            self._load_finished = False
+            self._image_imported = True
+            self._graph_changed = True
+            self.update()
+            
+        else:
+            QMessageBox.warning(self, "Error", "Temporary directory is invalid.")
 
     def slot_change_gph(self, graph_idx):
         """

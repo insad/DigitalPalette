@@ -6,7 +6,7 @@ Current stable version:
 Current alpha version:
 
 Current version:
-v1.0.9-beta
+v1.0.10-beta
 Website:
 https://github.com/liujiacode/DigitalPalette
 Date:

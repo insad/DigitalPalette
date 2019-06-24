@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QTemporaryDir
 from PyQt5.QtGui import QImage
 from PIL import Image
 from clibs.color import Color
@@ -18,18 +18,20 @@ class Image3C(QThread):
     ref_rgb = pyqtSignal(np.ndarray)
     finished = pyqtSignal(bool)
 
-    def __init__(self, setting={}):
+    def __init__(self):
         """
         Init image3c with default temp dir.
         """
 
         super().__init__()
-
-        self._env = {}
-        self._env["temp_dir"] = setting["temp_dir"]
-
-        if not os.path.isdir(self._env["temp_dir"]):
-            os.makedirs(self._env["temp_dir"])
+        
+        self._temp_dir = QTemporaryDir()
+    
+    def check_temp_dir(self):
+        return self._temp_dir.isValid()
+    
+    def remove_temp_dir(self):
+        self._temp_dir.remove()
 
     def import_image(self, image_file):
         """
@@ -137,18 +139,18 @@ class Image3C(QThread):
     
     def save_temp_data(self, rgb_data, prefix):
         rgb = QImage(rgb_data, rgb_data.shape[1], rgb_data.shape[0], rgb_data.shape[1] * 3, QImage.Format_RGB888)
-        rgb.save(self._env["temp_dir"] + os.sep + "{}_0.png".format(prefix))
+        rgb.save(self._temp_dir.path() + os.sep + "{}_0.png".format(prefix))
 
         r_chl, g_chl, b_chl = self.read_channels(rgb_data)
 
         r_chl = QImage(r_chl, r_chl.shape[1], r_chl.shape[0], r_chl.shape[1] * 3, QImage.Format_RGB888)
-        r_chl.save(self._env["temp_dir"] + os.sep + "{}_1.png".format(prefix))
+        r_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
 
         g_chl = QImage(g_chl, g_chl.shape[1], g_chl.shape[0], g_chl.shape[1] * 3, QImage.Format_RGB888)
-        g_chl.save(self._env["temp_dir"] + os.sep + "{}_2.png".format(prefix))
+        g_chl.save(self._temp_dir.path() + os.sep + "{}_2.png".format(prefix))
 
         b_chl = QImage(b_chl, b_chl.shape[1], b_chl.shape[0], b_chl.shape[1] * 3, QImage.Format_RGB888)
-        b_chl.save(self._env["temp_dir"] + os.sep + "{}_3.png".format(prefix))
+        b_chl.save(self._temp_dir.path() + os.sep + "{}_3.png".format(prefix))
 
     def load_image(self, graph_type, channel):
         """
@@ -160,6 +162,6 @@ class Image3C(QThread):
         """
 
         img_name = "{}_{}.png".format(graph_type, channel)
-        img = QImage(self._env["temp_dir"] + os.sep + img_name)
+        img = QImage(self._temp_dir.path() + os.sep + img_name)
 
         return img

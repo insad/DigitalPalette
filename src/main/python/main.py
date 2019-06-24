@@ -70,8 +70,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                              "select_dist": 10,           # minimal selecting distance.
                              "st_color": (100, 100, 100), # select circle color.
                              "it_color": (200, 200, 200), # referenced select circle color.
-
-                             "temp_dir": "./temp",        # temporary directory.
                              }
 
         self._setup_default_env()
@@ -218,6 +216,11 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
     def _setup_operation(self):
         self.pbtn_Import.clicked.connect(self._cwgt_wheel.slot_import)
         self.pbtn_Export.clicked.connect(self._cwgt_wheel.slot_export)
+    
+    def closeEvent(self, event):
+        # remove temporary directory.
+        self._cwgt_graph._image3c.remove_temp_dir()
+        event.accept()
 
 
     # ===== ===== ===== inner functions and decorators below ===== ===== =====
@@ -281,7 +284,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     def _resetup_graph(self):
         if self._cwgt_graph.isVisible():
-            self._cwgt_graph.slot_reextract()
+            self._cwgt_graph.slot_open_graph()
         else:
             self._cwgt_wheel.hide()
             self._cwgt_graph.show()
