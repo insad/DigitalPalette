@@ -83,22 +83,6 @@
     <string>H</string>
    </property>
   </widget>
-  <widget class="QLabel" name="graph_label">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>70</y>
-     <width>111</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pbtn_move_right">
    <property name="geometry">
     <rect>
@@ -294,16 +278,6 @@
     <string>+</string>
    </property>
   </widget>
-  <zorder>graph_label</zorder>
-  <zorder>cobox_chl</zorder>
-  <zorder>pbtn_return_home</zorder>
-  <zorder>pbtn_move_right</zorder>
-  <zorder>cobox_gph</zorder>
-  <zorder>pbtn_zoom_out</zorder>
-  <zorder>pbtn_move_left</zorder>
-  <zorder>pbtn_move_up</zorder>
-  <zorder>pbtn_move_down</zorder>
-  <zorder>pbtn_zoom_in</zorder>
  </widget>
  <resources/>
  <connections/>

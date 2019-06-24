@@ -22,7 +22,7 @@ __info__ = """
     Version: {}
     Author: Liu Jia
     Update: {}
-    Website: {}
+    Github: {}
     --------------
 
     DigitalPalette is distributed under GPL v3 license.
@@ -58,17 +58,18 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                              "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py.
                              "ia_color": (200, 200, 200), # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
                              "vb_color": (230, 230, 230), # V value bar edge color.
-                             "vs_color": (100, 100, 100), # View window segments color.
+                             "vs_color": (100, 100, 100), # View window tip color.
                              
                              "view_method": "overall",    # View method for graph displaying.
                              "half_sp": 5,                # Half of spacing between two views in graph.
-                             "graph_types": [0, 1, 2, 3], # Graph types corresponding to temporary files.
-                             "graph_chls": [0, 0, 0, 0],  # Graph channels corresponding to temporary files.
+                             "graph_types": [0, 3, 3, 3], # Graph types corresponding to temporary files.
+                             "graph_chls": [0, 1, 2, 3],  # Graph channels corresponding to temporary files.
 
                              "zoom_step": 1.3,            # zoom ratio for each step.
                              "move_step": 5,              # graph move lengtho for each step.
-                             "select_dist": 5,            # minimal selecting distance.
-                             "st_color": (0, 0, 0),       # select circle color.
+                             "select_dist": 10,           # minimal selecting distance.
+                             "st_color": (100, 100, 100), # select circle color.
+                             "it_color": (200, 200, 200), # referenced select circle color.
 
                              "temp_dir": "./temp",        # temporary directory.
                              }
@@ -115,8 +116,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
             rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
             rbtn_hm_rule.clicked.connect(self._cwgt_wheel.slot_modify_hm_rule(hm_rule))
+            rbtn_hm_rule.clicked.connect(self._cwgt_graph.slot_set_hm_rule(hm_rule))
 
-        self._cwgt_wheel.selected_hm_rule.connect(self._func_set_hm_rule_buttons)
+        self._cwgt_wheel.selected_hm_rule.connect(self._func_set_hm_rule_buttons) # for loading json files.
 
     def _setup_scroll_result(self):
         scroll_result = Ui_scroll_result()
@@ -192,6 +194,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             # set connection from wheel color to corresponding cube square.
             wheel_selected_color = getattr(self._cwgt_wheel, "selected_color_{}".format(idx))
             wheel_selected_color.connect(cube_square.slot_change_color)
+
+            # set connection from graph view color to corresponding cube square.
+            graph_selected_tr_color = getattr(self._cwgt_graph, "selected_tr_color_{}".format(idx))
+            graph_selected_tr_color.connect(cube_square.slot_change_graph_color)
 
             # init cube square state. default 0 is activated.
             if idx == 0:
@@ -269,6 +275,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
                 rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
                 rbtn_hm_rule.show()
+        
+        for idx in range(5):
+            self._cube_squares[idx].slot_active_on(True)
 
     def _resetup_graph(self):
         if self._cwgt_graph.isVisible():
@@ -281,6 +290,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 rbtn_hm_rule.hide()
             
             self._cwgt_graph.slot_update()
+
+        for idx in range(5):
+            self._cube_squares[idx].slot_active_on(False)
 
 
 if __name__ == "__main__":

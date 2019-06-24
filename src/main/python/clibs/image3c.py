@@ -29,6 +29,9 @@ class Image3C(object):
 
         Parameters:
           image_file - string. image file path.
+
+        Returns:
+          np.ndarray. referenced rgb color.
         """
 
         # import rgb data.
@@ -72,6 +75,8 @@ class Image3C(object):
         # final.
         fnl_results = vtl_results + hrz_results
         self.save_temp_data(fnl_results, "3")
+
+        return rgb_data
 
     def read_channels(self, rgb_data):
         """

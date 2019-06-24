@@ -393,8 +393,15 @@ class Wheel(QWidget):
                 QMessageBox.warning(self, "Error", "Unknown file extension: {}.".format(cb_file[0]))
 
     def slot_import(self):
-        cb_file = QFileDialog.getOpenFileName(filter="DigitalPalette Json File (*.json)")
+        interface_cmp = True
+        if not self.isVisible():
+            interface_cmp = False
+            QMessageBox.warning(self, "Attention", "Files can only be imported in color wheel interface.")
 
+        cb_file = [None,]
+        if interface_cmp:
+            cb_file = QFileDialog.getOpenFileName(filter="DigitalPalette Json File (*.json)")
+    
         if cb_file[0]:
             with open(cb_file[0], "r") as f:
                 color_dict = json.load(f)
@@ -409,7 +416,7 @@ class Wheel(QWidget):
                     if not version_cmp:
                         QMessageBox.warning(self, "Error", "Unstatisfied version: {}.".format(color_dict["version"]))
                 else:
-                    QMessageBox.warning(self, "Error", "Unknown version.")
+                    QMessageBox.warning(self, "Error", "Cannot find version information in file.")
 
                 color_cmp = False
                 if version_cmp:
@@ -425,9 +432,11 @@ class Wheel(QWidget):
                         if color_dict["harmony_rule"] in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
                             self._env["hm_rule"] = color_dict["harmony_rule"]
                         else:
-                            QMessageBox.warning(self, "Error", "Unknown harmony rule: {}.".format(color_dict["harmony_rule"]))
+                            self._env["hm_rule"] = "custom"
+                            QMessageBox.warning(self, "Error", "Unknown harmony rule: {}. Use custom instead.".format(color_dict["harmony_rule"]))
                     else:
-                        QMessageBox.warning(self, "Error", "Harmony rule doesn't exist in file.")
+                        self._env["hm_rule"] = "custom"
+                        QMessageBox.warning(self, "Error", "Harmony rule doesn't exist in file. Use custom instead.")
 
                 self._emit_color = True
                 self.selected_hm_rule.emit(self._env["hm_rule"])

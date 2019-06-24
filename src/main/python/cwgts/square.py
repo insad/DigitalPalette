@@ -51,6 +51,7 @@ class Square(QWidget):
 
         self._acitvated_state = False   # acitvate state.
         self._emit_activated = True     # emit selected_active to wheel.
+        self._activated_on = True       # set False to deactive and remain color 0 for graph view.
 
     def paintEvent(self, event):
         wid = self.geometry().width()
@@ -64,7 +65,7 @@ class Square(QWidget):
         painter.setRenderHint(QPainter.TextAntialiasing, True)
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
-        if self._acitvated_state:
+        if self._activated_on and self._acitvated_state:
             painter.setPen(QPen(QColor(*self._env["at_color"]), 5))
         else:
             painter.setPen(QPen(QColor(*self._env["ia_color"]), 3))
@@ -99,7 +100,7 @@ class Square(QWidget):
             self._emit_activated = False
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if self._activated_on and event.button() == Qt.LeftButton:
             p_x = event.x()
             p_y = event.y()
 
@@ -114,7 +115,7 @@ class Square(QWidget):
             event.ignore()
 
     def mouseDoubleClickEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if self._activated_on and event.button() == Qt.LeftButton:
             p_x = event.x()
             p_y = event.y()
 
@@ -171,6 +172,19 @@ class Square(QWidget):
             self._emit_hsv = True
             self._emit_color = False
             self.update()
+    
+    def slot_change_graph_color(self, rgb):
+        """
+        Slot func. Change square's color by graph view colors (rgb).
+        """
+
+        if not self._color.rgb_eq(rgb):
+            self._color.rgb = rgb
+
+            self._emit_rgb = True
+            self._emit_hsv = True
+            self._emit_color = True
+            self.update()
 
     def slot_change_rgb(self, tag):
         """
@@ -221,3 +235,14 @@ class Square(QWidget):
                 self.update()
         except:
             pass
+
+    def slot_active_on(self, state):
+        """
+        Only active color 0 (black edge) in graph views.
+        
+        Parameters:
+          state - bool. True for graph view and False for wheel. 
+        """
+
+        self._activated_on = state
+        self.update()

@@ -1,11 +1,162 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QGridLayout
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QPainter, QPen, QBrush, QPalette, QPixmap, QColor
 from cguis.graph_view_form import Ui_graph_view
 from clibs.trans2d import get_outer_box
 import random
+import numpy as np
+
+
+class OverLabel(QLabel):
+    """
+    QLabel with color circles.
+    """
+
+    select_dist = 10
+    st_color = (0, 0, 0)
+    it_color = (0, 0, 0)
+    pt_rtos = []
+    pt_colors = []
+    hm_rule = ""
+
+    selected_pt_rtos = pyqtSignal(tuple)
+    
+    selecting = False
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+
+        if self.pt_rtos:
+            lab_size = np.array((self.geometry().width(), self.geometry().height()))
+
+            painter = QPainter()
+            painter.begin(self)
+
+            painter.setRenderHint(QPainter.Antialiasing, True)
+            painter.setRenderHint(QPainter.TextAntialiasing, True)
+            painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+
+            for i in range(5):
+                pt_rto = self.pt_rtos[i]
+                pt_xy = pt_rto * lab_size / 65535
+                pt_box = get_outer_box(pt_xy, self.select_dist)
+
+                if self.pt_colors:
+                    painter.setBrush(QColor(*self.pt_colors[i]))
+                else:
+                    painter.setBrush(QBrush(Qt.NoBrush))
+                painter.setPen(QPen(QColor(*self.st_color), 2))
+                painter.drawEllipse(*pt_box)
+
+            for i in range(len(self.pt_rtos) - 5):
+                pt_rto = self.pt_rtos[5 + i]
+                pt_xy = pt_rto * lab_size / 65535
+                pt_box = get_outer_box(pt_xy, self.select_dist)
+
+                if self.pt_colors:
+                    painter.setBrush(QColor(*self.pt_colors[5 + i]))
+                else:
+                    painter.setBrush(QBrush(Qt.NoBrush))
+                painter.setPen(QPen(QColor(*self.it_color), 2, Qt.PenStyle(Qt.DashLine)))
+                painter.drawEllipse(*pt_box)
+
+            painter.end()
+    
+    def mousePressEvent(self, event):
+        point = np.array((event.x(), event.y()))
+        lab_size = np.array((self.geometry().width(), self.geometry().height()))
+
+        if self.hm_rule == "custom" and event.button() == Qt.LeftButton:
+            for i in range(len(self.pt_rtos)):
+                pt_xy = self.pt_rtos[i] * lab_size / 65535
+                if np.linalg.norm(point - pt_xy) < self.select_dist:
+                    self.pt_rtos.pop(i)
+                    break
+                
+            pt_rto = (point / lab_size * 65535).astype(np.uint16)
+            self.pt_rtos = [pt_rto,] + self.pt_rtos
+
+            while len(self.pt_rtos) < 5:
+                self.pt_rtos.append(np.array((random.random() * 65535, random.random() * 65535), dtype=np.uint16))
+
+            self.selected_pt_rtos.emit(tuple(self.pt_rtos))
+
+            self.selecting = True
+
+            event.accept()
+            self.update()
+
+        elif event.button() == Qt.RightButton:
+            clear_all = True
+            for i in range(len(self.pt_rtos)):
+                pt_xy = self.pt_rtos[i] * lab_size / 65535
+                if np.linalg.norm(point - pt_xy) < self.select_dist * 1.2:
+                    clear_all = False
+                if np.linalg.norm(point - pt_xy) < self.select_dist:
+                    self.pt_rtos.pop(i)
+                    break
+            
+            if clear_all:
+                self.pt_rtos = []
+                self.pt_colors = []
+            else:
+                while len(self.pt_rtos) < 5:
+                    self.pt_rtos.append(np.array((random.random() * 65535, random.random() * 65535), dtype=np.uint16))
+
+            self.selected_pt_rtos.emit(tuple(self.pt_rtos))
+
+            event.accept()
+            self.update()
+
+        else:
+            event.ignore()
+    
+    def mouseMoveEvent(self, event):
+        if self.hm_rule == "custom" and self.selecting:
+            point = np.array((event.x(), event.y()))
+            lab_size = np.array((self.geometry().width(), self.geometry().height()))
+
+            self.pt_rtos[0] = (point / lab_size * 65535).astype(np.uint16)
+
+            self.selected_pt_rtos.emit(tuple(self.pt_rtos))
+
+            event.accept()
+            self.update()
+
+        else:
+            event.ignore()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton or event.button() == Qt.RightButton:
+            self.selecting = False
+
+            event.accept()
+            self.update()
+        else:
+            event.ignore()
+    
+    # ===== ===== ===== slot functions ===== ===== =====
+
+    def slot_change_pt_rtos(self, pt_rtos):
+        self.pt_rtos = list(pt_rtos) 
+        self.update()
+    
+    def slot_set_colors(self, rgb_colors):
+        self.pt_colors = rgb_colors
+        self.update()
+
+    def slot_set_hm_rule(self, hm_rule):
+        self.hm_rule = hm_rule
+        self.update()
+
+    def slot_recover(self):
+        self.selected_pt_rtos.emit(tuple(self.pt_rtos))
+    
+    def slot_clear_all(self):
+        self.pt_rtos = []
+        self.pt_colors = []
 
 
 class View(QWidget, Ui_graph_view):
@@ -15,8 +166,6 @@ class View(QWidget, Ui_graph_view):
 
     selected_gph = pyqtSignal(int)
     selected_chl = pyqtSignal(int)
-
-    selected_pt_rtos = pyqtSignal(tuple)
 
     def __init__(self, setting={}):
         """
@@ -34,6 +183,27 @@ class View(QWidget, Ui_graph_view):
         self._env["move_step"] = setting["move_step"]
         self._env["select_dist"] = setting["select_dist"]
         self._env["st_color"] = setting["st_color"]
+        self._env["it_color"] = setting["it_color"]
+
+        self.graph_label = OverLabel(self)
+        self.graph_label.setGeometry(0, 0, 1, 1)
+        self.graph_label.select_dist = self._env["select_dist"]
+        self.graph_label.st_color = self._env["st_color"]
+        self.graph_label.it_color = self._env["it_color"]
+        
+        for name in ("gph", "chl"):
+            cobox_name = getattr(self, "cobox_{}".format(name))
+            cobox_name.raise_()
+        
+        for name in ("up", "down", "left", "right"):
+            pbtn_move_name = getattr(self, "pbtn_move_{}".format(name))
+            pbtn_move_name.raise_()
+        
+        for name in ("in", "out"):
+            pbtn_zoom_name = getattr(self, "pbtn_zoom_{}".format(name))
+            pbtn_zoom_name.raise_()
+        
+        self.pbtn_return_home.raise_()
 
         # once loaded.
         self._img = None
@@ -46,10 +216,6 @@ class View(QWidget, Ui_graph_view):
         self._moving = False
         self._dist_x = 0
         self._dist_y = 0
-
-        # for selecting color.
-        self._selecting = False
-        self._pt_rtos = []
 
         # set white background.
         palette = QPalette()
@@ -83,32 +249,10 @@ class View(QWidget, Ui_graph_view):
             img_hig = resized_img.size().height()
             self.graph_label.setGeometry((self._wid - img_wid) / 2, (self._hig - img_hig) / 2, img_wid, img_hig)
             self.graph_label.setPixmap(QPixmap.fromImage(resized_img))
+            self.graph_label.show()
 
             self._zoom = 1.0
             self._img_loaded = False
-
-        painter = QPainter()
-        painter.begin(self)
-
-        if self._pt_rtos:
-            painter.setBrush(QBrush(Qt.NoBrush))
-            painter.setPen(QPen(Qt.black, Qt.PenStyle(Qt.DashLine), 3))
-            for pt_rto in self._pt_rtos[:-5]:
-                _x = self.graph_label.geometry().x() + self.graph_label.geometry().width() * pt_rto[0]
-                _y = self.graph_label.geometry().y() + self.graph_label.geometry().height() * pt_rto[1]
-
-                _box = get_outer_box((_x, _y), self._env["select_dist"])
-                painter.drawEllipse(*_box)
-
-            painter.setPen(QPen(Qt.black, 3))
-            for pt_rto in self._pt_rtos[-5:]:
-                _x = self.graph_label.geometry().x() + self.graph_label.geometry().width() * pt_rto[0]
-                _y = self.graph_label.geometry().y() + self.graph_label.geometry().height() * pt_rto[1]
-
-                _box = get_outer_box((_x, _y), self._env["select_dist"])
-                painter.drawEllipse(*_box)
-
-        painter.end()
 
     def wheelEvent(self, event):
         point = (event.x(), event.y())
@@ -119,13 +263,13 @@ class View(QWidget, Ui_graph_view):
         else:
             ratio = 1
         self._func_zoom_(point, ratio)
-    
-    def mousePressEvent(self, event):
-        point = (event.x(), event.y())
-        lab_x = self.graph_label.geometry().x()
-        lab_y = self.graph_label.geometry().y()
 
+    def mousePressEvent(self, event):
         if event.button() == Qt.MidButton:
+            point = (event.x(), event.y())
+            lab_x = self.graph_label.geometry().x()
+            lab_y = self.graph_label.geometry().y()
+
             self._moving = True
 
             self._dist_x = lab_x - point[0]
@@ -133,30 +277,7 @@ class View(QWidget, Ui_graph_view):
 
             event.accept()
             self.update()
-        
-        elif event.button() == Qt.LeftButton:
-            rto_x = (point[0] - lab_x) / self.graph_label.geometry().width()
-            rto_y = (point[1] - lab_y) / self.graph_label.geometry().height()
 
-            if 0.0 < rto_x < 1.0 and 0.0 < rto_y < 1.0:
-                for i in range(len(self._pt_rtos)):
-                    if abs(rto_x - self._pt_rtos[i][0]) < self._env["select_dist"] and abs(rto_y - self._pt_rtos[i][1]) < self._env["select_dist"]:
-                        self._pt_rtos.pop(i)
-                        break
-                
-                self._pt_rtos.append((rto_x, rto_y))
-                while len(self._pt_rtos) < 5:
-                    self._pt_rtos = [(random.random(), random.random()),] + self._pt_rtos
-
-                self.selected_pt_rtos.emit(tuple(self._pt_rtos))
-
-                self._selecting = True
-
-                event.accept()
-                self.update()
-
-            else:
-                event.ignore()
         else:
             event.ignore()
 
@@ -168,25 +289,12 @@ class View(QWidget, Ui_graph_view):
 
             event.accept()
             self.update()
-        
-        if self._selecting:
-            rto_x = (point[0] - self.graph_label.geometry().x()) / self.graph_label.geometry().width()
-            rto_y = (point[1] - self.graph_label.geometry().y()) / self.graph_label.geometry().height()
 
-            rto_x = 0.0 if rto_x < 0.0 else rto_x
-            rto_x = 1.0 if rto_x > 1.0 else rto_x
-            rto_y = 0.0 if rto_y < 0.0 else rto_y
-            rto_y = 1.0 if rto_y > 1.0 else rto_y
-
-            self._pt_rtos[-1] = (rto_x, rto_y)
-            self.selected_pt_rtos.emit(tuple(self._pt_rtos))
-
-            event.accept()
-            self.update()
+        else:
+            event.ignore()
 
     def mouseReleaseEvent(self, event):
         self._moving = False
-        self._selecting = False
 
 
     # ===== ===== ===== inner functions ===== ===== =====
@@ -259,6 +367,3 @@ class View(QWidget, Ui_graph_view):
     
     def slot_move_right(self, value):
         self._func_move_(self._env["move_step"], 0)
-
-    def slot_change_pt_rtos(self, pt_rtos):
-        self._pt_rtos = list(pt_rtos)

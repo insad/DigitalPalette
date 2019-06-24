@@ -417,12 +417,18 @@ class Create(object):
 
         color_cmp = False
         for i in range(5):
-            try:
-                color_set.append(Color(color_dict["color_{}".format(i)]["hsv"], ctp="hsv"))
-                color_cmp = True
-            except:
-                color_cmp = False
-                raise ValueError("Can not import hsv color {}: {}.".format(i, color_dict["color_{}".format(i)]["hsv"]))
+            if "color_{}".format(i) in color_dict:
+                if "hsv" in color_dict["color_{}".format(i)]:
+                    try:
+                        color_set.append(Color(color_dict["color_{}".format(i)]["hsv"], ctp="hsv"))
+                        color_cmp = True
+                    except:
+                        color_cmp = False
+                        raise ValueError("Can not import color {} with hsv value: {}.".format(i, color_dict["color_{}".format(i)]["hsv"]))
+                else:
+                    raise ValueError("Can not find hsv tag of color {} in file.".format(i))
+            else:
+                raise ValueError("Can not find color {} in file.".format(i))
 
         if color_cmp:
             self._color_set = color_set

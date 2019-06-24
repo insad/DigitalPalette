@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtCore import Qt, QRect, pyqtSignal
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QImage
 from clibs.trans2d import get_outer_box
 from clibs.image3c import Image3C
+from clibs.color import Color
 from cwgts.view import View
 import numpy as np
 
@@ -13,6 +14,14 @@ class Graph(QWidget):
     """
     Graph view frame.
     """
+
+    selected_tr_color_0 = pyqtSignal(np.ndarray)
+    selected_tr_color_1 = pyqtSignal(np.ndarray)
+    selected_tr_color_2 = pyqtSignal(np.ndarray)
+    selected_tr_color_3 = pyqtSignal(np.ndarray)
+    selected_tr_color_4 = pyqtSignal(np.ndarray)
+
+    selected_tr_hm_rule = pyqtSignal(str)
 
     def __init__(self, setting={}):
         """
@@ -25,6 +34,7 @@ class Graph(QWidget):
         super().__init__()
 
         self._env = {}
+        self._env["hm_rule"] = setting["hm_rule"]
         self._env["vs_color"] = setting["vs_color"]
         self._env["auto_hide"] = setting["auto_hide"]
         self._env["tip_radius"] = setting["tip_radius"]
@@ -36,6 +46,7 @@ class Graph(QWidget):
         self._env["move_step"] = setting["move_step"]
         self._env["select_dist"] = setting["select_dist"]
         self._env["st_color"] = setting["st_color"]
+        self._env["it_color"] = setting["it_color"]
 
         self._label = QLabel(self)
         self._label.setText("Double click here to open a graph.")
@@ -65,6 +76,17 @@ class Graph(QWidget):
             graph_view.selected_gph.connect(self.slot_change_gph(i))
             graph_view.selected_chl.connect(self.slot_change_chl(i))
 
+        # set connections from one graph label to other graph labels and local graph colors.
+        for i in range(4):
+            from_graph_label = self._graph_views[i].graph_label
+
+            for j in range(4):
+                if j != i:
+                    to_graph_label = self._graph_views[j].graph_label
+                    from_graph_label.selected_pt_rtos.connect(to_graph_label.slot_change_pt_rtos)
+
+            from_graph_label.selected_pt_rtos.connect(self.slot_set_graph_colors)
+
         self._image_imported = False    # image is opend.
         self._graph_changed = True      # changing graphs.
         self._ori_wid = 0               # original width.
@@ -72,6 +94,12 @@ class Graph(QWidget):
         self._ori_gph = [5, 5, 5, 5]    # original graph type. set 5 which doesn't exist for initialize.
         self._ori_chl = [5, 5, 5, 5]    # original channel. set 5 which doesn't exist for initialize.
 
+        # for collecting selected colors in views.
+        self._ref_graph = None  # referenced rgb data from import image.
+
+        # for recover colors from wheel to graph interface.
+        self._ori_colors = [np.array((0, 0, 0))] * 5
+        
         # for func resize.
         self._pos_rto = np.array([0.5, 0.5])
         self._pos_moving = False
@@ -80,6 +108,7 @@ class Graph(QWidget):
         self._view_seq = [0, 1, 2, 3]
 
     def paintEvent(self, event):
+
         self._wid = self.geometry().width()
         self._hig = self.geometry().height()
 
@@ -219,7 +248,7 @@ class Graph(QWidget):
                                                       TIFF Graph (*.tif *.tiff);;")
 
         if cb_file[0]:
-            self._image3c.import_image(cb_file[0])
+            self._ref_graph = self._image3c.import_image(cb_file[0])
             self._image_imported = True
 
     def _func_update_view_(self):
@@ -319,6 +348,10 @@ class Graph(QWidget):
         self._ori_gph = [5, 5, 5, 5]
         self._ori_chl = [5, 5, 5, 5]
 
+        for i in range(4):
+            graph_label = self._graph_views[i].graph_label
+            graph_label.slot_clear_all()
+
         self._graph_changed = True
         self.update()
 
@@ -352,8 +385,49 @@ class Graph(QWidget):
 
     def slot_update(self):
         """
-        Update graph view when changing from wheel to graph.
+        Update graph view when changing from wheel to graph in main loop. It would recover colors to None.
         """
 
         self._graph_changed = True
+
+        if self._env["hm_rule"] == "custom":
+            self._graph_views[0].graph_label.slot_recover()
         self.update()
+
+    def slot_set_graph_colors(self, selected_rtos):
+        """
+        Use the first five colors in selected colors as result colors.
+        """
+
+        rgb_colors = []
+        for selected_rto in selected_rtos:
+            ref_size = np.array(self._ref_graph.shape[:2])
+            ref_pos = (ref_size * selected_rto / 65535).astype(int)
+            rgb = self._ref_graph[ref_pos[1]][ref_pos[0]]
+            rgb_colors.append(rgb)
+        
+        for i in range(4):
+            graph_label = self._graph_views[i].graph_label
+            graph_label.slot_set_colors(rgb_colors)
+
+        if rgb_colors:
+            for i in range(5):
+                selected_tr_color = getattr(self, "selected_tr_color_{}".format(i))
+                selected_tr_color.emit(rgb_colors[i])
+
+        self.update()
+
+    def slot_set_hm_rule(self, hm_rule):
+        """
+        Slot func. Change current harmony rule.
+        """
+
+        def _func_(value):
+            self._env["hm_rule"] = hm_rule
+
+            for i in range(4):
+                graph_label = self._graph_views[i].graph_label
+                graph_label.slot_set_hm_rule(hm_rule)
+
+            self.update()
+        return _func_
