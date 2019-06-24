@@ -76,6 +76,11 @@ class OverLabel(QLabel):
                     break
                 
             pt_rto = (point / lab_size * 65535).astype(np.uint16)
+            pt_rto[0] = 0 if pt_rto[0] < 0 else pt_rto[0]
+            pt_rto[0] = 65535 if pt_rto[0] > 65535 else pt_rto[0]
+            pt_rto[1] = 0 if pt_rto[1] < 0 else pt_rto[1]
+            pt_rto[1] = 65535 if pt_rto[1] > 65535 else pt_rto[1]
+            
             self.pt_rtos = [pt_rto,] + self.pt_rtos
 
             while len(self.pt_rtos) < 5:
@@ -118,7 +123,13 @@ class OverLabel(QLabel):
             point = np.array((event.x(), event.y()))
             lab_size = np.array((self.geometry().width(), self.geometry().height()))
 
-            self.pt_rtos[0] = (point / lab_size * 65535).astype(np.uint16)
+            pt_rto = (point / lab_size * 65535).astype(np.uint16)
+            pt_rto[0] = 0 if pt_rto[0] < 0 else pt_rto[0]
+            pt_rto[0] = 65535 if pt_rto[0] > 65535 else pt_rto[0]
+            pt_rto[1] = 0 if pt_rto[1] < 0 else pt_rto[1]
+            pt_rto[1] = 65535 if pt_rto[1] > 65535 else pt_rto[1]
+
+            self.pt_rtos[0] = pt_rto
 
             self.selected_pt_rtos.emit(tuple(self.pt_rtos))
 

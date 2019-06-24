@@ -36,7 +36,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self.setWindowTitle("DigitalPalette {}".format(dpinfo.current_version()))
         app_icon = QIcon()
-        app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
+        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
 
         self._setting_env = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set.

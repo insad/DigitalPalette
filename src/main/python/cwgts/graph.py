@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout, QProgressBar
 from PyQt5.QtCore import Qt, QRect, pyqtSignal
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QImage
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage
+from cguis.resource import view_rc
 from clibs.trans2d import get_outer_box
 from clibs.image3c import Image3C
 from clibs.color import Color
@@ -51,14 +52,31 @@ class Graph(QWidget):
         self._label = QLabel(self)
         self._label.setText("Double click here to open a graph.")
         self._label.setWordWrap(True)
+        self._label.show()
+
+        self._icon = QImage(":/images/images/icon_grey.png")
+        self._icon_label = QLabel(self)
+        self._icon_label.hide()
+
 
         self._image3c = Image3C(self._env)
+        self._load_finished = False # loading finished.
+        self._image3c.ref_rgb.connect(self.slot_set_ref_rgb)
+        self._image3c.process.connect(self.slot_set_current_step)
+        self._image3c.finished.connect(self.slot_set_loading_state)
+        self._image3c.describe.connect(self.slot_set_loading_desc)
 
         # graph views after image imported.
         grid_layout = QGridLayout()
         grid_layout.setContentsMargins(self._env["half_sp"], self._env["half_sp"], self._env["half_sp"], self._env["half_sp"])
         grid_layout.setSpacing(self._env["half_sp"] * 2)
         self.setLayout(grid_layout)
+
+        self._pro_bar = QProgressBar() # loading process.
+        self._pro_bar.setMaximum(100)
+        self._pro_bar.setValue(0)
+        grid_layout.addWidget(self._pro_bar, 3, 0, 1, 1)
+        self._pro_bar.hide()
 
         self._graph_views = []
         for i in range(4):
@@ -113,8 +131,7 @@ class Graph(QWidget):
         self._hig = self.geometry().height()
 
         # paint analysis interface.
-        if self._image_imported:
-            self._label.hide()
+        if self._image_imported and self._load_finished:
 
             # draw tip circle.
             painter = QPainter()
@@ -137,7 +154,7 @@ class Graph(QWidget):
 
             # update graph view sizes and contents.
             if self._wid != self._ori_wid or self._hig != self._ori_hig or self._graph_changed:
-                self._func_show()
+                self._func_show_()
                 self._func_resize_()
                 self._func_update_view_()
                 
@@ -148,10 +165,23 @@ class Graph(QWidget):
                 
                 self._graph_changed = False
 
+        # paint loading interface.
+        elif self._image_imported and not self._load_finished:
+            bar_wid = self._wid * 0.8
+            bar_hig = self._hig * 0.1
+            self._pro_bar.setGeometry((self._wid - bar_wid) / 2, self._hig - bar_hig * 1.2, bar_wid, bar_hig)
+            
+            resized_img = self._icon.scaled(self._wid * 0.8, self._hig * 0.8, Qt.KeepAspectRatio)
+            img_wid = resized_img.size().width()
+            img_hig = resized_img.size().height()
+
+            self._icon_label.setPixmap(QPixmap.fromImage(resized_img))
+            self._icon_label.setGeometry((self._wid - img_wid) / 2, bar_hig * 0.2, img_wid, img_hig)
+
+            self._label.setGeometry((self._wid - bar_wid) / 2, self._hig - bar_hig * 2.2, bar_wid, bar_hig)
+
         # paint open image interface.
         else:
-            self._label.show()
-
             painter = QPainter()
             painter.begin(self)
 
@@ -248,7 +278,14 @@ class Graph(QWidget):
                                                       TIFF Graph (*.tif *.tiff);;")
 
         if cb_file[0]:
-            self._ref_graph = self._image3c.import_image(cb_file[0])
+            self._image3c.import_image(cb_file[0])
+            self._image3c.start()
+            self._label.show()
+            self._pro_bar.show()
+            self._icon_label.show()
+            self._view_seq = []
+            self._func_show_()
+            self._load_finished = False
             self._image_imported = True
 
     def _func_update_view_(self):
@@ -280,7 +317,7 @@ class Graph(QWidget):
             if 3 in self._view_seq:
                 self._graph_views[3].setGeometry((pos_x + self._env["half_sp"]), (pos_y + self._env["half_sp"]), (self._wid - pos_x - self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
 
-    def _func_show(self):
+    def _func_show_(self):
         """
         Change view visibility according to view sequence.
         """
@@ -401,11 +438,14 @@ class Graph(QWidget):
 
         rgb_colors = []
         for selected_rto in selected_rtos:
-            ref_size = np.array(self._ref_graph.shape[:2])
+            # length - 1 for array.
+            ref_size = np.array(self._ref_graph.shape[:2]) - 1
+            # the array x, y is different from image view x, y, which would cause an out-of-range error.
+            ref_size[0], ref_size[1] = ref_size[1], ref_size[0]
             ref_pos = (ref_size * selected_rto / 65535).astype(int)
             rgb = self._ref_graph[ref_pos[1]][ref_pos[0]]
             rgb_colors.append(rgb)
-        
+            
         for i in range(4):
             graph_label = self._graph_views[i].graph_label
             graph_label.slot_set_colors(rgb_colors)
@@ -431,3 +471,44 @@ class Graph(QWidget):
 
             self.update()
         return _func_
+
+    def slot_set_current_step(self, step):
+        """
+        Getting current process.
+        """
+
+        self._pro_bar.setValue(step)
+        self.update()
+
+    def slot_set_ref_rgb(self, rgb_data):
+        """
+        Getting referenced graph.
+        """
+
+        self._ref_graph = rgb_data
+        self._pro_bar.setMaximum(4 + rgb_data.shape[0] * 3)
+        self.update()
+
+    def slot_set_loading_state(self, state):
+        """
+        Loading finished process.
+        """
+
+        self._load_finished = state
+        self._pro_bar.hide()
+        self._icon_label.hide()
+        self._label.hide()
+
+        self._view_seq = [0, 1, 2, 3]
+        self._func_resize_()
+        self._func_show_()
+        self.update()
+
+    def slot_set_loading_desc(self, description):
+        """
+        Loading descriptions when importing a image.
+        """
+
+        self._label.setText(description)
+        self._label.setAlignment(Qt.AlignCenter)
+        self.update()
