@@ -1,27 +1,33 @@
 # -*- coding: utf-8 -*-
 
-__info__ = """
-Current stable version:
 
-Current alpha version:
+__info__ = """
+Latest stable version:
+
+
+Latest alpha version:
+
 
 Current version:
-v1.0.10-beta
+v1.0.11-beta
+
 Website:
 https://github.com/liujiacode/DigitalPalette
+
 Date:
-2019.06.24
+2019.06.25
 """
 
+
 def current_version():
-    version = __info__.split("\n")[-6]
+    version = __info__.split("\n")[-8]
     return version
 
 def compatible_versions():
     return (r"^v1.0*", )
 
 def website():
-    return __info__.split("\n")[-4]
+    return __info__.split("\n")[-5]
 
 def update_date():
     return __info__.split("\n")[-2]

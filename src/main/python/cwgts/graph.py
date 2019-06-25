@@ -508,7 +508,7 @@ class Graph(QWidget):
         """
 
         self._ref_graph = rgb_data
-        self._pro_bar.setMaximum(4 + rgb_data.shape[0] * 3)
+        self._pro_bar.setMaximum(6 + rgb_data.shape[0] * 5)
         self.update()
 
     def slot_set_loading_state(self, state):

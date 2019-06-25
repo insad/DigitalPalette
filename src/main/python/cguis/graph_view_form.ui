@@ -134,22 +134,42 @@
    </property>
    <item>
     <property name="text">
-     <string>N</string>
+     <string>R-N</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>V</string>
+     <string>R-V</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>H</string>
+     <string>R-H</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>F</string>
+     <string>R-F</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>H-N</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>H-V</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>H-H</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>H-F</string>
     </property>
    </item>
   </widget>

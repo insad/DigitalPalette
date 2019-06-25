@@ -36,7 +36,8 @@ class Image3C(QThread):
     def import_image(self, image_file):
         """
         Import a image from file and detect the H, S, V value edges of imported image.
-        Total steps: 4 + hsv_data.shape[0] + 1 + results_shape[0] + 1 + results_shape[0] + 1 + 1.
+        Total steps = 4 + results_shape[0] + 1 + results_shape[0] + 1 + 3 + hsv_data.shape[0] + 2 + results_shape[0] + 1 + results_shape[0] + 1 + 1
+                    = 6 + rgb_data.shape[0] * 5
 
         Parameters:
           image_file - string. image file path.
@@ -48,79 +49,142 @@ class Image3C(QThread):
         self._image_file = image_file
     
     def run(self):
+        # ===== ===== ===== RGB part ===== ===== =====
+
         # import rgb data.
         self.describe.emit("Reading RGB data.")
         rgb_data = np.array(Image.open(self._image_file).convert("RGB"), dtype=np.uint8)
         self.ref_rgb.emit(rgb_data)
         self.process.emit(1)
 
-        self.save_temp_data(rgb_data, "0")
+        self.save_rgb_temp_data(rgb_data, "0")
         self.process.emit(2)
+
+        # rgb space Sobel edge detection.
+        self.describe.emit("Detecting image RGB space edges.")
+        results_shape = (rgb_data.shape[0] - 2, rgb_data.shape[1] - 2, 3)
+        self.process.emit(3)
+
+        next_process = 4
+
+        # rgb vertical.
+        self.describe.emit("Generating vertical RGB space edges.")
+        vtl_results = np.zeros(results_shape, dtype=np.uint8)
+        for i in range(results_shape[0]):
+            for j in range(results_shape[1]):
+                r_result = rgb_data[i][j + 2][0] + rgb_data[i + 1][j + 2][0] * 2 + rgb_data[i + 2][j + 2][0] - rgb_data[i][j][0] - rgb_data[i + 1][j][0] * 2 - rgb_data[i + 2][j][0]
+                g_result = rgb_data[i][j + 2][1] + rgb_data[i + 1][j + 2][1] * 2 + rgb_data[i + 2][j + 2][1] - rgb_data[i][j][1] - rgb_data[i + 1][j][1] * 2 - rgb_data[i + 2][j][1]
+                b_result = rgb_data[i][j + 2][2] + rgb_data[i + 1][j + 2][2] * 2 + rgb_data[i + 2][j + 2][2] - rgb_data[i][j][2] - rgb_data[i + 1][j][2] * 2 - rgb_data[i + 2][j][2]
+                vtl_results[i][j] = np.array((abs(r_result) / 4, abs(g_result) / 4, abs(b_result) / 4), dtype=np.uint8)
+            self.process.emit(next_process + i)
+
+        self.save_rgb_temp_data(vtl_results, "1")
+        self.process.emit(next_process + results_shape[0])
+
+        next_process += results_shape[0] + 1
+        
+        # rgb horizontal.
+        self.describe.emit("Generating horizontal RGB space edges.")
+        hrz_results = np.zeros(results_shape, dtype=np.uint8)
+        for i in range(results_shape[0]):
+            for j in range(results_shape[1]):
+                r_result = rgb_data[i + 2][j][0] + rgb_data[i + 2][j + 1][0] * 2 + rgb_data[i + 2][j + 2][0] - rgb_data[i][j][0] - rgb_data[i][j + 1][0] * 2 - rgb_data[i][j + 2][0]
+                g_result = rgb_data[i + 2][j][1] + rgb_data[i + 2][j + 1][1] * 2 + rgb_data[i + 2][j + 2][1] - rgb_data[i][j][1] - rgb_data[i][j + 1][1] * 2 - rgb_data[i][j + 2][1]
+                b_result = rgb_data[i + 2][j][2] + rgb_data[i + 2][j + 1][2] * 2 + rgb_data[i + 2][j + 2][2] - rgb_data[i][j][2] - rgb_data[i][j + 1][2] * 2 - rgb_data[i][j + 2][2]
+                hrz_results[i][j] = np.array((abs(r_result) / 4, abs(g_result) / 4, abs(b_result) / 4), dtype=np.uint8)
+            self.process.emit(next_process + i)
+
+        self.save_rgb_temp_data(hrz_results, "2")
+        self.process.emit(next_process + results_shape[0])
+
+        next_process += results_shape[0] + 1
+
+        # rgb final.
+        self.describe.emit("Integrating final RGB space edges.")
+        fnl_results = (np.sqrt(vtl_results.astype(np.uint32) ** 2 + hrz_results.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
+        self.process.emit(next_process)
+
+        self.save_rgb_temp_data(fnl_results, "3")
+        self.process.emit(next_process + 1)
+
+        # ===== ===== ===== HSV part ===== ===== =====
 
         # transform from rgb to hsv.
         self.describe.emit("Transforming RGB to HSV data.")
         hsv_data = np.zeros(rgb_data.shape, dtype=np.uint16) # = hsv * 65535 (/ 360)
-        self.process.emit(3)
+        self.process.emit(next_process + 2)
+
+        next_process += 3
 
         for i in range(hsv_data.shape[0]):
             for j in range(hsv_data.shape[1]):
                 hsv = Color.rgb_to_hsv(rgb_data[i][j])
                 hsv = hsv / np.array((360.0, 1.0, 1.0)) * 65535
                 hsv_data[i][j] = hsv.astype(np.uint16)
-            self.process.emit(4 + i)
+            self.process.emit(next_process + i)
         
-        next_process = 4 + hsv_data.shape[0]
+        next_process += hsv_data.shape[0]
 
-        # Sobel edge detection.
-        self.describe.emit("Detecting image edges.")
-        results_shape = (hsv_data.shape[0] - 2, hsv_data.shape[1] - 2, 3)
+        self.save_hsv_temp_data(rgb_data, hsv_data, "4")
         self.process.emit(next_process)
 
-        next_process += 1
+        # hsv space Sobel edge detection. 1028 = 4 * 65535 / 255 = 262140 / 255.
+        self.describe.emit("Detecting image HSV space edges.")
+        results_shape = (hsv_data.shape[0] - 2, hsv_data.shape[1] - 2, 3)
+        self.process.emit(next_process + 1)
 
-        # vertical.
-        self.describe.emit("Generating vertical edges.")
+        next_process += 2
+
+        # hsv vertical.
+        self.describe.emit("Generating vertical HSV space edges.")
         vtl_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
                 h_result = hsv_data[i][j + 2][0] + hsv_data[i + 1][j + 2][0] * 2 + hsv_data[i + 2][j + 2][0] - hsv_data[i][j][0] - hsv_data[i + 1][j][0] * 2 - hsv_data[i + 2][j][0]
                 s_result = hsv_data[i][j + 2][1] + hsv_data[i + 1][j + 2][1] * 2 + hsv_data[i + 2][j + 2][1] - hsv_data[i][j][1] - hsv_data[i + 1][j][1] * 2 - hsv_data[i + 2][j][1]
                 v_result = hsv_data[i][j + 2][2] + hsv_data[i + 1][j + 2][2] * 2 + hsv_data[i + 2][j + 2][2] - hsv_data[i][j][2] - hsv_data[i + 1][j][2] * 2 - hsv_data[i + 2][j][2]
-                vtl_results[i][j] = np.array((abs(h_result) / 1028, abs(s_result) / 1028, abs(v_result) / 1028), dtype=np.uint8)
+                
+                h_result = abs(h_result)
+                h_result = 510 - h_result / 514 if h_result > 131070 else h_result / 514
+                vtl_results[i][j] = np.array((h_result, abs(s_result) / 1028, abs(v_result) / 1028), dtype=np.uint8)
             self.process.emit(next_process + i)
 
-        self.save_temp_data(vtl_results, "1")
+        self.save_rgb_temp_data(vtl_results, "5")
         self.process.emit(next_process + results_shape[0])
 
         next_process += results_shape[0] + 1
 
-        # horizontal.
-        self.describe.emit("Generating horizontal edges.")
+        # hsv horizontal.
+        self.describe.emit("Generating horizontal HSV space edges.")
         hrz_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
                 h_result = hsv_data[i + 2][j][0] + hsv_data[i + 2][j + 1][0] * 2 + hsv_data[i + 2][j + 2][0] - hsv_data[i][j][0] - hsv_data[i][j + 1][0] * 2 - hsv_data[i][j + 2][0]
                 s_result = hsv_data[i + 2][j][1] + hsv_data[i + 2][j + 1][1] * 2 + hsv_data[i + 2][j + 2][1] - hsv_data[i][j][1] - hsv_data[i][j + 1][1] * 2 - hsv_data[i][j + 2][1]
                 v_result = hsv_data[i + 2][j][2] + hsv_data[i + 2][j + 1][2] * 2 + hsv_data[i + 2][j + 2][2] - hsv_data[i][j][2] - hsv_data[i][j + 1][2] * 2 - hsv_data[i][j + 2][2]
-                hrz_results[i][j] = np.array((abs(h_result) / 1028, abs(s_result) / 1028, abs(v_result) / 1028), dtype=np.uint8)
+                
+                h_result = abs(h_result)
+                h_result = 510 - h_result / 514 if h_result > 131070 else h_result / 514
+                hrz_results[i][j] = np.array((h_result, abs(s_result) / 1028, abs(v_result) / 1028), dtype=np.uint8)
             self.process.emit(next_process + i)
 
-        self.save_temp_data(hrz_results, "2")
+        self.save_rgb_temp_data(hrz_results, "6")
         self.process.emit(next_process + results_shape[0])
 
         next_process += results_shape[0] + 1
 
-        # final.
-        self.describe.emit("Integrating final edges.")
-        fnl_results = vtl_results + hrz_results
+        # hsv final.
+        self.describe.emit("Integrating final HSV space edges.")
+        fnl_results = (np.sqrt(vtl_results.astype(np.uint32) ** 2 + hrz_results.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
         self.process.emit(next_process)
-        self.save_temp_data(fnl_results, "3")
+
+        self.save_rgb_temp_data(fnl_results, "7")
         self.process.emit(next_process + 1)
-        
+
         self.describe.emit("Finishing.")
         self.finished.emit(True)
 
-    def read_channels(self, rgb_data):
+    def read_rgb_channels(self, rgb_data):
         """
         Read R, G, B part channels of rgb data.
         """
@@ -131,17 +195,17 @@ class Image3C(QThread):
 
         for i in range(rgb_data.shape[0]):
             for j in range(rgb_data.shape[1]):
-                r_channel[i][j][0] = rgb_data[i][j][0]
-                g_channel[i][j][1] = rgb_data[i][j][1]
-                b_channel[i][j][2] = rgb_data[i][j][2]
+                r_channel[i][j][0] = rgb_data[i][j][0].astype(np.uint8)
+                g_channel[i][j][1] = rgb_data[i][j][1].astype(np.uint8)
+                b_channel[i][j][2] = rgb_data[i][j][2].astype(np.uint8)
         
         return r_channel, g_channel, b_channel
     
-    def save_temp_data(self, rgb_data, prefix):
+    def save_rgb_temp_data(self, rgb_data, prefix):
         rgb = QImage(rgb_data, rgb_data.shape[1], rgb_data.shape[0], rgb_data.shape[1] * 3, QImage.Format_RGB888)
         rgb.save(self._temp_dir.path() + os.sep + "{}_0.png".format(prefix))
 
-        r_chl, g_chl, b_chl = self.read_channels(rgb_data)
+        r_chl, g_chl, b_chl = self.read_rgb_channels(rgb_data)
 
         r_chl = QImage(r_chl, r_chl.shape[1], r_chl.shape[0], r_chl.shape[1] * 3, QImage.Format_RGB888)
         r_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
@@ -152,10 +216,34 @@ class Image3C(QThread):
         b_chl = QImage(b_chl, b_chl.shape[1], b_chl.shape[0], b_chl.shape[1] * 3, QImage.Format_RGB888)
         b_chl.save(self._temp_dir.path() + os.sep + "{}_3.png".format(prefix))
 
+    def save_hsv_temp_data(self, rgb_data, hsv_data, prefix):
+        rgb = QImage(rgb_data, rgb_data.shape[1], rgb_data.shape[0], rgb_data.shape[1] * 3, QImage.Format_RGB888)
+        rgb.save(self._temp_dir.path() + os.sep + "{}_0.png".format(prefix))
+
+        h_channel = np.zeros(hsv_data.shape, dtype=np.uint8)
+        s_channel = np.zeros(hsv_data.shape, dtype=np.uint8)
+        v_channel = np.zeros(hsv_data.shape, dtype=np.uint8)
+
+        for i in range(hsv_data.shape[0]):
+            for j in range(hsv_data.shape[1]):
+                h, s, v = hsv_data[i][j].astype(float) * np.array((360.0, 1.0, 1.0)) / 65535
+                h_channel[i][j] = Color.hsv_to_rgb((h, 1, 1)).astype(np.uint8)
+                s_channel[i][j] = Color.hsv_to_rgb((0, s, 1)).astype(np.uint8)
+                v_channel[i][j] = Color.hsv_to_rgb((0, 1, v)).astype(np.uint8)
+        
+        h_chl = QImage(h_channel, h_channel.shape[1], h_channel.shape[0], h_channel.shape[1] * 3, QImage.Format_RGB888)
+        h_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
+
+        s_chl = QImage(s_channel, s_channel.shape[1], s_channel.shape[0], s_channel.shape[1] * 3, QImage.Format_RGB888)
+        s_chl.save(self._temp_dir.path() + os.sep + "{}_2.png".format(prefix))
+
+        v_chl = QImage(v_channel, v_channel.shape[1], v_channel.shape[0], v_channel.shape[1] * 3, QImage.Format_RGB888)
+        v_chl.save(self._temp_dir.path() + os.sep + "{}_3.png".format(prefix))
+
     def load_image(self, graph_type, channel):
         """
         Load splited images.
-        
+
         Parameters:
           graph type - int. 0: normal rgb data; 1: vertical edge data; 2: horizontal edge data; 3: final edge data.
           channel - int. 0: rgb full data. 1: r channel data; 2: g channel data; 3: b channel data.
