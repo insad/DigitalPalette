@@ -464,7 +464,7 @@ class Graph(QWidget):
             ref_size = np.array(self._ref_graph.shape[:2]) - 1
             # the array x, y is different from image view x, y, which would cause an out-of-range error.
             ref_size[0], ref_size[1] = ref_size[1], ref_size[0]
-            ref_pos = (ref_size * selected_rto / 65535).astype(int)
+            ref_pos = (ref_size * selected_rto).astype(int)
             rgb = self._ref_graph[ref_pos[1]][ref_pos[0]]
             rgb_colors.append(rgb)
             

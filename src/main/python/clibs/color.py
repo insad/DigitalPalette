@@ -359,10 +359,10 @@ class Color(object):
         """
 
         if len(rgb) == 3:
-            _rgb = np.rint(rgb).astype(int)
+            _rgb = np.rint(rgb)
 
             if (_rgb >= (0, 0, 0)).all() and (_rgb <= (255, 255, 255)).all():
-                return _rgb
+                return _rgb.astype(np.uint8)
             else:
                 raise ValueError("expect R, G, B in range 0 ~ 255: {}.".format(rgb))
 
@@ -390,7 +390,7 @@ class Color(object):
             if not (0.0 <= _s <= 1.0 and 0.0 <= _v <= 1.0):
                 raise ValueError("expect S, V in range 0.0~1.0: {}.".format(hsv))
 
-            return np.array((_h, _s, _v), dtype=float)
+            return np.array((_h, _s, _v), dtype=np.float32)
 
         else:
             raise ValueError("expect HSV color length 3: {}.".format(hsv))

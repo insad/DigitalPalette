@@ -60,7 +60,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                              "vb_color": (230, 230, 230), # V value bar edge color.
                              "vs_color": (100, 100, 100), # View window tip color.
                              
-                             "view_method": "overall",    # View method for graph displaying.
                              "half_sp": 5,                # Half of spacing between two views in graph.
                              "graph_types": [0, 3, 3, 3], # Graph types corresponding to temporary files.
                              "graph_chls": [0, 1, 2, 3],  # Graph channels corresponding to temporary files.
