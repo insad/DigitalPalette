@@ -33,19 +33,12 @@ class Graph(QWidget):
 
         super().__init__()
 
+        # loading settings.
+        # graph types and graph chls are not allowed to reload.
         self._env = {}
-        self._env["hm_rule"] = setting["hm_rule"]
-        self._env["vs_color"] = setting["vs_color"]
-        self._env["auto_hide"] = setting["auto_hide"]
-        self._env["tip_radius"] = setting["tip_radius"]
+        self.reload_settings(setting)
         self._env["graph_types"] = setting["graph_types"]
         self._env["graph_chls"] = setting["graph_chls"]
-        self._env["half_sp"] = setting["half_sp"]
-        self._env["zoom_step"] = setting["zoom_step"]
-        self._env["move_step"] = setting["move_step"]
-        self._env["select_dist"] = setting["select_dist"]
-        self._env["st_color"] = setting["st_color"]
-        self._env["it_color"] = setting["it_color"]
 
         self._label = QLabel(self)
         self._label.setText("Double click here to open a graph.")
@@ -119,6 +112,7 @@ class Graph(QWidget):
         # for func resize.
         self._pos_rto = np.array([0.5, 0.5])
         self._pos_moving = False
+        self._tip_radius = 0
 
         # for func show.
         self._view_seq = [0, 1, 2, 3]
@@ -127,6 +121,26 @@ class Graph(QWidget):
         self.setAcceptDrops(True)
         self._accepted_file = ""
 
+    def reload_settings(self, setting):
+        self._env["hm_rule"] = setting["hm_rule"]
+        self._env["vs_color"] = setting["vs_color"]
+        self._env["tip_radius"] = setting["tip_radius"]
+        self._env["half_sp"] = setting["half_sp"]
+        self._env["zoom_step"] = setting["zoom_step"]
+        self._env["move_step"] = setting["move_step"]
+        self._env["select_dist"] = setting["select_dist"]
+        self._env["st_color"] = setting["st_color"]
+        self._env["it_color"] = setting["it_color"]
+    
+    def reload_view_settings(self):
+        for graph_view in self._graph_views:
+            graph_view.reload_settings(self._env)
+            graph_view.reload_overlabel()
+        
+        if self.isVisible():
+            self._func_resize_()
+            self.update()
+
     def paintEvent(self, event):
 
         self._wid = self.geometry().width()
@@ -134,6 +148,8 @@ class Graph(QWidget):
 
         # paint analysis interface.
         if self._image_imported and self._load_finished:
+            # set tip radius.
+            self._tip_radius = min(self._wid, self._hig) * self._env["tip_radius"] / 2
 
             # draw tip circle.
             painter = QPainter()
@@ -144,13 +160,14 @@ class Graph(QWidget):
             painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
             tip_center = np.array((self._wid, self._hig)) * self._pos_rto
-            tip_box = get_outer_box(tip_center, self._env["tip_radius"])
+            
+            tip_box = get_outer_box(tip_center, self._tip_radius)
             painter.setPen(QPen(QColor(*self._env["vs_color"]), 3))
             painter.setBrush(QBrush(Qt.NoBrush))
             
             painter.drawEllipse(*tip_box)
-            painter.drawLine(tip_center[0], tip_center[1] + self._env["tip_radius"] * 0.4, tip_center[0], tip_center[1] - self._env["tip_radius"] * 0.4)
-            painter.drawLine(tip_center[0] + self._env["tip_radius"] * 0.4, tip_center[1], tip_center[0] - self._env["tip_radius"] * 0.4, tip_center[1])
+            painter.drawLine(tip_center[0], tip_center[1] + self._tip_radius * 0.4, tip_center[0], tip_center[1] - self._tip_radius * 0.4)
+            painter.drawLine(tip_center[0] + self._tip_radius * 0.4, tip_center[1], tip_center[0] - self._tip_radius * 0.4, tip_center[1])
 
             painter.end()
 
@@ -225,7 +242,7 @@ class Graph(QWidget):
             point = np.array((event.x(), event.y()))
             tip_center = np.array((self._wid, self._hig)) * self._pos_rto
 
-            if np.linalg.norm(point - tip_center) < self._env["tip_radius"]:
+            if np.linalg.norm(point - tip_center) < self._tip_radius:
                 pos_rto = point / np.array((self._wid, self._hig))
                 pos_rto, show_list = self._func_pos_absorp_(pos_rto)
                 self._pos_moving = True

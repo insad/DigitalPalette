@@ -2,7 +2,7 @@
 Digital palette for selecting harmony colors.
 
 # Version
-v1.0.12-beta
+v1.0.13-beta
 
 # Author
 Liu Jia
@@ -21,3 +21,4 @@ Liu Jia
 * 2019.06.24: Add temporary directory auto remove method.
 * 2019.06.25: Add RGB space separation method.
 * 2019.06.25: Change icon.
+* 2019.06.26: Add settings interface.

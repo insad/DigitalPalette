@@ -191,18 +191,14 @@ class View(QWidget, Ui_graph_view):
         super().__init__()
         self.setupUi(self)
 
+        # loading settings.
         self._env = {}
-        self._env["zoom_step"] = setting["zoom_step"]
-        self._env["move_step"] = setting["move_step"]
-        self._env["select_dist"] = setting["select_dist"]
-        self._env["st_color"] = setting["st_color"]
-        self._env["it_color"] = setting["it_color"]
+        self.reload_settings(setting)
 
+        # loading overlabel settings.
         self.graph_label = OverLabel(self)
         self.graph_label.setGeometry(0, 0, 1, 1)
-        self.graph_label.select_dist = self._env["select_dist"]
-        self.graph_label.st_color = self._env["st_color"]
-        self.graph_label.it_color = self._env["it_color"]
+        self.reload_overlabel()
         
         for name in ("gph", "chl"):
             cobox_name = getattr(self, "cobox_{}".format(name))
@@ -251,6 +247,18 @@ class View(QWidget, Ui_graph_view):
         self.pbtn_move_down.clicked.connect(self.slot_move_down)
         self.pbtn_move_left.clicked.connect(self.slot_move_left)
         self.pbtn_move_right.clicked.connect(self.slot_move_right)
+
+    def reload_settings(self, setting):
+        self._env["zoom_step"] = setting["zoom_step"]
+        self._env["move_step"] = setting["move_step"]
+        self._env["select_dist"] = setting["select_dist"]
+        self._env["st_color"] = setting["st_color"]
+        self._env["it_color"] = setting["it_color"]
+
+    def reload_overlabel(self):
+        self.graph_label.select_dist = self._env["select_dist"]
+        self.graph_label.st_color = self._env["st_color"]
+        self.graph_label.it_color = self._env["it_color"]
 
     def paintEvent(self, event):
         self._wid = self.geometry().width()

@@ -8,8 +8,10 @@ from cguis.scroll_result_form import Ui_scroll_result
 from cwgts.wheel import Wheel
 from cwgts.graph import Graph
 from cwgts.square import Square
+from cwgts.settings import Settings
 from clibs.color import Color
 from clibs import info as dpinfo
+from clibs.argument import Argument
 from PyQt5.QtGui import QIcon, QDesktopServices, QPixmap
 from PyQt5.QtCore import QUrl
 import sys
@@ -39,59 +41,62 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
 
-        self._setting_env = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set.
-                             "s_range": (0.68, 1.0),      # S range for initial random HSV color set.
-                             "v_range": (0.68, 1.0),      # V range for initial random HSV color set.
+        default_settings = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set.
+                            "s_range": (0.68, 1.0),      # S range for initial random HSV color set.
+                            "v_range": (0.68, 1.0),      # V range for initial random HSV color set.
 
-                             "hm_rule": "analogous",      # Initial harmony rule.
+                            "hm_rule": "analogous",      # Initial harmony rule.
 
-                             "radius": 0.8,               # Color wheel radius (ratio) compared with work space width.
-                             "color_radius": 0.05,        # Color tag radius (ratio)  compared with work space width.
-                             "tip_radius": 20,            # Circle tip radius in graph view.
-                             "auto_hide": False,           # Auto hide circle tip in graph view.
+                            "radius": 0.8,               # Color wheel radius (ratio) compared with work space width.
+                            "color_radius": 0.05,        # Color tag radius (ratio)  compared with work space width.
+                            "tip_radius": 0.1,            # Circle tip radius in graph view.
 
-                             "widratio": 0.9,             # Color square width / height ratio compared with cube size.
-                             "bar_widratio": 0.8,         # V value bar height ratio compared with work space.
+                            "widratio": 0.9,             # Color square width / height ratio compared with cube size.
+                            "bar_widratio": 0.8,         # V value bar height ratio compared with work space.
 
-                             "press_move": True,          # Press anywhere in wheel will move activated color tag to the selected color.
+                            "press_move": True,          # Press anywhere in wheel will move activated color tag to the selected color.
 
-                             "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py.
-                             "ia_color": (200, 200, 200), # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
-                             "vb_color": (230, 230, 230), # V value bar edge color.
-                             "vs_color": (100, 100, 100), # View window tip color.
+                            "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py.
+                            "ia_color": (200, 200, 200), # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
+                            "vb_color": (230, 230, 230), # V value bar edge color.
+                            "vs_color": (100, 100, 100), # View window tip color.
+                            "st_color": (100, 100, 100), # select circle color in graph views.
+                            "it_color": (200, 200, 200), # referenced select circle color in graph views.
                              
-                             "half_sp": 5,                # Half of spacing between two views in graph.
-                             "graph_types": [0, 3, 3, 3], # Graph types corresponding to temporary files.
-                             "graph_chls": [0, 1, 2, 3],  # Graph channels corresponding to temporary files.
+                            "half_sp": 5,                # Half of spacing between two views in graph.
+                            "graph_types": [0, 7, 7, 7], # Graph types corresponding to temporary files.
+                            "graph_chls": [0, 1, 2, 3],  # Graph channels corresponding to temporary files.
 
-                             "zoom_step": 1.3,            # zoom ratio for each step.
-                             "move_step": 5,              # graph move lengtho for each step.
-                             "select_dist": 10,           # minimal selecting distance.
-                             "st_color": (100, 100, 100), # select circle color.
-                             "it_color": (200, 200, 200), # referenced select circle color.
-                             }
+                            "zoom_step": 1.3,            # zoom ratio for each step.
+                            "move_step": 5,              # graph move lengtho for each step.
+                            "select_dist": 10,           # minimal selecting distance.
+                            }
 
-        self._setup_default_env()
+        self._env = Argument(default_settings, "./settings.json")
+
+        self._setup_environment()
         self._setup_wheel()
         self._setup_scroll_result()
+        self._setup_settings(default_settings)
         self._setup_operation()
-        self._setup_msg()
 
-    def _setup_msg(self):
-        self.actionAbout.triggered.connect(self._show_info_)
-        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.website())))
-
-        self.pbtn_Create.clicked.connect(self._resetup_wheel)
-        self.pbtn_Extract.clicked.connect(self._resetup_graph)
-
-    def _setup_default_env(self):
+    def _setup_environment(self):
         """
-        Setup default harmony rule.
+        Setup environment. At start. See setup operation for end.
         """
 
-        hm_rules = getattr(self, "rbtn_{}".format(self._setting_env["hm_rule"]))
+        hm_rules = getattr(self, "rbtn_{}".format(self._env.settings["hm_rule"]))
         hm_rules.setChecked(True)
 
+    def _setup_settings(self, default_settings):
+        self._settings = Settings(default_settings, self._env.settings)
+        self._settings.changed_setti.connect(self._reload_settings)
+
+        app_icon = QIcon()
+        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
+        self._settings.setWindowIcon(app_icon)
+        self._settings.setWindowTitle("Settings")
+    
     def _setup_wheel(self):
         """
         Setup work area (wheel or graph).
@@ -100,10 +105,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._work_grid_layout = QGridLayout(self.workspace)
         self._work_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self._cwgt_wheel = Wheel(setting=self._setting_env)
+        self._cwgt_wheel = Wheel(setting=self._env.settings)
         self._work_grid_layout.addWidget(self._cwgt_wheel)
 
-        self._cwgt_graph = Graph(setting=self._setting_env)
+        self._cwgt_graph = Graph(setting=self._env.settings)
         self._work_grid_layout.addWidget(self._cwgt_graph)
         self._cwgt_graph.hide()
 
@@ -128,7 +133,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             cube_color = getattr(scroll_result, "color_{}".format(idx))
             cube_grid_layout = QGridLayout(cube_color)
             cube_grid_layout.setContentsMargins(0, 0, 0, 0)
-            cube_square = Square(setting=self._setting_env)
+            cube_square = Square(setting=self._env.settings)
             cube_grid_layout.addWidget(cube_square)
             cube_color.setLayout(cube_grid_layout)
 
@@ -213,12 +218,31 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             cube_ledit.textChanged.connect(cube_square.slot_change_hex_code)
 
     def _setup_operation(self):
+        """
+        Setup operation. At end. See setup environment for start.
+        """
+
         self.pbtn_Import.clicked.connect(self._cwgt_wheel.slot_import)
         self.pbtn_Export.clicked.connect(self._cwgt_wheel.slot_export)
+
+        self.actionAbout.triggered.connect(self._show_info_)
+        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.website())))
+
+        self.pbtn_Create.clicked.connect(self._resetup_wheel)
+        self.pbtn_Extract.clicked.connect(self._resetup_graph)
+
+        self.actionSettings.triggered.connect(self._settings.show)
+
+        if self._env.err:
+            QMessageBox.warning(self, "Attention", self._env.err)
     
     def closeEvent(self, event):
         # remove temporary directory.
         self._cwgt_graph._image3c.remove_temp_dir()
+
+        # save settings.
+        self._env.save_settings("./settings.json")
+
         event.accept()
 
 
@@ -295,6 +319,29 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         for idx in range(5):
             self._cube_squares[idx].slot_active_on(False)
+
+    def _reload_settings(self, uss):
+        """
+        Reload local settings by user settings.
+
+        Parameters:
+          uss - dict. user settings.
+        """
+
+        self._env.setting(uss)
+
+        self._cwgt_wheel.reload_settings(self._env.settings)
+        self._cwgt_wheel.update()
+
+        self._cwgt_graph.reload_settings(self._env.settings)
+        self._cwgt_graph.reload_view_settings()
+        self._cwgt_graph.update()
+
+        for cube_square in self._cube_squares:
+            cube_square.reload_settings(self._env.settings)
+            cube_square.update()
+
+        self.update()
 
 
 if __name__ == "__main__":

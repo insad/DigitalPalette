@@ -37,10 +37,9 @@ class Square(QWidget):
 
         super().__init__()
 
+        # loading settings.
         self._env = {}
-        self._env["at_color"] = setting["at_color"]
-        self._env["ia_color"] = setting["ia_color"]
-        self._env["widratio"] = setting["widratio"]
+        self.reload_settings(setting)
 
         self._color = Color()
         self._ori_color = Color(self._color)
@@ -52,6 +51,11 @@ class Square(QWidget):
         self._acitvated_state = False   # acitvate state.
         self._emit_activated = True     # emit selected_active to wheel.
         self._activated_on = True       # set False to deactive and remain color 0 for graph view.
+
+    def reload_settings(self, setting):
+        self._env["at_color"] = setting["at_color"]
+        self._env["ia_color"] = setting["ia_color"]
+        self._env["widratio"] = setting["widratio"]
 
     def paintEvent(self, event):
         wid = self.geometry().width()

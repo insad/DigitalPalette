@@ -9,6 +9,7 @@ from clibs import info as dpinfo
 from clibs.trans2d import get_outer_box, rotate_point_center, get_theta_center
 import numpy as np
 import json
+import os
 import re
 import time
 
@@ -44,22 +45,12 @@ class Wheel(QWidget):
 
         super().__init__()
 
+        # loading settings.
         self._pr_setting = {}
-        self._pr_setting["h_range"] = setting["h_range"]
-        self._pr_setting["s_range"] = setting["s_range"]
-        self._pr_setting["v_range"] = setting["v_range"]
+        self._env = {}
+        self.reload_settings(setting)
 
         self._create = Create(**self._pr_setting)
-
-        self._env = {}
-        self._env["hm_rule"] = setting["hm_rule"]
-        self._env["radius"] = setting["radius"]
-        self._env["color_radius"] = setting["color_radius"]
-        self._env["press_move"] = setting["press_move"]
-        self._env["at_color"] = setting["at_color"]
-        self._env["ia_color"] = setting["ia_color"]
-        self._env["bar_widratio"] = setting["bar_widratio"]
-        self._env["vb_color"] = setting["vb_color"]
 
         self._create.create(self._env["hm_rule"])
         self._ori_color_set = [Color(self._create.color_set[0]),
@@ -78,6 +69,20 @@ class Wheel(QWidget):
         self._wheel_actived = False # for mouse press, move on wheel.
         self._bar_1_actived = False # for mouse press, move on bar 1.
         self._bar_2_actived = False # for mouse press, move on bar 2.
+    
+    def reload_settings(self, setting):
+        self._pr_setting["h_range"] = setting["h_range"]
+        self._pr_setting["s_range"] = setting["s_range"]
+        self._pr_setting["v_range"] = setting["v_range"]
+
+        self._env["hm_rule"] = setting["hm_rule"]
+        self._env["radius"] = setting["radius"]
+        self._env["color_radius"] = setting["color_radius"]
+        self._env["press_move"] = setting["press_move"]
+        self._env["at_color"] = setting["at_color"]
+        self._env["ia_color"] = setting["ia_color"]
+        self._env["bar_widratio"] = setting["bar_widratio"]
+        self._env["vb_color"] = setting["vb_color"]
 
     @property
     def color_set(self):
@@ -218,20 +223,22 @@ class Wheel(QWidget):
 
             if np.linalg.norm(point - self._center) < self._radius:
                 aly_accepted = True
-                self._wheel_actived = True
 
                 for idx in range(5):
                     if np.linalg.norm(point - self._color_centers[idx]) < self._color_radius:
                         self._active_color_idx = idx
+                        self._wheel_actived = True
                         aly_accepted = False
                         event.accept()
                         self.update()
+                        break
 
                 if aly_accepted and self._env["press_move"]:
                     color = Color(self._create.color_set[self._active_color_idx])
                     color.s = np.linalg.norm(point - self._center) / self._radius
                     color.h = get_theta_center(self._center, point)
                     self._create.modify(self._env["hm_rule"], self._active_color_idx, color)
+                    self._wheel_actived = True
                     event.accept()
                     self.update()
 
@@ -406,26 +413,19 @@ class Wheel(QWidget):
             with open(cb_file[0], "r") as f:
                 color_dict = json.load(f)
 
-                version_cmp = False
-                if "version" in color_dict:
-                    for vre in dpinfo.compatible_versions():
-                        if re.match(vre, color_dict["version"]):
-                            version_cmp = True
-                            break
-                
-                    if not version_cmp:
-                        QMessageBox.warning(self, "Error", "Unstatisfied version: {}.".format(color_dict["version"]))
-                else:
-                    QMessageBox.warning(self, "Error", "Cannot find version information in file.")
-
                 color_cmp = False
-                if version_cmp:
-                    try:
-                        self._create.import_color_set(color_dict)
-                        color_cmp = True
-                    except Exception as err:
-                        color_cmp = False
-                        QMessageBox.warning(self, "Error", str(err))
+                if "version" in color_dict:
+                    if dpinfo.if_version_compatible(color_dict["version"]):
+                        try:
+                            self._create.import_color_set(color_dict)
+                            color_cmp = True
+                        except Exception as err:
+                            QMessageBox.warning(self, "Error", str(err))
+                
+                    else:
+                        QMessageBox.warning(self, "Error", "Version is not compatible: {}.".format(color_dict["version"]))
+                else:
+                    QMessageBox.warning(self, "Error", "Version information is not found in {}.".format(os.path.basename(cb_file[0])))
 
                 if color_cmp:
                     if "harmony_rule" in color_dict:
@@ -433,11 +433,11 @@ class Wheel(QWidget):
                             self._env["hm_rule"] = color_dict["harmony_rule"]
                         else:
                             self._env["hm_rule"] = "custom"
-                            QMessageBox.warning(self, "Error", "Unknown harmony rule: {}. Use custom instead.".format(color_dict["harmony_rule"]))
+                            QMessageBox.warning(self, "Error", "Unknown harmony rule: {}. Using custom instead.".format(color_dict["harmony_rule"]))
                     else:
                         self._env["hm_rule"] = "custom"
                         QMessageBox.warning(self, "Error", "Harmony rule doesn't exist in file. Use custom instead.")
 
-                self._emit_color = True
-                self.selected_hm_rule.emit(self._env["hm_rule"])
-                self.update()
+            self._emit_color = True
+            self.selected_hm_rule.emit(self._env["hm_rule"])
+            self.update()

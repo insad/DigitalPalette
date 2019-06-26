@@ -113,6 +113,9 @@ venv.bak/
 crefs/
 temp/
 
+# local
+*.json
+
 # test
 *.test
 test.*
