@@ -23,7 +23,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -1274,7 +1274,20 @@
             </item>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="4" column="0">
+           <spacer name="st_vsp_psi_rule">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>21</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0" colspan="2">
            <widget class="QCheckBox" name="st_cbox_press_move">
             <property name="minimumSize">
              <size>
@@ -1289,14 +1302,14 @@
              </size>
             </property>
             <property name="text">
-             <string>Press and select</string>
+             <string>Press and select instantly</string>
             </property>
             <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <spacer name="st_vsp_whl_rule">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1304,7 +1317,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>97</height>
+              <height>50</height>
              </size>
             </property>
            </spacer>
@@ -1315,7 +1328,7 @@
        <item>
         <widget class="QGroupBox" name="st_gbox_img_rule">
          <property name="title">
-          <string>Image view</string>
+          <string>Graph view</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
@@ -1873,7 +1886,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Selection distance</string>
+             <string>Selection scope</string>
             </property>
            </widget>
           </item>
@@ -1910,7 +1923,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>39</height>
+              <height>50</height>
              </size>
             </property>
            </spacer>

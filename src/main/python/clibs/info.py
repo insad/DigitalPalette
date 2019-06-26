@@ -1,28 +1,17 @@
 # -*- coding: utf-8 -*-
 
-__info__ = """
-Latest stable version:
-
-
-Latest alpha version:
-
-
-Current version:
-v1.0.13-beta
-
-Website:
-https://github.com/liujiacode/DigitalPalette
-
-Date:
-2019.06.25
-"""
-
 import re
+import urllib
 
 
 def current_version():
-    version = __info__.split("\n")[-8]
-    return version
+    return "v1.0.14-beta"
+
+def website():
+    return "https://github.com/liujiacode/DigitalPalette"
+
+def update_date():
+    return "2019.06.26"
 
 def if_version_compatible(version):
     version_cmp = False
@@ -34,11 +23,21 @@ def if_version_compatible(version):
 
     return version_cmp
 
-def website():
-    return __info__.split("\n")[-5]
+def about_info():
+    info = """
+DigitalPalette Info
 
-def update_date():
-    return __info__.split("\n")[-2]
+    --------------
+    Version : {}
+    Author  : Liu Jia
+    Update  : {}
+    Github  : {}
+    --------------
+
+DigitalPalette is free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
+    """.format(current_version(), update_date(), website())
+
+    return info
 
 
 if __name__ == "__main__":

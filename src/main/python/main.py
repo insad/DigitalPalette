@@ -17,20 +17,6 @@ from PyQt5.QtCore import QUrl
 import sys
 
 
-__info__ = """
-    DigitalPalette Info
-
-    --------------
-    Version: {}
-    Author: Liu Jia
-    Update: {}
-    Github: {}
-    --------------
-
-    DigitalPalette is distributed under GPL v3 license.
-""".format(dpinfo.current_version(), dpinfo.update_date(), dpinfo.website())
-
-
 class DigitalPalette(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -290,7 +276,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     # show DigitalPalette information.
     def _show_info_(self):
-        QMessageBox.information(self, "About", __info__)
+        QMessageBox.information(self, "About", dpinfo.about_info())
     
     def _resetup_wheel(self):
         if self._cwgt_wheel.isVisible():
