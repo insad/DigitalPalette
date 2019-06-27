@@ -409,7 +409,7 @@ class Color(object):
 
         if isinstance(hex_code, str):
             if len(hex_code) == 6:
-                for stri in hex_code:
+                for stri in hex_code.upper():
                     if stri not in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"):
                         raise ValueError("expect code in hex type: {}.".format(hex_code))
             else:
@@ -417,7 +417,7 @@ class Color(object):
         else:
             raise ValueError("expect hex code in string type: {}.".format(hex_code))
 
-        return hex_code
+        return hex_code.upper()
 
     @classmethod
     def rgb_to_hsv(cls, rgb):

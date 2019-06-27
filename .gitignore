@@ -117,8 +117,10 @@ temp/
 *.json
 
 # test
+*.test/
 *.test
 test.*
 test_*
+*.bak/
 *_bak.py
 *_bak.ui

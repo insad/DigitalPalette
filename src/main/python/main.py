@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 
+"""
+DigitalPalette is a free software, which 
+is distributed in the hope that it will 
+be useful, but WITHOUT ANY WARRANTY. You 
+can redistribute it and/or modify it 
+under the terms of the GNU General Public 
+License as published by the Free Software 
+Foundation. See the GNU General Public 
+License for more details.
+"""
+
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QHBoxLayout, QMessageBox
 from cguis.main_window import Ui_MainWindow
