@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
 
 """
-DigitalPalette is a free software, which 
-is distributed in the hope that it will 
-be useful, but WITHOUT ANY WARRANTY. You 
-can redistribute it and/or modify it 
-under the terms of the GNU General Public 
-License as published by the Free Software 
-Foundation. See the GNU General Public 
-License for more details.
+DigitalPalette is a free software, which is distributed in 
+the hope that it will be useful, but WITHOUT ANY WARRANTY. 
+You can redistribute it and/or modify it under the terms of 
+the GNU General Public License as published by the Free 
+Software Foundation. See the GNU General Public License 
+for more details.
 """
 
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox
 from cguis.main_window import Ui_MainWindow
 from cguis.resource import view_rc
-from cguis.scroll_result_form import Ui_scroll_result
 from cwgts.wheel import Wheel
 from cwgts.graph import Graph
-from cwgts.square import Square
+from cwgts.result import Result
 from cwgts.settings import Settings
 from clibs.color import Color
 from clibs import info as dpinfo
 from clibs.argument import Argument
 from PyQt5.QtGui import QIcon, QDesktopServices, QPixmap
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QTranslator, QCoreApplication
 import sys
+import os
 
 
 class DigitalPalette(QMainWindow, Ui_MainWindow):
@@ -67,9 +64,14 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                             "zoom_step": 1.3,            # zoom ratio for each step.
                             "move_step": 5,              # graph move lengtho for each step.
                             "select_dist": 10,           # minimal selecting distance.
+                            
+                            "lang": "en",                # default language.
                             }
 
         self._env = Argument(default_settings, "./settings.json")
+        
+        self._tr = QTranslator()
+        self._app = QApplication.instance()
 
         self._setup_environment()
         self._setup_wheel()
@@ -85,31 +87,37 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         hm_rules = getattr(self, "rbtn_{}".format(self._env.settings["hm_rule"]))
         hm_rules.setChecked(True)
 
+        self._func_reload_local_lang_()
+
     def _setup_settings(self, default_settings):
+        """
+        Setup setting dialog.
+        """
+
         self._settings = Settings(default_settings, self._env.settings)
-        self._settings.changed_setti.connect(self._reload_settings)
+        self._settings.changed_setti.connect(self._func_reload_settings_)
 
         app_icon = QIcon()
         app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
         self._settings.setWindowIcon(app_icon)
         self._settings.setWindowTitle("Settings")
-    
+
     def _setup_wheel(self):
         """
         Setup work area (wheel or graph).
         """
 
-        self._work_grid_layout = QGridLayout(self.workspace)
-        self._work_grid_layout.setContentsMargins(2, 2, 2, 2)
+        work_grid_layout = QGridLayout(self.workspace)
+        work_grid_layout.setContentsMargins(2, 2, 2, 2)
 
         self._cwgt_wheel = Wheel(setting=self._env.settings)
-        self._work_grid_layout.addWidget(self._cwgt_wheel)
+        work_grid_layout.addWidget(self._cwgt_wheel)
 
         self._cwgt_graph = Graph(setting=self._env.settings)
-        self._work_grid_layout.addWidget(self._cwgt_graph)
         self._cwgt_graph.hide()
+        work_grid_layout.addWidget(self._cwgt_graph)
 
-        self.workspace.setLayout(self._work_grid_layout)
+        self.workspace.setLayout(work_grid_layout)
 
         # set connections between button hm rule and wheel hm rule.
         for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
@@ -120,72 +128,27 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._cwgt_wheel.selected_hm_rule.connect(self._func_set_hm_rule_buttons) # for loading json files.
 
     def _setup_scroll_result(self):
-        scroll_result = Ui_scroll_result()
-        scroll_result.setupUi(self.result)
+        """
+        Setup scroll result area.
+        """
 
-        self._cube_squares = []
+        rst_grid_layout = QGridLayout(self.result)
+        rst_grid_layout.setContentsMargins(2, 2, 2, 2)
+
+        self._cwgt_result = Result(setting=self._env.settings)
+        rst_grid_layout.addWidget(self._cwgt_result)
+        self.result.setLayout(rst_grid_layout)
+
+        self._cwgt_result.slot_change_rgb_visibility(self.cbox_RGB.isChecked())
+        self._cwgt_result.slot_change_hsv_visibility(self.cbox_HSV.isChecked())
+        self.cbox_RGB.stateChanged.connect(self._cwgt_result.slot_change_rgb_visibility)
+        self.cbox_HSV.stateChanged.connect(self._cwgt_result.slot_change_hsv_visibility)
 
         for idx in range(5):
-            # create square objects.
-            cube_color = getattr(scroll_result, "color_{}".format(idx))
-            cube_grid_layout = QGridLayout(cube_color)
-            cube_grid_layout.setContentsMargins(0, 0, 0, 0)
-            cube_square = Square(setting=self._env.settings)
-            cube_grid_layout.addWidget(cube_square)
-            cube_color.setLayout(cube_grid_layout)
-
-            self._cube_squares.append(cube_square)
+            cube_square = self._cwgt_result.cube_squares[idx]
 
             # init cube square colors by color set of wheel.
             cube_square.slot_change_color(self._cwgt_wheel.color_set[idx].hsv)
-
-            # set rgb gbox visibility.
-            rgb_gbox = getattr(scroll_result, "gbox_RGB_{}".format(idx))
-            if self.cbox_RGB.isChecked():
-                rgb_gbox.setVisible(True)
-            else:
-                rgb_gbox.setVisible(False)
-            self.cbox_RGB.stateChanged.connect(rgb_gbox.setVisible)
-
-            # set connections between rgb sliders and rgb spin boxes.
-            for ctype in ("r", "g", "b"):
-                hs_RGB = getattr(scroll_result, "hs_RGB_{}_{}".format(ctype, idx))
-                hs_RGB.valueChanged.connect(self._func_RGB_hs_to_sp_(scroll_result, "sp_RGB_{}_{}".format(ctype, idx)))
-
-                sp_RGB = getattr(scroll_result, "sp_RGB_{}_{}".format(ctype, idx))
-                sp_RGB.valueChanged.connect(self._func_RGB_sp_to_hs_(scroll_result, "hs_RGB_{}_{}".format(ctype, idx)))
-
-                # set connections from rgb spin boxes to cube squares.
-                sp_RGB.valueChanged.connect(cube_square.slot_change_rgb(ctype))
-
-            # set hsv gbox visibility.
-            hsv_gbox = getattr(scroll_result, "gbox_HSV_{}".format(idx))
-            if self.cbox_HSV.isChecked():
-                hsv_gbox.setVisible(True)
-            else:
-                hsv_gbox.setVisible(False)
-            self.cbox_HSV.stateChanged.connect(hsv_gbox.setVisible)
-
-            # set connections between hsv sliders and hsv double spin boxes.
-            for ctype in ("h", "s", "v"):
-                hs_HSV = getattr(scroll_result, "hs_HSV_{}_{}".format(ctype, idx))
-                hs_HSV.valueChanged.connect(self._func_HSV_hs_to_dp_(scroll_result, "dp_HSV_{}_{}".format(ctype, idx)))
-
-                dp_HSV = getattr(scroll_result, "dp_HSV_{}_{}".format(ctype, idx))
-                dp_HSV.valueChanged.connect(self._func_HSV_dp_to_hs_(scroll_result, "hs_HSV_{}_{}".format(ctype, idx)))
-
-                # set connections from hsv double spin boxes to cube squares.
-                dp_HSV.valueChanged.connect(cube_square.slot_change_hsv(ctype))
-
-            # set connections from cube squares to rgb spin boxes.
-            for ctype in ("r", "g", "b"):
-                cube_selected = getattr(cube_square, "selected_{}".format(ctype))
-                cube_selected.connect(self._func_set_value_(scroll_result, "sp_RGB_{}_{}".format(ctype, idx)))
-
-            # set connections from cube squares to hsv double spin boxes.
-            for ctype in ("h", "s", "v"):
-                cube_selected = getattr(cube_square, "selected_{}".format(ctype))
-                cube_selected.connect(self._func_set_value_(scroll_result, "dp_HSV_{}_{}".format(ctype, idx)))
 
             # set connection from cube square to corresponding wheel color.
             cube_square.selected_hsv.connect(self._cwgt_wheel.slot_modify_color(idx))
@@ -198,21 +161,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             graph_selected_tr_color = getattr(self._cwgt_graph, "selected_tr_color_{}".format(idx))
             graph_selected_tr_color.connect(cube_square.slot_change_graph_color)
 
-            # init cube square state. default 0 is activated.
-            if idx == 0:
-                cube_square.slot_wheel_change_active_state(True)
-            else:
-                cube_square.slot_wheel_change_active_state(False)
-
             # set connections bwtween wheel activated color and cube square states.
             selected_acitve = getattr(self._cwgt_wheel, "selected_acitve_{}".format(idx))
             selected_acitve.connect(cube_square.slot_wheel_change_active_state)
             cube_square.selected_active.connect(self._cwgt_wheel.slot_modify_activate_index(idx))
-
-            # set connections between cube square and hex code line edits.
-            cube_ledit = getattr(scroll_result, "le_hex_{}".format(idx))
-            cube_square.selected_hex.connect(cube_ledit.setText)
-            cube_ledit.textChanged.connect(cube_square.slot_change_hex_code)
 
     def _setup_operation(self):
         """
@@ -225,13 +177,15 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionAbout.triggered.connect(self._show_info_)
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.website())))
 
-        self.pbtn_Create.clicked.connect(self._resetup_wheel)
-        self.pbtn_Extract.clicked.connect(self._resetup_graph)
+        self.pbtn_Create.clicked.connect(self._func_resetup_wheel_)
+        self.pbtn_Extract.clicked.connect(self._func_resetup_graph_)
 
         self.actionSettings.triggered.connect(self._settings.show)
 
         if self._env.err:
-            QMessageBox.warning(self, "Attention", self._env.err)
+            QMessageBox.warning(self, self._err_descs[0], self._err_descs[self._env.err[0]].format(self._env.err[1]))
+        
+        self._func_reload_cwgts_lang_()
     
     def closeEvent(self, event):
         # remove temporary directory.
@@ -245,39 +199,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     # ===== ===== ===== inner functions and decorators below ===== ===== =====
 
-    # set spin box's value by slider's value in result area.
-    def _func_RGB_hs_to_sp_(self, obj, name):
-        def _func_(value):
-            sp = getattr(obj, name)
-            sp.setValue(int(value))
-        return _func_
-
-    def _func_HSV_hs_to_dp_(self, obj, name):
-        def _func_(value):
-            sp = getattr(obj, name)
-            sp.setValue(float(value / 1E3))
-        return _func_
-
-    # set slider's value by spin box's value.
-    def _func_RGB_sp_to_hs_(self, obj, name):
-        def _func_(value):
-            hs = getattr(obj, name)
-            hs.setValue(int(value))
-        return _func_
-
-    def _func_HSV_dp_to_hs_(self, obj, name):
-        def _func_(value):
-            hs = getattr(obj, name)
-            hs.setValue(int(value * 1E3))
-        return _func_
-
-    # set object's value generally.
-    def _func_set_value_(self, obj, name):
-        def _func_(value):
-            sp = getattr(obj, name)
-            sp.setValue(value)
-        return _func_
-
     # set hm rule buttons.
     def _func_set_hm_rule_buttons(self, hm_rule):
         for pr_hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
@@ -287,9 +208,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     # show DigitalPalette information.
     def _show_info_(self):
-        QMessageBox.information(self, "About", dpinfo.about_info())
-    
-    def _resetup_wheel(self):
+        QMessageBox.information(self, self._info_descs[0], "\n".join(self._info_descs[1:]).format(dpinfo.current_version(), "Liu Jia", dpinfo.update_date(), dpinfo.website()))
+
+    def _func_resetup_wheel_(self):
         if self._cwgt_wheel.isVisible():
             self._cwgt_wheel.slot_recreate()
         else:
@@ -300,9 +221,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 rbtn_hm_rule.show()
         
         for idx in range(5):
-            self._cube_squares[idx].slot_active_on(True)
+            self._cwgt_result.cube_squares[idx].slot_active_on(True)
 
-    def _resetup_graph(self):
+    def _func_resetup_graph_(self):
         if self._cwgt_graph.isVisible():
             self._cwgt_graph.slot_open_graph()
         else:
@@ -315,9 +236,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self._cwgt_graph.slot_update()
 
         for idx in range(5):
-            self._cube_squares[idx].slot_active_on(False)
+            self._cwgt_result.cube_squares[idx].slot_active_on(False)
 
-    def _reload_settings(self, uss):
+    def _func_reload_settings_(self, uss):
         """
         Reload local settings by user settings.
 
@@ -334,11 +255,44 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._cwgt_graph.reload_view_settings()
         self._cwgt_graph.update()
 
-        for cube_square in self._cube_squares:
+        for cube_square in self._cwgt_result.cube_squares:
             cube_square.reload_settings(self._env.settings)
             cube_square.update()
+        
+        if self._env.settings["lang"] != self._lang_path.split(os.sep)[-1].split(".")[0]:
+            self._func_reload_local_lang_()
+            self._func_reload_cwgts_lang_()
 
         self.update()
+    
+    def _func_reload_local_lang_(self):
+        self._lang_path = os.sep.join((".", "language", self._env.settings["lang"] + ".qm"))
+        if os.path.isfile(self._lang_path):
+            self._tr.load(self._lang_path)
+            self._app.installTranslator(self._tr)
+            self.retranslateUi(self)
+            self._func_tr_()
+    
+    def _func_reload_cwgts_lang_(self):
+            self._cwgt_wheel._func_tr_()
+            self._cwgt_graph._func_tr_()
+
+    def _func_tr_(self):
+        _translate = QCoreApplication.translate
+
+        self._err_descs = (_translate("DigitalPalette", "Error"),
+                           _translate("DigitalPalette", "Unknown version of settings file. Using default settings instead."),
+                           _translate("DigitalPalette", "Version is not compatible for settings file: {0}. Using default settings instead."),)
+
+        self._info_descs = (_translate("DigitalPalette", "About"),
+                            _translate("DigitalPalette", "DigitalPalette Info"),
+                            _translate("DigitalPalette", "----- ----- ----- -----"),
+                            _translate("DigitalPalette", "Version: {0}"),
+                            _translate("DigitalPalette", "Author: {1}"),
+                            _translate("DigitalPalette", "Update: {2}"),
+                            _translate("DigitalPalette", "Github: {3}"),
+                            _translate("DigitalPalette", "----- ----- ----- -----"),
+                            _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),)
 
 
 if __name__ == "__main__":

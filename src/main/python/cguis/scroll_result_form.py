@@ -13,6 +13,7 @@ class Ui_scroll_result(object):
     def setupUi(self, scroll_result):
         scroll_result.setObjectName("scroll_result")
         scroll_result.resize(800, 669)
+        scroll_result.setWindowTitle("")
         self.gridLayout = QtWidgets.QGridLayout(scroll_result)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
@@ -707,7 +708,6 @@ class Ui_scroll_result(object):
 
     def retranslateUi(self, scroll_result):
         _translate = QtCore.QCoreApplication.translate
-        scroll_result.setWindowTitle(_translate("scroll_result", "Form"))
         self.sharp_2.setText(_translate("scroll_result", "#"))
         self.gbox_RGB_2.setTitle(_translate("scroll_result", "RGB"))
         self.lb_RGB_r_2.setText(_translate("scroll_result", "R"))

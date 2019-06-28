@@ -2,7 +2,7 @@
 
 from PyQt5.QtWidgets import QWidget, QFileDialog, QMessageBox
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient
-from PyQt5.QtCore import Qt, QPoint, pyqtSignal
+from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QCoreApplication
 from clibs.create import Create
 from clibs.color import Color
 from clibs import info as dpinfo
@@ -69,6 +69,8 @@ class Wheel(QWidget):
         self._wheel_actived = False # for mouse press, move on wheel.
         self._bar_1_actived = False # for mouse press, move on bar 1.
         self._bar_2_actived = False # for mouse press, move on bar 2.
+
+        self._func_tr_()
     
     def reload_settings(self, setting):
         self._pr_setting["h_range"] = setting["h_range"]
@@ -397,13 +399,13 @@ class Wheel(QWidget):
                     f.write(color_swatch)
 
             else:
-                QMessageBox.warning(self, "Error", "Unknown file extension: {}.".format(cb_file[0]))
+                QMessageBox.warning(self, self._err_descs[0], self._err_descs[9].format(cb_file[0]))
 
     def slot_import(self):
         interface_cmp = True
         if not self.isVisible():
             interface_cmp = False
-            QMessageBox.warning(self, "Attention", "Files can only be imported in color wheel interface.")
+            QMessageBox.warning(self, self._err_descs[0], self._err_descs[8])
 
         cb_file = [None,]
         if interface_cmp:
@@ -416,16 +418,15 @@ class Wheel(QWidget):
                 color_cmp = False
                 if "version" in color_dict:
                     if dpinfo.if_version_compatible(color_dict["version"]):
-                        try:
-                            self._create.import_color_set(color_dict)
+                        err = self._create.import_color_set(color_dict)
+                        if err:
+                            QMessageBox.warning(self, self._err_descs[0], self._err_descs[err[0]].format(*err[1]))
+                        else:
                             color_cmp = True
-                        except Exception as err:
-                            QMessageBox.warning(self, "Error", str(err))
-                
                     else:
-                        QMessageBox.warning(self, "Error", "Version is not compatible: {}.".format(color_dict["version"]))
+                        QMessageBox.warning(self, self._err_descs[0], self._err_descs[4].format(color_dict["version"]))
                 else:
-                    QMessageBox.warning(self, "Error", "Version information is not found in {}.".format(os.path.basename(cb_file[0])))
+                    QMessageBox.warning(self, self._err_descs[0], self._err_descs[5].format(os.path.basename(cb_file[0])))
 
                 if color_cmp:
                     if "harmony_rule" in color_dict:
@@ -433,11 +434,25 @@ class Wheel(QWidget):
                             self._env["hm_rule"] = color_dict["harmony_rule"]
                         else:
                             self._env["hm_rule"] = "custom"
-                            QMessageBox.warning(self, "Error", "Unknown harmony rule: {}. Using custom instead.".format(color_dict["harmony_rule"]))
+                            QMessageBox.warning(self, self._err_descs[0], self._err_descs[6].format(color_dict["harmony_rule"]))
                     else:
                         self._env["hm_rule"] = "custom"
-                        QMessageBox.warning(self, "Error", "Harmony rule doesn't exist in file. Use custom instead.")
+                        QMessageBox.warning(self, self._err_descs[0], self._err_descs[7])
 
             self._emit_color = True
             self.selected_hm_rule.emit(self._env["hm_rule"])
             self.update()
+
+    def _func_tr_(self):
+        _translate = QCoreApplication.translate
+
+        self._err_descs = (_translate("Wheel", "Error"),
+                           _translate("Wheel", "Color {0} doesn't exist in data file."),
+                           _translate("Wheel", "The HSV tag of color {0} doesn't exist in data file."),
+                           _translate("Wheel", "Color {0} with HSV value is invalid: {1}."),
+                           _translate("Wheel", "Version is not compatible for data file: {0}."),
+                           _translate("Wheel", "Unknown version of data file {0}."),
+                           _translate("Wheel", "Harmony rule is invalid: {0}. Using custom instead."),
+                           _translate("Wheel", "Harmony rule doesn't exist in data file. Use custom instead."),
+                           _translate("Wheel", "Data files can only be imported in color wheel interface."),
+                           _translate("Wheel", "Unknown data file extension: {0}."),)

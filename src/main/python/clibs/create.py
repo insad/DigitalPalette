@@ -415,20 +415,21 @@ class Create(object):
     def import_color_set(self, color_dict):
         color_set = []
 
-        color_cmp = False
+        err = None
+
         for i in range(5):
             if "color_{}".format(i) in color_dict:
                 if "hsv" in color_dict["color_{}".format(i)]:
                     try:
                         color_set.append(Color(color_dict["color_{}".format(i)]["hsv"], ctp="hsv"))
-                        color_cmp = True
                     except:
-                        color_cmp = False
-                        raise ValueError("Can not import color {} with hsv value: {}.".format(i, color_dict["color_{}".format(i)]["hsv"]))
+                        err = (3, (str(i), str(color_dict["color_{}".format(i)]["hsv"])))
                 else:
-                    raise ValueError("Can not find hsv tag of color {} in file.".format(i))
+                    err = (2, str(i))
             else:
-                raise ValueError("Can not find color {} in file.".format(i))
+                err = (1, str(i))
 
-        if color_cmp:
+        if err:
+            return err
+        else:
             self._color_set = color_set

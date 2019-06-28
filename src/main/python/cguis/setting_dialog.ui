@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>setting_dialog</class>
+ <widget class="QDialog" name="setting_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,21 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>8</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>8</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
    <item row="0" column="0">
     <widget class="QTabWidget" name="setti_items">
      <property name="tabPosition">
@@ -23,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -34,29 +46,102 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
+        <widget class="QGroupBox" name="st_gbox_lang">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Language</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="st_rbtn_en">
+            <property name="text">
+             <string>English</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="st_rbtn_zh_CN">
+            <property name="text">
+             <string>中文</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="st_hsp_lang">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>322</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>8</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="st_gbox_sqr_itf">
          <property name="title">
           <string>Color Square</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="st_label_widratio">
-            <property name="minimumSize">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+          <item row="0" column="2">
+           <spacer name="st_hsp_sqr_itf">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>200</width>
+              <width>447</width>
               <height>20</height>
              </size>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Color square length</string>
-            </property>
-           </widget>
+           </spacer>
           </item>
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="st_p_widratio">
@@ -86,18 +171,24 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <spacer name="st_hsp_sqr_itf">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+          <item row="0" column="0">
+           <widget class="QLabel" name="st_label_widratio">
+            <property name="minimumSize">
              <size>
-              <width>447</width>
+              <width>200</width>
               <height>20</height>
              </size>
             </property>
-           </spacer>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Color square length</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <spacer name="st_vsp_sqr_itf">
@@ -107,7 +198,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>50</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>
@@ -121,6 +212,18 @@
           <string>Color wheel</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="st_label_raduis">
             <property name="minimumSize">
@@ -277,7 +380,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Active tag color</string>
+             <string>Activated tag color</string>
             </property>
            </widget>
           </item>
@@ -353,7 +456,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Inactive tag color</string>
+             <string>Inactivated tag color</string>
             </property>
            </widget>
           </item>
@@ -438,7 +541,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Bar color</string>
+             <string>Bar edge color</string>
             </property>
            </widget>
           </item>
@@ -543,6 +646,18 @@
           <string>Graph view</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="st_label_tip_radius">
             <property name="minimumSize">
@@ -608,7 +723,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Graph separation width</string>
+             <string>Layer separation width</string>
             </property>
            </widget>
           </item>
@@ -734,7 +849,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Selection color</string>
+             <string>Selection point color</string>
             </property>
            </widget>
           </item>
@@ -819,7 +934,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Reference color</string>
+             <string>Reference point color</string>
             </property>
            </widget>
           </item>
@@ -931,6 +1046,18 @@
           <string>Color wheel</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="st_label_h_range_from">
             <property name="minimumSize">
@@ -1331,6 +1458,18 @@
           <string>Graph view</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="st_label_graph_types">
             <property name="minimumSize">
@@ -1795,7 +1934,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Zoom step</string>
+             <string>Zoom ratio per step</string>
             </property>
            </widget>
           </item>
@@ -1842,7 +1981,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Move step</string>
+             <string>Move distance per step</string>
             </property>
            </widget>
           </item>
@@ -1952,7 +2091,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>setting_dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1968,7 +2107,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>setting_dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

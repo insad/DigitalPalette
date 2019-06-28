@@ -14,7 +14,7 @@ class Image3C(QThread):
     """
 
     process = pyqtSignal(int)
-    describe = pyqtSignal(str)
+    describe = pyqtSignal(int)
     ref_rgb = pyqtSignal(np.ndarray)
     finished = pyqtSignal(bool)
 
@@ -52,7 +52,7 @@ class Image3C(QThread):
         # ===== ===== ===== RGB part ===== ===== =====
 
         # import rgb data.
-        self.describe.emit("Reading RGB data.")
+        self.describe.emit(0)
         rgb_data = np.array(Image.open(self._image_file).convert("RGB"), dtype=np.uint8)
         self.ref_rgb.emit(rgb_data)
         self.process.emit(1)
@@ -61,14 +61,14 @@ class Image3C(QThread):
         self.process.emit(2)
 
         # rgb space Sobel edge detection.
-        self.describe.emit("Detecting image RGB space edges.")
+        self.describe.emit(1)
         results_shape = (rgb_data.shape[0] - 2, rgb_data.shape[1] - 2, 3)
         self.process.emit(3)
 
         next_process = 4
 
         # rgb vertical.
-        self.describe.emit("Generating vertical RGB space edges.")
+        self.describe.emit(2)
         vtl_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
@@ -84,7 +84,7 @@ class Image3C(QThread):
         next_process += results_shape[0] + 1
         
         # rgb horizontal.
-        self.describe.emit("Generating horizontal RGB space edges.")
+        self.describe.emit(3)
         hrz_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
@@ -100,7 +100,7 @@ class Image3C(QThread):
         next_process += results_shape[0] + 1
 
         # rgb final.
-        self.describe.emit("Integrating final RGB space edges.")
+        self.describe.emit(4)
         fnl_results = (np.sqrt(vtl_results.astype(np.uint32) ** 2 + hrz_results.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
         self.process.emit(next_process)
 
@@ -110,7 +110,7 @@ class Image3C(QThread):
         # ===== ===== ===== HSV part ===== ===== =====
 
         # transform from rgb to hsv.
-        self.describe.emit("Transforming RGB to HSV data.")
+        self.describe.emit(5)
         hsv_data = np.zeros(rgb_data.shape, dtype=np.float32) # = hsv * 1.0 (/ 360)
         self.process.emit(next_process + 2)
 
@@ -129,14 +129,14 @@ class Image3C(QThread):
         self.process.emit(next_process)
 
         # hsv space Sobel edge detection.
-        self.describe.emit("Detecting image HSV space edges.")
+        self.describe.emit(6)
         results_shape = (hsv_data.shape[0] - 2, hsv_data.shape[1] - 2, 3)
         self.process.emit(next_process + 1)
 
         next_process += 2
 
         # hsv vertical.
-        self.describe.emit("Generating vertical HSV space edges.")
+        self.describe.emit(7)
         vtl_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
@@ -156,7 +156,7 @@ class Image3C(QThread):
         next_process += results_shape[0] + 1
 
         # hsv horizontal.
-        self.describe.emit("Generating horizontal HSV space edges.")
+        self.describe.emit(8)
         hrz_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
@@ -176,14 +176,14 @@ class Image3C(QThread):
         next_process += results_shape[0] + 1
 
         # hsv final.
-        self.describe.emit("Integrating final HSV space edges.")
+        self.describe.emit(9)
         fnl_results = (np.sqrt(vtl_results.astype(np.uint32) ** 2 + hrz_results.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
         self.process.emit(next_process)
 
         self.save_rgb_temp_data(fnl_results, "7")
         self.process.emit(next_process + 1)
 
-        self.describe.emit("Finishing.")
+        self.describe.emit(10)
         self.finished.emit(True)
 
     def read_rgb_channels(self, rgb_data):

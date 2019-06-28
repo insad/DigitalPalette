@@ -13,6 +13,7 @@ class Ui_graph_view(object):
     def setupUi(self, graph_view):
         graph_view.setObjectName("graph_view")
         graph_view.resize(400, 300)
+        graph_view.setWindowTitle("")
         graph_view.setAutoFillBackground(True)
         self.cobox_chl = QtWidgets.QComboBox(graph_view)
         self.cobox_chl.setGeometry(QtCore.QRect(35, 0, 35, 20))
@@ -78,7 +79,6 @@ class Ui_graph_view(object):
 
     def retranslateUi(self, graph_view):
         _translate = QtCore.QCoreApplication.translate
-        graph_view.setWindowTitle(_translate("graph_view", "Form"))
         self.cobox_chl.setItemText(0, _translate("graph_view", "A"))
         self.cobox_chl.setItemText(1, _translate("graph_view", "1"))
         self.cobox_chl.setItemText(2, _translate("graph_view", "2"))

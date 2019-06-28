@@ -17,7 +17,7 @@ class Argument(object):
 
         self._setti = {"version": dpinfo.current_version(),}
         self._setti.update(default_setti)
-        self.err = ""
+        self.err = None
 
         if os.path.isfile(setti_file):
             with open(setti_file, "r") as sf:
@@ -27,10 +27,10 @@ class Argument(object):
                     if dpinfo.if_version_compatible(uss["version"]):
                         self.setting(uss)
                     else:
-                        self.err = "Version is not compatible: {}. Using default settings instead.".format(uss["version"])
+                        self.err = (2, str(uss["version"]))
 
                 else:
-                    self.err = "Version information is not found in settings.json. Using default settings instead."
+                    self.err = (1, "")
 
     @property
     def settings(self):
@@ -120,6 +120,9 @@ class Argument(object):
 
         if "select_dist" in uss:
             self.parse_num("select_dist", uss["select_dist"], int, (1, 100), int)
+        
+        if "lang" in uss:
+            self.parse_selection("lang", uss["lang"], ("en", "zh_CN"), lowercase=False)
     
     def parse_range(self, name, value, dtype, target_range, target_dtype):
         if name in self._setti:
@@ -128,11 +131,12 @@ class Argument(object):
                     if value[0] < value[1]:
                         self._setti[name] = (target_dtype(value[0]), target_dtype(value[1]))
 
-    def parse_selection(self, name, value, value_list):
+    def parse_selection(self, name, value, value_list, lowercase=True):
         if name in self._setti:
-            if isinstance(value, str) and value.lower() in value_list:
-                self._setti[name] = str(value)
-    
+            _value = value.lower() if lowercase else value
+            if isinstance(value, str) and _value in value_list:
+                self._setti[name] = _value
+
     def parse_selection_list(self, name, value, dtype, length, value_list):
         if name in self._setti:
             if isinstance(value, (tuple, list)) and len(value) == length:

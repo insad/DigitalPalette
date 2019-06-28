@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QGridLayout, QProgressBar, QMessageBox
-from PyQt5.QtCore import Qt, QRect, pyqtSignal
+from PyQt5.QtCore import Qt, QRect, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage
 from cguis.resource import view_rc
 from clibs.trans2d import get_outer_box
@@ -40,15 +40,16 @@ class Graph(QWidget):
         self._env["graph_types"] = setting["graph_types"]
         self._env["graph_chls"] = setting["graph_chls"]
 
-        self._label = QLabel(self)
-        self._label.setText("Double click here to open a graph.")
-        self._label.setWordWrap(True)
-        self._label.show()
+        self._dbc_label = QLabel(self)
+        self._dbc_label.setWordWrap(True)
+        self._dbc_label.show()
+
+        self._load_label = QLabel(self)
+        self._load_label.hide()
 
         self._icon = QImage(":/images/images/icon_grey.png")
         self._icon_label = QLabel(self)
         self._icon_label.hide()
-
 
         self._image3c = Image3C()
         self._load_finished = True # loading finished. set False when loading.
@@ -120,6 +121,9 @@ class Graph(QWidget):
         # drop image.
         self.setAcceptDrops(True)
         self._accepted_file = ""
+
+        # translate interface.
+        self._func_tr_()
 
     def reload_settings(self, setting):
         self._env["hm_rule"] = setting["hm_rule"]
@@ -197,7 +201,7 @@ class Graph(QWidget):
             self._icon_label.setPixmap(QPixmap.fromImage(resized_img))
             self._icon_label.setGeometry((self._wid - img_wid) / 2, bar_hig * 0.2, img_wid, img_hig)
 
-            self._label.setGeometry((self._wid - bar_wid) / 2, self._hig - bar_hig * 2.2, bar_wid, bar_hig)
+            self._load_label.setGeometry((self._wid - bar_wid) / 2, self._hig - bar_hig * 2.2, bar_wid, bar_hig)
 
         # paint open image interface.
         else:
@@ -214,8 +218,8 @@ class Graph(QWidget):
             radius = min(self._wid * 0.1, self._hig * 0.1)
             painter.drawRoundedRect(*box, radius, radius)
 
-            self._label.setGeometry(QRect(*box))
-            self._label.setAlignment(Qt.AlignCenter)
+            self._dbc_label.setGeometry(QRect(*box))
+            self._dbc_label.setAlignment(Qt.AlignCenter)
 
             painter.end()
 
@@ -404,7 +408,7 @@ class Graph(QWidget):
                 self.slot_open_image_file(cb_file[0])
         
         else:
-            QMessageBox.warning(self, "Attention", "Please open one image once time.")
+            QMessageBox.warning(self, self._err_descs[0], self._err_descs[1])
 
     def slot_open_image_file(self, image):
         if self._image3c.check_temp_dir():
@@ -418,7 +422,8 @@ class Graph(QWidget):
             self._image3c.import_image(image)
             self._image3c.start()
 
-            self._label.show()
+            self._dbc_label.hide()
+            self._load_label.show()
             self._pro_bar.show()
             self._icon_label.show()
             self._view_seq = []
@@ -429,7 +434,7 @@ class Graph(QWidget):
             self.update()
             
         else:
-            QMessageBox.warning(self, "Error", "Temporary directory is invalid.")
+            QMessageBox.warning(self, self._err_descs[0], self._err_descs[2])
 
     def slot_change_gph(self, graph_idx):
         """
@@ -536,18 +541,39 @@ class Graph(QWidget):
         self._load_finished = state
         self._pro_bar.hide()
         self._icon_label.hide()
-        self._label.hide()
+        self._load_label.hide()
 
         self._view_seq = [0, 1, 2, 3]
         self._func_resize_()
         self._func_show_()
         self.update()
 
-    def slot_set_loading_desc(self, description):
+    def slot_set_loading_desc(self, desc_idx):
         """
         Loading descriptions when importing a image.
         """
 
-        self._label.setText(description)
-        self._label.setAlignment(Qt.AlignCenter)
+        self._load_label.setText(self._loading_descs[desc_idx])
+        self._load_label.setAlignment(Qt.AlignCenter)
         self.update()
+
+    def _func_tr_(self):
+        _translate = QCoreApplication.translate
+
+        self._dbc_label.setText(_translate("Graph", "Double click here to open a graph."))
+
+        self._loading_descs = (_translate("Graph", "Reading RGB data."),
+                               _translate("Graph", "Detecting image RGB space edges."),
+                               _translate("Graph", "Generating vertical RGB space edges."),
+                               _translate("Graph", "Generating horizontal RGB space edges."),
+                               _translate("Graph", "Integrating final RGB space edges."),
+                               _translate("Graph", "Transforming RGB to HSV data."),
+                               _translate("Graph", "Detecting image HSV space edges."),
+                               _translate("Graph", "Generating vertical HSV space edges."),
+                               _translate("Graph", "Generating horizontal HSV space edges."),
+                               _translate("Graph", "Integrating final HSV space edges."),
+                               _translate("Graph", "Finishing."),)
+
+        self._err_descs = (_translate("Graph", "Error"),
+                           _translate("Graph", "Please open one image once time."),
+                           _translate("Graph", "Couldn't create temporary directory."),)

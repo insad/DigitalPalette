@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-from cguis.setting_dialog import Ui_Dialog
+from cguis.setting_dialog import Ui_setting_dialog
 from PyQt5.QtCore import pyqtSignal
 
 
-class Settings(QDialog, Ui_Dialog):
+class Settings(QDialog, Ui_setting_dialog):
     """
     Settings dialog for argument setting.
     """
@@ -67,6 +67,10 @@ class Settings(QDialog, Ui_Dialog):
             color_r.valueChanged.connect(self.slot_change_color(name))
             color_g.valueChanged.connect(self.slot_change_color(name))
             color_b.valueChanged.connect(self.slot_change_color(name))
+        
+        for name in ("en", "zh_CN"):
+            rbtn_lang = getattr(self, "st_rbtn_{}".format(name))
+            rbtn_lang.clicked.connect(self.slot_change_lang(name))
 
     def reset_all(self, setting):
         for name in ("h_range", "s_range", "v_range"):
@@ -99,6 +103,9 @@ class Settings(QDialog, Ui_Dialog):
             color_r.setValue(setting[name][0])
             color_g.setValue(setting[name][1])
             color_b.setValue(setting[name][2])
+        
+        st_rbtn_lang = getattr(self, "st_rbtn_{}".format(setting["lang"]))
+        st_rbtn_lang.click()
     
     def slot_change_range(self, name):
         def _func_(value):
@@ -133,9 +140,13 @@ class Settings(QDialog, Ui_Dialog):
         def _func_(value):
             self._changed[name] = value
         return _func_
+    
+    def slot_change_lang(self, name):
+        def _func_(value):
+            self._changed["lang"] = name
+        return _func_
 
     def slot_accepted(self):
-        print(self._changed)
         self.changed_setti.emit(self._changed)
         self._changed = {}
     
@@ -144,6 +155,5 @@ class Settings(QDialog, Ui_Dialog):
     
     def slot_reseting(self, default_setting):
         def _func_():
-            print("resett")
             self.reset_all(default_setting)
         return _func_
