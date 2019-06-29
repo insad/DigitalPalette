@@ -11,7 +11,7 @@ class Result(QWidget, Ui_scroll_result):
     Result area containing five color squares and slides.
     """
 
-    def __init__(self, setting={}):
+    def __init__(self, settings):
         """
         Init the result area.
 
@@ -29,7 +29,7 @@ class Result(QWidget, Ui_scroll_result):
             cube_color = getattr(self, "color_{}".format(idx))
             cube_grid_layout = QGridLayout(cube_color)
             cube_grid_layout.setContentsMargins(0, 0, 0, 0)
-            cube_square = Square(setting=setting)
+            cube_square = Square(settings)
             cube_grid_layout.addWidget(cube_square)
             cube_color.setLayout(cube_grid_layout)
 

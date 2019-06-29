@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 
 
 def current_version():
-    return "v1.0.17-beta"
+    return "v1.0.18-beta"
 
 def website():
     return "https://github.com/liujiacode/DigitalPalette"

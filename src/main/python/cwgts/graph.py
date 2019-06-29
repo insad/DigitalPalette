@@ -23,7 +23,7 @@ class Graph(QWidget):
 
     selected_tr_hm_rule = pyqtSignal(str)
 
-    def __init__(self, setting={}):
+    def __init__(self, settings):
         """
         Init the graph work area.
 
@@ -35,10 +35,9 @@ class Graph(QWidget):
 
         # loading settings.
         # graph types and graph chls are not allowed to reload.
-        self._env = {}
-        self.reload_settings(setting)
-        self._env["graph_types"] = setting["graph_types"]
-        self._env["graph_chls"] = setting["graph_chls"]
+        self.reload_settings(settings)
+        self._env_graph_types = settings[18]
+        self._env_graph_chls = settings[19]
 
         self._dbc_label = QLabel(self)
         self._dbc_label.setWordWrap(True)
@@ -60,8 +59,8 @@ class Graph(QWidget):
 
         # graph views after image imported.
         grid_layout = QGridLayout()
-        grid_layout.setContentsMargins(self._env["half_sp"], self._env["half_sp"], self._env["half_sp"], self._env["half_sp"])
-        grid_layout.setSpacing(self._env["half_sp"] * 2)
+        grid_layout.setContentsMargins(self._env_half_sp, self._env_half_sp, self._env_half_sp, self._env_half_sp)
+        grid_layout.setSpacing(self._env_half_sp * 2)
         self.setLayout(grid_layout)
 
         self._pro_bar = QProgressBar() # loading process.
@@ -72,15 +71,15 @@ class Graph(QWidget):
 
         self._graph_views = []
         for i in range(4):
-            graph_view = View(self._env)
+            graph_view = View(self._env_zoom_step, self._env_move_step, self._env_select_dist, self._env_st_color, self._env_it_color)
             grid_layout.addWidget(graph_view, i // 2, i % 2, 1, 1)
 
             graph_view.hide()
             self._graph_views.append(graph_view)
 
             # init graph view type and channel.
-            graph_view.slot_change_gph(self._env["graph_types"][i])
-            graph_view.slot_change_chl(self._env["graph_chls"][i])
+            graph_view.slot_change_gph(self._env_graph_types[i])
+            graph_view.slot_change_chl(self._env_graph_chls[i])
             
             # set connection from graph view type and channel to local setting.
             graph_view.selected_gph.connect(self.slot_change_gph(i))
@@ -125,20 +124,20 @@ class Graph(QWidget):
         # translate interface.
         self._func_tr_()
 
-    def reload_settings(self, setting):
-        self._env["hm_rule"] = setting["hm_rule"]
-        self._env["vs_color"] = setting["vs_color"]
-        self._env["tip_radius"] = setting["tip_radius"]
-        self._env["half_sp"] = setting["half_sp"]
-        self._env["zoom_step"] = setting["zoom_step"]
-        self._env["move_step"] = setting["move_step"]
-        self._env["select_dist"] = setting["select_dist"]
-        self._env["st_color"] = setting["st_color"]
-        self._env["it_color"] = setting["it_color"]
+    def reload_settings(self, settings):
+        self._env_hm_rule = settings[20]
+        self._env_vs_color = settings[15]
+        self._env_tip_radius = settings[5]
+        self._env_half_sp = settings[11]
+        self._env_zoom_step = settings[8]
+        self._env_move_step = settings[9]
+        self._env_select_dist = settings[10]
+        self._env_st_color = settings[16]
+        self._env_it_color = settings[17]
     
     def reload_view_settings(self):
         for graph_view in self._graph_views:
-            graph_view.reload_settings(self._env)
+            graph_view.reload_settings(self._env_zoom_step, self._env_move_step, self._env_select_dist, self._env_st_color, self._env_it_color)
             graph_view.reload_overlabel()
         
         if self.isVisible():
@@ -153,7 +152,7 @@ class Graph(QWidget):
         # paint analysis interface.
         if self._image_imported and self._load_finished:
             # set tip radius.
-            self._tip_radius = min(self._wid, self._hig) * self._env["tip_radius"] / 2
+            self._tip_radius = min(self._wid, self._hig) * self._env_tip_radius / 2
 
             # draw tip circle.
             painter = QPainter()
@@ -166,7 +165,7 @@ class Graph(QWidget):
             tip_center = np.array((self._wid, self._hig)) * self._pos_rto
             
             tip_box = get_outer_box(tip_center, self._tip_radius)
-            painter.setPen(QPen(QColor(*self._env["vs_color"]), 3))
+            painter.setPen(QPen(QColor(*self._env_vs_color), 3))
             painter.setBrush(QBrush(Qt.NoBrush))
             
             painter.drawEllipse(*tip_box)
@@ -183,8 +182,8 @@ class Graph(QWidget):
                 
                 self._ori_wid = int(self._wid)
                 self._ori_hig = int(self._hig)
-                self._ori_gph = list(self._env["graph_types"])
-                self._ori_chl = list(self._env["graph_chls"])
+                self._ori_gph = list(self._env_graph_types)
+                self._ori_chl = list(self._env_graph_chls)
                 
                 self._graph_changed = False
 
@@ -312,8 +311,8 @@ class Graph(QWidget):
         """
 
         for i in self._view_seq:
-            if self._env["graph_types"][i] != self._ori_gph[i] or self._env["graph_chls"][i] != self._ori_chl[i]:
-                img = self._image3c.load_image(self._env["graph_types"][i], self._env["graph_chls"][i])
+            if self._env_graph_types[i] != self._ori_gph[i] or self._env_graph_chls[i] != self._ori_chl[i]:
+                img = self._image3c.load_image(self._env_graph_types[i], self._env_graph_chls[i])
                 graph_view = self._graph_views[i]
                 graph_view.slot_load_img(img)
 
@@ -325,15 +324,15 @@ class Graph(QWidget):
         pos_x = int(self._wid * self._pos_rto[0])
         pos_y = int(self._hig * self._pos_rto[1])
         
-        if self._graph_views[0].geometry().width() != (pos_x - self._env["half_sp"] * 2) or self._graph_views[0].geometry().height != (pos_y - self._env["half_sp"] * 2):
+        if self._graph_views[0].geometry().width() != (pos_x - self._env_half_sp * 2) or self._graph_views[0].geometry().height != (pos_y - self._env_half_sp * 2):
             if 0 in self._view_seq:
-                self._graph_views[0].setGeometry(self._env["half_sp"], self._env["half_sp"], (pos_x - self._env["half_sp"] * 2), (pos_y - self._env["half_sp"] * 2))
+                self._graph_views[0].setGeometry(self._env_half_sp, self._env_half_sp, (pos_x - self._env_half_sp * 2), (pos_y - self._env_half_sp * 2))
             if 1 in self._view_seq:
-                self._graph_views[1].setGeometry((pos_x + self._env["half_sp"]), self._env["half_sp"], (self._wid - pos_x - self._env["half_sp"] * 2), (pos_y - self._env["half_sp"] * 2))
+                self._graph_views[1].setGeometry((pos_x + self._env_half_sp), self._env_half_sp, (self._wid - pos_x - self._env_half_sp * 2), (pos_y - self._env_half_sp * 2))
             if 2 in self._view_seq:
-                self._graph_views[2].setGeometry(self._env["half_sp"], (pos_y + self._env["half_sp"]), (pos_x -self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
+                self._graph_views[2].setGeometry(self._env_half_sp, (pos_y + self._env_half_sp), (pos_x -self._env_half_sp * 2), (self._hig - pos_y - self._env_half_sp * 2))
             if 3 in self._view_seq:
-                self._graph_views[3].setGeometry((pos_x + self._env["half_sp"]), (pos_y + self._env["half_sp"]), (self._wid - pos_x - self._env["half_sp"] * 2), (self._hig - pos_y - self._env["half_sp"] * 2))
+                self._graph_views[3].setGeometry((pos_x + self._env_half_sp), (pos_y + self._env_half_sp), (self._wid - pos_x - self._env_half_sp * 2), (self._hig - pos_y - self._env_half_sp * 2))
 
     def _func_show_(self):
         """
@@ -442,8 +441,8 @@ class Graph(QWidget):
         """
 
         def _func_(graph_type):
-            if graph_type != self._env["graph_types"][graph_idx]:
-                self._env["graph_types"][graph_idx] = graph_type
+            if graph_type != self._env_graph_types[graph_idx]:
+                self._env_graph_types[graph_idx] = graph_type
 
                 self._graph_changed = True
                 self.update()
@@ -456,8 +455,8 @@ class Graph(QWidget):
         """
 
         def _func_(channel):
-            if channel != self._env["graph_chls"][graph_idx]:
-                self._env["graph_chls"][graph_idx] = channel
+            if channel != self._env_graph_chls[graph_idx]:
+                self._env_graph_chls[graph_idx] = channel
 
                 self._graph_changed = True
                 self.update()
@@ -471,7 +470,7 @@ class Graph(QWidget):
 
         self._graph_changed = True
 
-        if self._env["hm_rule"] == "custom":
+        if self._env_hm_rule == "custom":
             self._graph_views[0].graph_label.slot_recover()
         self.update()
 
@@ -507,7 +506,7 @@ class Graph(QWidget):
         """
 
         def _func_(value):
-            self._env["hm_rule"] = hm_rule
+            self._env_hm_rule = hm_rule
 
             for i in range(4):
                 graph_label = self._graph_views[i].graph_label
@@ -556,6 +555,11 @@ class Graph(QWidget):
         self._load_label.setText(self._loading_descs[desc_idx])
         self._load_label.setAlignment(Qt.AlignCenter)
         self.update()
+
+    def closeEvent(self, event):
+        self._image3c.remove_temp_dir()
+
+        event.accept()
 
     def _func_tr_(self):
         _translate = QCoreApplication.translate

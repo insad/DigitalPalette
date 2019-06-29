@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QColorDialog
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
+from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, pyqtSignal
 from clibs.color import Color
 import numpy as np
@@ -27,7 +27,7 @@ class Square(QWidget):
 
     selected_active = pyqtSignal(bool) # to wheel.
 
-    def __init__(self, setting={}):
+    def __init__(self, settings):
         """
         Init the color square.
 
@@ -38,8 +38,7 @@ class Square(QWidget):
         super().__init__()
 
         # loading settings.
-        self._env = {}
-        self.reload_settings(setting)
+        self.reload_settings(settings)
 
         self._color = Color()
         self._ori_color = Color(self._color)
@@ -52,16 +51,16 @@ class Square(QWidget):
         self._emit_activated = True     # emit selected_active to wheel.
         self._activated_on = True       # set False to deactive and remain color 0 for graph view.
 
-    def reload_settings(self, setting):
-        self._env["at_color"] = setting["at_color"]
-        self._env["ia_color"] = setting["ia_color"]
-        self._env["widratio"] = setting["widratio"]
+    def reload_settings(self, settings):
+        self._env_at_color = settings[12]
+        self._env_ia_color = settings[13]
+        self._env_widratio = settings[6]
 
     def paintEvent(self, event):
         wid = self.geometry().width()
         hig = self.geometry().height()
-        rto = (1.0 - self._env["widratio"]) / 2
-        self._box = (wid * rto, hig * rto, wid * self._env["widratio"], hig * self._env["widratio"])
+        rto = (1.0 - self._env_widratio) / 2
+        self._box = (wid * rto, hig * rto, wid * self._env_widratio, hig * self._env_widratio)
         painter = QPainter()
         painter.begin(self)
 
@@ -70,9 +69,9 @@ class Square(QWidget):
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         if self._activated_on and self._acitvated_state:
-            painter.setPen(QPen(QColor(*self._env["at_color"]), 5))
+            painter.setPen(QPen(QColor(*self._env_at_color), 5))
         else:
-            painter.setPen(QPen(QColor(*self._env["ia_color"]), 3))
+            painter.setPen(QPen(QColor(*self._env_ia_color), 3))
         painter.setBrush(QColor(*self._color.rgb))
         painter.drawRect(*self._box)
 

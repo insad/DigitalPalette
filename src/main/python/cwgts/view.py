@@ -180,7 +180,7 @@ class View(QWidget, Ui_graph_view):
     selected_gph = pyqtSignal(int)
     selected_chl = pyqtSignal(int)
 
-    def __init__(self, setting={}):
+    def __init__(self, zoom_step, move_step, select_dist, st_color, it_color):
         """
         Init the graph view area.
 
@@ -192,8 +192,7 @@ class View(QWidget, Ui_graph_view):
         self.setupUi(self)
 
         # loading settings.
-        self._env = {}
-        self.reload_settings(setting)
+        self.reload_settings(zoom_step, move_step, select_dist, st_color, it_color)
 
         # loading overlabel settings.
         self.graph_label = OverLabel(self)
@@ -248,17 +247,17 @@ class View(QWidget, Ui_graph_view):
         self.pbtn_move_left.clicked.connect(self.slot_move_left)
         self.pbtn_move_right.clicked.connect(self.slot_move_right)
 
-    def reload_settings(self, setting):
-        self._env["zoom_step"] = setting["zoom_step"]
-        self._env["move_step"] = setting["move_step"]
-        self._env["select_dist"] = setting["select_dist"]
-        self._env["st_color"] = setting["st_color"]
-        self._env["it_color"] = setting["it_color"]
+    def reload_settings(self, zoom_step, move_step, select_dist, st_color, it_color):
+        self._env_zoom_step = zoom_step
+        self._env_move_step = move_step
+        self._env_select_dist = select_dist
+        self._env_st_color = st_color
+        self._env_it_color = it_color
 
     def reload_overlabel(self):
-        self.graph_label.select_dist = self._env["select_dist"]
-        self.graph_label.st_color = self._env["st_color"]
-        self.graph_label.it_color = self._env["it_color"]
+        self.graph_label.select_dist = self._env_select_dist
+        self.graph_label.st_color = self._env_st_color
+        self.graph_label.it_color = self._env_it_color
 
     def paintEvent(self, event):
         self._wid = self.geometry().width()
@@ -280,7 +279,7 @@ class View(QWidget, Ui_graph_view):
 
         ratio = (event.angleDelta() / 120).y()
         if ratio:
-            ratio = ratio * self._env["zoom_step"] if ratio > 0 else -1 * ratio / self._env["zoom_step"]
+            ratio = ratio * self._env_zoom_step if ratio > 0 else -1 * ratio / self._env_zoom_step
         else:
             ratio = 1
         self._func_zoom_(point, ratio)
@@ -366,25 +365,25 @@ class View(QWidget, Ui_graph_view):
     
     def slot_zoom_in(self, value):
         center = (self._wid / 2, self._hig / 2)
-        self._func_zoom_(center, self._env["zoom_step"])
+        self._func_zoom_(center, self._env_zoom_step)
         self.update()
     
     def slot_zoom_out(self, value):
         center = (self._wid / 2, self._hig / 2)
-        self._func_zoom_(center, 1 / self._env["zoom_step"])
+        self._func_zoom_(center, 1 / self._env_zoom_step)
         self.update()
 
     def slot_reset_img(self, value):
         self._img_loaded = True
 
     def slot_move_up(self, value):
-        self._func_move_(0, -1 * self._env["move_step"])
+        self._func_move_(0, -1 * self._env_move_step)
     
     def slot_move_down(self, value):
-        self._func_move_(0, self._env["move_step"])
+        self._func_move_(0, self._env_move_step)
     
     def slot_move_left(self, value):
-        self._func_move_(-1 * self._env["move_step"], 0)
+        self._func_move_(-1 * self._env_move_step, 0)
     
     def slot_move_right(self, value):
-        self._func_move_(self._env["move_step"], 0)
+        self._func_move_(self._env_move_step, 0)

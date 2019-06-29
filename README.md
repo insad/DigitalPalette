@@ -2,7 +2,7 @@
 Digital palette for selecting harmony colors.
 
 # Version
-v1.0.17-beta
+v1.0.18-beta
 
 # Author
 Liu Jia
@@ -26,3 +26,4 @@ Liu Jia
 * 2019.06.26: Repair uppercase hex color code.
 * 2019.06.28: Add Chinese translation.
 * 2019.06.29: Repair data opening presentations.
+* 2019.06.29: Add translation method.

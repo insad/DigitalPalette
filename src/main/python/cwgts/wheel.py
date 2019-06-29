@@ -10,7 +10,6 @@ from clibs.trans2d import get_outer_box, rotate_point_center, get_theta_center
 import numpy as np
 import json
 import os
-import re
 import time
 
 
@@ -35,7 +34,7 @@ class Wheel(QWidget):
 
     selected_hm_rule = pyqtSignal(str)
 
-    def __init__(self, setting={}):
+    def __init__(self, settings):
         """
         Init the color wheel.
 
@@ -46,13 +45,12 @@ class Wheel(QWidget):
         super().__init__()
 
         # loading settings.
-        self._pr_setting = {}
-        self._env = {}
-        self.reload_settings(setting)
+        # hm rule is not allowed to reload.
+        self.reload_settings(settings)
+        self._env_hm_rule = settings[20]
 
-        self._create = Create(**self._pr_setting)
-
-        self._create.create(self._env["hm_rule"])
+        self._create = Create(self._pr_h_range, self._pr_s_range, self._pr_v_range)
+        self._create.create(self._env_hm_rule)
 
         self._emit_color = False       # emit selected_color_0 or 1, 2, 3, 4
         self._emit_other_color = False # emit other selected_color_0 or 1, 2, 3, 4
@@ -67,19 +65,18 @@ class Wheel(QWidget):
 
         self._func_tr_()
     
-    def reload_settings(self, setting):
-        self._pr_setting["h_range"] = setting["h_range"]
-        self._pr_setting["s_range"] = setting["s_range"]
-        self._pr_setting["v_range"] = setting["v_range"]
+    def reload_settings(self, settings):
+        self._pr_h_range = settings[0]
+        self._pr_s_range = settings[1]
+        self._pr_v_range = settings[2]
 
-        self._env["hm_rule"] = setting["hm_rule"]
-        self._env["radius"] = setting["radius"]
-        self._env["color_radius"] = setting["color_radius"]
-        self._env["press_move"] = setting["press_move"]
-        self._env["at_color"] = setting["at_color"]
-        self._env["ia_color"] = setting["ia_color"]
-        self._env["bar_widratio"] = setting["bar_widratio"]
-        self._env["vb_color"] = setting["vb_color"]
+        self._env_radius = settings[3]
+        self._env_color_radius = settings[4]
+        self._env_press_move = settings[22]
+        self._env_at_color = settings[12]
+        self._env_ia_color = settings[13]
+        self._env_bar_widratio = settings[7]
+        self._env_vb_color = settings[14]
 
     @property
     def color_set(self):
@@ -89,7 +86,7 @@ class Wheel(QWidget):
         wid = self.geometry().width()
         hig = self.geometry().height()
         self._center = np.array((wid / 2.0, hig / 2.0), dtype=int)
-        self._radius = min(wid, hig) * self._env["radius"] / 2
+        self._radius = min(wid, hig) * self._env_radius / 2
 
         painter = QPainter()
         painter.begin(self)
@@ -120,7 +117,7 @@ class Wheel(QWidget):
 
         # color set.
         self._color_centers = []
-        self._color_radius = min(wid, hig) * self._env["color_radius"] / 2
+        self._color_radius = min(wid, hig) * self._env_color_radius / 2
         for idx in range(5):
             color = self._create.color_set[idx]
             color_center = np.array([color.s * self._radius, 0]) + self._center
@@ -136,9 +133,9 @@ class Wheel(QWidget):
             color_box = get_outer_box(color_center, self._color_radius)
 
             if idx == self._active_color_idx:
-                painter.setPen(QPen(QColor(*self._env["at_color"]), 5))
+                painter.setPen(QPen(QColor(*self._env_at_color), 5))
             else:
-                painter.setPen(QPen(QColor(*self._env["ia_color"]), 3))
+                painter.setPen(QPen(QColor(*self._env_ia_color), 3))
             painter.drawLine(QPoint(*self._center), QPoint(*color_center))
             painter.setBrush(QColor(*color.rgb))
             painter.drawEllipse(*color_box)
@@ -148,12 +145,12 @@ class Wheel(QWidget):
         current_v = current_color.v
         current_color.v = 1
 
-        re_wid = wid * (1 - self._env["radius"]) / 2 * self._env["bar_widratio"]
+        re_wid = wid * (1 - self._env_radius) / 2 * self._env_bar_widratio
         re_wid = self._color_radius * 3 if self._color_radius * 3 < re_wid else re_wid
 
-        bar_1_center = (wid * (1 - self._env["radius"]) / 4, hig / 2)
-        self._bar_1_box = (bar_1_center[0] - re_wid / 2, bar_1_center[1] - hig * self._env["bar_widratio"] / 2, re_wid, hig * self._env["bar_widratio"])
-        painter.setPen(QPen(QColor(*self._env["vb_color"]), 3))
+        bar_1_center = (wid * (1 - self._env_radius) / 4, hig / 2)
+        self._bar_1_box = (bar_1_center[0] - re_wid / 2, bar_1_center[1] - hig * self._env_bar_widratio / 2, re_wid, hig * self._env_bar_widratio)
+        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
         lgrad = QLinearGradient(self._bar_1_box[0], self._bar_1_box[1], self._bar_1_box[0], self._bar_1_box[3])
         lgrad.setColorAt(1.0, Qt.white)
         lgrad.setColorAt(0.0, Qt.black)
@@ -162,13 +159,13 @@ class Wheel(QWidget):
 
         self._cir_1_center = (bar_1_center[0], self._bar_1_box[1] + self._bar_1_box[3] * current_v)
         cir_1_box = get_outer_box(self._cir_1_center, self._color_radius)
-        painter.setPen(QPen(QColor(*self._env["vb_color"]), 3))
+        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
         painter.setBrush(QBrush(Qt.NoBrush))
         painter.drawEllipse(*cir_1_box)
 
-        bar_2_center = (wid - wid * (1 - self._env["radius"]) / 4, hig / 2)
-        self._bar_2_box = (bar_2_center[0] - re_wid / 2, bar_2_center[1] - hig * self._env["bar_widratio"] / 2, re_wid, hig * self._env["bar_widratio"])
-        painter.setPen(QPen(QColor(*self._env["vb_color"]), 3))
+        bar_2_center = (wid - wid * (1 - self._env_radius) / 4, hig / 2)
+        self._bar_2_box = (bar_2_center[0] - re_wid / 2, bar_2_center[1] - hig * self._env_bar_widratio / 2, re_wid, hig * self._env_bar_widratio)
+        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
         lgrad = QLinearGradient(self._bar_2_box[0], self._bar_2_box[1], self._bar_2_box[0], self._bar_2_box[3])
         lgrad.setColorAt(1.0, QColor(*current_color.rgb))
         lgrad.setColorAt(0.0, Qt.black)
@@ -177,7 +174,7 @@ class Wheel(QWidget):
 
         self._cir_2_center = (bar_2_center[0], self._bar_2_box[1] + self._bar_2_box[3] * current_v)
         cir_2_box = get_outer_box(self._cir_2_center, self._color_radius)
-        painter.setPen(QPen(QColor(*self._env["vb_color"]), 3))
+        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
         painter.setBrush(QBrush(Qt.NoBrush))
         painter.drawEllipse(*cir_2_box)
 
@@ -229,11 +226,11 @@ class Wheel(QWidget):
                         self.update()
                         break
 
-                if aly_accepted and self._env["press_move"]:
+                if aly_accepted and self._env_press_move:
                     color = Color(self._create.color_set[self._active_color_idx])
                     color.s = np.linalg.norm(point - self._center) / self._radius
                     color.h = get_theta_center(self._center, point)
-                    self._create.modify(self._env["hm_rule"], self._active_color_idx, color)
+                    self._create.modify(self._env_hm_rule, self._active_color_idx, color)
                     self._wheel_actived = True
                     event.accept()
                     self.update()
@@ -269,7 +266,7 @@ class Wheel(QWidget):
                 color = Color(self._create.color_set[self._active_color_idx])
                 color.overflow_s(np.linalg.norm(point - self._center) / self._radius)
                 color.h = get_theta_center(self._center, point)
-                self._create.modify(self._env["hm_rule"], self._active_color_idx, color)
+                self._create.modify(self._env_hm_rule, self._active_color_idx, color)
                 event.accept()
                 self.update()
 
@@ -313,9 +310,9 @@ class Wheel(QWidget):
         """
 
         def _func_(value):
-            if hm_rule != self._env["hm_rule"]:
-                self._env["hm_rule"] = hm_rule
-                self._create.create(self._env["hm_rule"])
+            if hm_rule != self._env_hm_rule:
+                self._env_hm_rule = hm_rule
+                self._create.create(self._env_hm_rule)
 
                 self._emit_color = True
                 self._emit_other_color = False
@@ -330,7 +327,7 @@ class Wheel(QWidget):
 
         def _func_(color):
             if self._receive_color and not self._create.color_set[index].hsv_eq(color, acr=1E-3):
-                self._create.modify(self._env["hm_rule"], index, Color(color, ctp="hsv"))
+                self._create.modify(self._env_hm_rule, index, Color(color, ctp="hsv"))
                 self._active_color_idx = int(index)
 
                 self._emit_color = False
@@ -344,8 +341,8 @@ class Wheel(QWidget):
         Slot func. Recreate color set.
         """
 
-        self._create = Create(**self._pr_setting)
-        self._create.create(self._env["hm_rule"])
+        self._create = Create(self._pr_h_range, self._pr_s_range, self._pr_v_range)
+        self._create.create(self._env_hm_rule)
         self._emit_color = True
         self.update()
 
@@ -374,7 +371,7 @@ class Wheel(QWidget):
 
         if cb_file[0]:
             if cb_file[0].split(".")[-1].lower() == "json":
-                color_dict = {"version": dpinfo.current_version(), "harmony_rule": self._env["hm_rule"]}
+                color_dict = {"version": dpinfo.current_version(), "harmony_rule": self._env_hm_rule}
                 color_dict.update(self._create.export_color_set())
 
                 with open(cb_file[0], "w") as f:
@@ -384,7 +381,7 @@ class Wheel(QWidget):
                 with open(cb_file[0], "w") as f:
                     f.write("# DigitalPalette Color Export.\n")
                     f.write("# Version: {}.\n".format(dpinfo.current_version()))
-                    f.write("# Harmony Rule: {}.\n".format(self._env["hm_rule"]))
+                    f.write("# Harmony Rule: {}.\n".format(self._env_hm_rule))
                     f.write(self._create.export_text())                    
 
             elif cb_file[0].split(".")[-1].lower() == "aco":
@@ -436,16 +433,16 @@ class Wheel(QWidget):
             if color_cmp:
                 if "harmony_rule" in color_dict:
                     if color_dict["harmony_rule"] in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
-                        self._env["hm_rule"] = color_dict["harmony_rule"]
+                        self._env_hm_rule = color_dict["harmony_rule"]
                     else:
-                        self._env["hm_rule"] = "custom"
+                        self._env_hm_rule = "custom"
                         QMessageBox.warning(self, self._err_descs[0], self._err_descs[6].format(color_dict["harmony_rule"]))
                 else:
-                    self._env["hm_rule"] = "custom"
+                    self._env_hm_rule = "custom"
                     QMessageBox.warning(self, self._err_descs[0], self._err_descs[7])
 
                 self._emit_color = True
-                self.selected_hm_rule.emit(self._env["hm_rule"])
+                self.selected_hm_rule.emit(self._env_hm_rule)
                 self.update()
 
     def _func_tr_(self):

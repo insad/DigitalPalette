@@ -16,9 +16,7 @@ from cwgts.wheel import Wheel
 from cwgts.graph import Graph
 from cwgts.result import Result
 from cwgts.settings import Settings
-from clibs.color import Color
 from clibs import info as dpinfo
-from clibs.argument import Argument
 from PyQt5.QtGui import QIcon, QDesktopServices, QPixmap
 from PyQt5.QtCore import QUrl, QTranslator, QCoreApplication
 import sys
@@ -35,70 +33,43 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
 
-        default_settings = {"h_range": (0.0, 360.0),     # H range for initial random HSV color set.
-                            "s_range": (0.68, 1.0),      # S range for initial random HSV color set.
-                            "v_range": (0.68, 1.0),      # V range for initial random HSV color set.
+        # init settings.
+        default_settings = (
+            (0.0, 360.0),     # 0  # "h_range":      # H range for initial random HSV color set.
+            (0.68, 1.0),      # 1  # "s_range":      # S range for initial random HSV color set.
+            (0.68, 1.0),      # 2  # "v_range":      # V range for initial random HSV color set.
+            0.8,              # 3  # "radius":       # Color wheel radius (ratio) compared with work space width.
+            0.05,             # 4  # "color_radius": # Color tag radius (ratio)  compared with work space width.
+            0.1,              # 5  # "tip_radius":   # Circle tip radius in graph view.
+            0.9,              # 6  # "widratio":     # Color square width / height ratio compared with cube size.
+            0.8,              # 7  # "bar_widratio": # V value bar height ratio compared with work space.
+            1.3,              # 8  # "zoom_step":    # zoom ratio for each step.
+            5,                # 9  # "move_step":    # graph move lengtho for each step.
+            10,               # 10 # "select_dist":  # minimal selecting distance.
+            5,                # 11 # "half_sp":      # Half of spacing between two views in graph.
+            (0,   0,   0  ),  # 12 # "at_color":     # activated color for color tag in wheel and square. For wheel.py and square.py.
+            (200, 200, 200),  # 13 # "ia_color":     # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
+            (230, 230, 230),  # 14 # "vb_color":     # V value bar edge color.
+            (100, 100, 100),  # 15 # "vs_color":     # View window tip color.
+            (100, 100, 100),  # 16 # "st_color":     # select circle color in graph views.
+            (200, 200, 200),  # 17 # "it_color":     # referenced select circle color in graph views.
+            [0, 7, 7, 7],     # 18 # "graph_types":  # Graph types corresponding to temporary files.
+            [0, 1, 2, 3],     # 19 #  "graph_chls":  # Graph channels corresponding to temporary files.
+            "analogous",      # 20 # "hm_rule":      # Initial harmony rule.
+            "en",             # 21 # "lang":         # default language.
+            True,             # 22 # "press_move":   # Press anywhere in wheel will move activated color tag to the selected color.
+        )
 
-                            "hm_rule": "analogous",      # Initial harmony rule.
+        self._settings = Settings(default_settings)
+        self._settings.settings_changed.connect(self._func_reload_settings_)
 
-                            "radius": 0.8,               # Color wheel radius (ratio) compared with work space width.
-                            "color_radius": 0.05,        # Color tag radius (ratio)  compared with work space width.
-                            "tip_radius": 0.1,            # Circle tip radius in graph view.
-
-                            "widratio": 0.9,             # Color square width / height ratio compared with cube size.
-                            "bar_widratio": 0.8,         # V value bar height ratio compared with work space.
-
-                            "press_move": True,          # Press anywhere in wheel will move activated color tag to the selected color.
-
-                            "at_color": (0, 0, 0),       # activated color for color tag in wheel and square. For wheel.py and square.py.
-                            "ia_color": (200, 200, 200), # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
-                            "vb_color": (230, 230, 230), # V value bar edge color.
-                            "vs_color": (100, 100, 100), # View window tip color.
-                            "st_color": (100, 100, 100), # select circle color in graph views.
-                            "it_color": (200, 200, 200), # referenced select circle color in graph views.
-                             
-                            "half_sp": 5,                # Half of spacing between two views in graph.
-                            "graph_types": [0, 7, 7, 7], # Graph types corresponding to temporary files.
-                            "graph_chls": [0, 1, 2, 3],  # Graph channels corresponding to temporary files.
-
-                            "zoom_step": 1.3,            # zoom ratio for each step.
-                            "move_step": 5,              # graph move lengtho for each step.
-                            "select_dist": 10,           # minimal selecting distance.
-                            
-                            "lang": "en",                # default language.
-                            }
-
-        self._env = Argument(default_settings, "./settings.json")
-        
+        # init translator.
         self._tr = QTranslator()
         self._app = QApplication.instance()
 
-        self._setup_environment()
         self._setup_wheel()
         self._setup_scroll_result()
-        self._setup_settings(default_settings)
-        self._setup_operation()
-
-    def _setup_environment(self):
-        """
-        Setup environment. At start. See setup operation for end.
-        """
-
-        hm_rules = getattr(self, "rbtn_{}".format(self._env.settings["hm_rule"]))
-        hm_rules.setChecked(True)
-
-    def _setup_settings(self, default_settings):
-        """
-        Setup setting dialog.
-        """
-
-        self._settings = Settings(default_settings, self._env.settings)
-        self._settings.changed_setti.connect(self._func_reload_settings_)
-
-        app_icon = QIcon()
-        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
-        self._settings.setWindowIcon(app_icon)
-        self._settings.setWindowTitle("Settings")
+        self._setup_interface()
 
     def _setup_wheel(self):
         """
@@ -108,10 +79,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         work_grid_layout = QGridLayout(self.workspace)
         work_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self._cwgt_wheel = Wheel(setting=self._env.settings)
+        self._cwgt_wheel = Wheel(self._settings.argu.settings)
         work_grid_layout.addWidget(self._cwgt_wheel)
 
-        self._cwgt_graph = Graph(setting=self._env.settings)
+        self._cwgt_graph = Graph(self._settings.argu.settings)
         self._cwgt_graph.hide()
         work_grid_layout.addWidget(self._cwgt_graph)
 
@@ -133,7 +104,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         rst_grid_layout = QGridLayout(self.result)
         rst_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self._cwgt_result = Result(setting=self._env.settings)
+        self._cwgt_result = Result(self._settings.argu.settings)
         rst_grid_layout.addWidget(self._cwgt_result)
         self.result.setLayout(rst_grid_layout)
 
@@ -164,10 +135,13 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             selected_acitve.connect(cube_square.slot_wheel_change_active_state)
             cube_square.selected_active.connect(self._cwgt_wheel.slot_modify_activate_index(idx))
 
-    def _setup_operation(self):
+    def _setup_interface(self):
         """
-        Setup operation. At end. See setup environment for start.
+        Setup operation. At end.
         """
+
+        hm_rules = getattr(self, "rbtn_{}".format(self._settings.argu.settings[20]))
+        hm_rules.setChecked(True)
 
         self.pbtn_Import.clicked.connect(self._cwgt_wheel.slot_import)
         self.pbtn_Export.clicked.connect(self._cwgt_wheel.slot_export)
@@ -180,26 +154,16 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self.actionSettings.triggered.connect(self._settings.show)
 
+        self._ori_lang = self._settings.argu.settings[21]
+
         self._func_reload_local_lang_()
-
-        if self._env.err:
-            QMessageBox.warning(self, self._err_descs[0], self._err_descs[self._env.err[0]].format(self._env.err[1]))
-    
-    def closeEvent(self, event):
-        # remove temporary directory.
-        self._cwgt_graph._image3c.remove_temp_dir()
-
-        # save settings.
-        self._env.save_settings("./settings.json")
-
-        event.accept()
 
 
     # ===== ===== ===== inner functions and decorators below ===== ===== =====
 
     # set hm rule buttons.
     def _func_set_hm_rule_buttons(self, hm_rule):
-        for pr_hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
+        for pr_hm_rule in self._settings.argu.hm_rules:
             if pr_hm_rule.lower() == hm_rule:
                 rbtn_hm_rule = getattr(self, "rbtn_{}".format(pr_hm_rule))
                 rbtn_hm_rule.click()
@@ -214,7 +178,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         else:
             self._cwgt_wheel.show()
             self._cwgt_graph.hide()
-            for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
+            for hm_rule in self._settings.argu.hm_rules[:-1]:
                 rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
                 rbtn_hm_rule.show()
         
@@ -227,7 +191,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         else:
             self._cwgt_wheel.hide()
             self._cwgt_graph.show()
-            for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades"):
+            for hm_rule in self._settings.argu.hm_rules[:-1]:
                 rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
                 rbtn_hm_rule.hide()
             
@@ -236,34 +200,35 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         for idx in range(5):
             self._cwgt_result.cube_squares[idx].slot_active_on(False)
 
-    def _func_reload_settings_(self, uss):
+    def _func_reload_settings_(self, value):
         """
         Reload local settings by user settings.
-
-        Parameters:
-          uss - dict. user settings.
         """
 
-        self._env.setting(uss)
-
-        self._cwgt_wheel.reload_settings(self._env.settings)
+        self._cwgt_wheel.reload_settings(self._settings.argu.settings)
         self._cwgt_wheel.update()
 
-        self._cwgt_graph.reload_settings(self._env.settings)
+        self._cwgt_graph.reload_settings(self._settings.argu.settings)
         self._cwgt_graph.reload_view_settings()
         self._cwgt_graph.update()
 
         for cube_square in self._cwgt_result.cube_squares:
-            cube_square.reload_settings(self._env.settings)
+            cube_square.reload_settings(self._settings.argu.settings)
             cube_square.update()
         
+        """
         if self._env.settings["lang"] != self._lang_path.split(os.sep)[-1].split(".")[0]:
             self._func_reload_local_lang_()
-
+        """
         self.update()
-    
+
+
     def _func_reload_local_lang_(self):
-        self._lang_path = os.sep.join((".", "language", self._env.settings["lang"] + ".qm"))
+        pass
+        """"
+        if self._settings.argu.settings[21] != self._ori_lang:
+            lang_pkgs = os.listdir(os.sep.join((".", "language")
+        self._lang_path = os.sep.join((".", "language", self._settings.argu.settings[21] + ".qm"))
         if os.path.isfile(self._lang_path):
             self._tr.load(self._lang_path)
             self._app.installTranslator(self._tr)
@@ -271,14 +236,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self._func_tr_()
             self._cwgt_wheel._func_tr_()
             self._cwgt_graph._func_tr_()
-
+        """
+        
     def _func_tr_(self):
         _translate = QCoreApplication.translate
-
-        self._err_descs = (_translate("DigitalPalette", "Error"),
-                           _translate("DigitalPalette", "Unknown version of settings file. Using default settings instead."),
-                           _translate("DigitalPalette", "Version is not compatible for settings file: {0}. Using default settings instead."),
-                           _translate("DigitalPalette", "Settings file is broken. Using default settings instead."),)
 
         self._info_descs = (_translate("DigitalPalette", "About"),
                             _translate("DigitalPalette", "DigitalPalette Info"),
