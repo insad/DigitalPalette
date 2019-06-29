@@ -20,9 +20,20 @@ class Argument(object):
         self.err = None
 
         if os.path.isfile(setti_file):
+            file_cmp = True
+            uss = {}
             with open(setti_file, "r") as sf:
-                uss = json.load(sf)
+                try:
+                    uss = json.load(sf)
+                except:
+                    self.err = (3, "")
+                    file_cmp = False
+                
+                if not isinstance(uss, dict):
+                    self.err = (3, "")
+                    file_cmp = False
 
+            if file_cmp:
                 if "version" in uss:
                     if dpinfo.if_version_compatible(uss["version"]):
                         self.setting(uss)

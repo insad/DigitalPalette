@@ -1,61 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="en" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="en">
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="277"/>
+        <location filename="../../main.py" line="278"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="277"/>
+        <location filename="../../main.py" line="278"/>
         <source>Unknown version of settings file. Using default settings instead.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="277"/>
+        <location filename="../../main.py" line="278"/>
         <source>Version is not compatible for settings file: {0}. Using default settings instead.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>DigitalPalette Info</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>----- ----- ----- -----</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>Version: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>Author: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>Update: {2}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="281"/>
+        <location filename="../../main.py" line="283"/>
         <source>Github: {3}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="278"/>
+        <source>Settings file is broken. Using default settings instead.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -123,17 +129,17 @@
     <message>
         <location filename="../../cwgts/graph.py" line="577"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../cwgts/graph.py" line="577"/>
-        <source>Please open one image once time.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../cwgts/graph.py" line="577"/>
         <source>Couldn&apos;t create temporary directory.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/graph.py" line="577"/>
+        <source>Please open only one image in once time.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -262,54 +268,59 @@
 <context>
     <name>Wheel</name>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Unknown version of data file {0}.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Color {0} doesn&apos;t exist in data file.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>The HSV tag of color {0} doesn&apos;t exist in data file.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Color {0} with HSV value is invalid: {1}.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Version is not compatible for data file: {0}.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Harmony rule is invalid: {0}. Using custom instead.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Harmony rule doesn&apos;t exist in data file. Use custom instead.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Data files can only be imported in color wheel interface.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Unknown data file extension: {0}.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="454"/>
+        <source>Data file is broken.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -710,10 +721,10 @@
         <source>Rule</source>
         <translation></translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../setting_dialog.py" line="604"/>
         <source>中文</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

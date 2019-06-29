@@ -87,8 +87,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         hm_rules = getattr(self, "rbtn_{}".format(self._env.settings["hm_rule"]))
         hm_rules.setChecked(True)
 
-        self._func_reload_local_lang_()
-
     def _setup_settings(self, default_settings):
         """
         Setup setting dialog.
@@ -182,10 +180,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self.actionSettings.triggered.connect(self._settings.show)
 
+        self._func_reload_local_lang_()
+
         if self._env.err:
             QMessageBox.warning(self, self._err_descs[0], self._err_descs[self._env.err[0]].format(self._env.err[1]))
-        
-        self._func_reload_cwgts_lang_()
     
     def closeEvent(self, event):
         # remove temporary directory.
@@ -261,7 +259,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         
         if self._env.settings["lang"] != self._lang_path.split(os.sep)[-1].split(".")[0]:
             self._func_reload_local_lang_()
-            self._func_reload_cwgts_lang_()
 
         self.update()
     
@@ -272,8 +269,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self._app.installTranslator(self._tr)
             self.retranslateUi(self)
             self._func_tr_()
-    
-    def _func_reload_cwgts_lang_(self):
             self._cwgt_wheel._func_tr_()
             self._cwgt_graph._func_tr_()
 
@@ -282,7 +277,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self._err_descs = (_translate("DigitalPalette", "Error"),
                            _translate("DigitalPalette", "Unknown version of settings file. Using default settings instead."),
-                           _translate("DigitalPalette", "Version is not compatible for settings file: {0}. Using default settings instead."),)
+                           _translate("DigitalPalette", "Version is not compatible for settings file: {0}. Using default settings instead."),
+                           _translate("DigitalPalette", "Settings file is broken. Using default settings instead."),)
 
         self._info_descs = (_translate("DigitalPalette", "About"),
                             _translate("DigitalPalette", "DigitalPalette Info"),

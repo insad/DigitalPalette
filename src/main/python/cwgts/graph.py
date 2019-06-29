@@ -575,5 +575,5 @@ class Graph(QWidget):
                                _translate("Graph", "Finishing."),)
 
         self._err_descs = (_translate("Graph", "Error"),
-                           _translate("Graph", "Please open one image once time."),
+                           _translate("Graph", "Please open only one image in once time."),
                            _translate("Graph", "Couldn't create temporary directory."),)

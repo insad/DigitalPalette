@@ -11,52 +11,57 @@
     <message>
         <location filename="../../main.py" line="278"/>
         <source>Unknown version of settings file. Using default settings instead.</source>
-        <translation>未知的设置文件版本。使用软件默认设置。</translation>
+        <translation>未知的设置文件版本。使用默认设置。</translation>
     </message>
     <message>
         <location filename="../../main.py" line="278"/>
         <source>Version is not compatible for settings file: {0}. Using default settings instead.</source>
-        <translation>设置文件版本不兼容：{0}。使用软件默认设置。</translation>
+        <translation>设置文件版本不兼容：{0}。使用默认设置。</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>DigitalPalette Info</source>
         <translation>DigitalPalette信息</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>----- ----- ----- -----</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>Version: {0}</source>
         <translation>版本：{0}</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>Author: {1}</source>
         <translation>作者：{1}</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation>DigitalPalette是自由软件，本着可用的意愿分发，但不作任何担保。您可以在遵守由自由软件基金会发布的GNU通用公共许可协议的情况下重新分发并且（或者）修改软件。更多细节请参看GNU通用公共许可协议。</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>Update: {2}</source>
         <translation>升级：{2}</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="282"/>
+        <location filename="../../main.py" line="283"/>
         <source>Github: {3}</source>
         <translation>Github：{3}</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="278"/>
+        <source>Settings file is broken. Using default settings instead.</source>
+        <translation>设置文件已损坏。使用默认设置。</translation>
     </message>
 </context>
 <context>
@@ -128,13 +133,13 @@
     </message>
     <message>
         <location filename="../../cwgts/graph.py" line="577"/>
-        <source>Please open one image once time.</source>
-        <translation>请一次仅打开一个文件。</translation>
+        <source>Couldn&apos;t create temporary directory.</source>
+        <translation>未能创建临时文件夹。</translation>
     </message>
     <message>
         <location filename="../../cwgts/graph.py" line="577"/>
-        <source>Couldn&apos;t create temporary directory.</source>
-        <translation>未能创建临时文件夹。</translation>
+        <source>Please open only one image in once time.</source>
+        <translation>请一次仅打开一张图像文件。</translation>
     </message>
 </context>
 <context>
@@ -263,54 +268,59 @@
 <context>
     <name>Wheel</name>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Unknown version of data file {0}.</source>
         <translation>数据文件{0}的版本未知。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Color {0} doesn&apos;t exist in data file.</source>
         <translation>未能在数据文件中找到关于颜色{0}的信息。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>The HSV tag of color {0} doesn&apos;t exist in data file.</source>
         <translation>未能在数据文件中找到颜色{0}的HSV标志。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Color {0} with HSV value is invalid: {1}.</source>
         <translation>无效的颜色{0}的HSV数据：{1}。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Version is not compatible for data file: {0}.</source>
         <translation>数据文件版本不兼容：{0}。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Harmony rule is invalid: {0}. Using custom instead.</source>
         <translation>无效的调和规则：{0}。使用自定义规则。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Harmony rule doesn&apos;t exist in data file. Use custom instead.</source>
         <translation>未能在数据文件中找到调和规则。使用自定义规则。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Data files can only be imported in color wheel interface.</source>
         <translation>仅可在色轮界面下导入数据文件。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="449"/>
+        <location filename="../../cwgts/wheel.py" line="454"/>
         <source>Unknown data file extension: {0}.</source>
         <translation>未知的数据文件扩展名：{0}。</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="454"/>
+        <source>Data file is broken.</source>
+        <translation>数据文件已损坏。</translation>
     </message>
 </context>
 <context>
@@ -714,7 +724,7 @@
     <message>
         <location filename="../setting_dialog.py" line="604"/>
         <source>中文</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

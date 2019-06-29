@@ -5,13 +5,13 @@ import urllib
 
 
 def current_version():
-    return "v1.0.16-beta"
+    return "v1.0.17-beta"
 
 def website():
     return "https://github.com/liujiacode/DigitalPalette"
 
 def update_date():
-    return "2019.06.28"
+    return "2019.06.29"
 
 def if_version_compatible(version):
     version_cmp = False
