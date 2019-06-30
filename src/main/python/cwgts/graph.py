@@ -564,20 +564,26 @@ class Graph(QWidget):
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
-        self._dbc_label.setText(_translate("Graph", "Double click here to open a graph."))
+        self._dbc_label.setText(
+            _translate("Graph", "Double click here to open an image."),
+        )
 
-        self._loading_descs = (_translate("Graph", "Reading RGB data."),
-                               _translate("Graph", "Detecting image RGB space edges."),
-                               _translate("Graph", "Generating vertical RGB space edges."),
-                               _translate("Graph", "Generating horizontal RGB space edges."),
-                               _translate("Graph", "Integrating final RGB space edges."),
-                               _translate("Graph", "Transforming RGB to HSV data."),
-                               _translate("Graph", "Detecting image HSV space edges."),
-                               _translate("Graph", "Generating vertical HSV space edges."),
-                               _translate("Graph", "Generating horizontal HSV space edges."),
-                               _translate("Graph", "Integrating final HSV space edges."),
-                               _translate("Graph", "Finishing."),)
+        self._loading_descs = (
+            _translate("Graph", "Reading RGB data."),
+            _translate("Graph", "Detecting image RGB space edges."),
+            _translate("Graph", "Generating vertical RGB space edges."),
+            _translate("Graph", "Generating horizontal RGB space edges."),
+            _translate("Graph", "Integrating final RGB space edges."),
+            _translate("Graph", "Transforming RGB to HSV data."),
+            _translate("Graph", "Detecting image HSV space edges."),
+            _translate("Graph", "Generating vertical HSV space edges."),
+            _translate("Graph", "Generating horizontal HSV space edges."),
+            _translate("Graph", "Integrating final HSV space edges."),
+            _translate("Graph", "Finishing."),
+        )
 
-        self._err_descs = (_translate("Graph", "Error"),
-                           _translate("Graph", "Please open only one image in once time."),
-                           _translate("Graph", "Couldn't create temporary directory."),)
+        self._err_descs = (
+            _translate("Graph", "Error"),
+            _translate("Graph", "Please open only one image in once time."),
+            _translate("Graph", "Couldn't create temporary directory."),
+        )

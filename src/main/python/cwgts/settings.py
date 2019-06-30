@@ -7,7 +7,6 @@ from cguis.setting_dialog import Ui_setting_dialog
 from cguis.resource import view_rc
 from clibs.argument import Argument
 import os
-import re
 
 
 class Settings(QDialog, Ui_setting_dialog):
@@ -34,43 +33,21 @@ class Settings(QDialog, Ui_setting_dialog):
         self.setWindowIcon(app_icon)
         self.setWindowTitle("Settings")
 
-        # loading langs.
-        self.global_langs = (
-            "en", "ar", "be", "bg", "ca", "cs", "da", "de", "el", "es", 
-            "et", "fi", "fr", "hr", "hu", "is", "it", "iw", "ja", "ko", 
-            "lt", "lv", "mk", "nl", "no", "pl", "pt", "ro", "ru", "sh", 
-            "sk", "sl", "sq", "sr", "sv", "th", "tr", "uk", "zh"
-        )
+        # load settings.
+        self.argu = Argument(default_settings, os.sep.join((".", "settings.json")), os.sep.join((".", "language")))
 
-        langs = os.listdir(os.sep.join((".", "language")))
-        lang_paths = []
-
-        for lang in langs:
-            if lang.split(".")[-1] == "qm" and re.split("\.|_|-", lang)[0] in self.global_langs and os.path.isfile(os.sep.join((".", "language", lang))):
-                lang_paths.append((self.global_langs.index(re.split("\.|_|-", lang)[0]), os.sep.join((".", "language", lang))))
-        
-        self.lang_paths = tuple(lang_paths)
+        # init lang cobox values. (part 1)
+        for lang_path in self.argu.lang_paths:
+            self.st_cobox_21.addItem("")
 
         # load texts.
         self._func_tr_()
 
-        # load settings.
-        self.argu = Argument(default_settings, os.sep.join((".", "settings.json")))
-
         if self.argu.err:
             QMessageBox.warning(self, self._err_descs[0], self._err_descs[self.argu.err[0]].format(self.argu.err[1]))
+            self.argu.save_settings("./settings.json")
 
         # init button values.
-        if self.lang_paths:
-            for idx in range(len(self.lang_paths)):
-                abbr_name = os.path.basename(self.lang_paths[idx][1]).split(".")[0]
-                self.st_cobox_21.addItem(self._lang_descs[self.lang_paths[idx][0]] + " ({})".format(abbr_name))
-
-                if abbr_name.lower() == self.argu.settings[21]:
-                    self.st_cobox_21.setCurrentIndex(idx)
-        else:
-            self.st_cobox_21.addItem("Default")
-
         self.reset_all(self.argu.settings)
 
         # changed values.
@@ -121,6 +98,9 @@ class Settings(QDialog, Ui_setting_dialog):
             color_r.valueChanged.connect(self.slot_change_color(idx))
             color_g.valueChanged.connect(self.slot_change_color(idx))
             color_b.valueChanged.connect(self.slot_change_color(idx))
+        
+        # "lang"
+        self.st_cobox_21.currentIndexChanged.connect(self.slot_change_lang)
 
     def reset_all(self, settings):
         # ("h_range", "s_range", "v_range")
@@ -159,6 +139,9 @@ class Settings(QDialog, Ui_setting_dialog):
             color_r.setValue(settings[idx][0])
             color_g.setValue(settings[idx][1])
             color_b.setValue(settings[idx][2])
+        
+        # "lang"
+        self.st_cobox_21.setCurrentIndex(self.argu.settings[21][0])
     
     def slot_change_range(self, idx):
         def _func_(value):
@@ -193,6 +176,9 @@ class Settings(QDialog, Ui_setting_dialog):
         def _func_(value):
             self._changed[idx] = value
         return _func_
+    
+    def slot_change_lang(self, value):
+        self._changed[21] = (value, "")
 
     def slot_accepted(self):
         err_lst = self.argu.modify_settings(tuple(zip(self._changed.keys(), self._changed.values())))
@@ -222,14 +208,59 @@ class Settings(QDialog, Ui_setting_dialog):
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
-        self._err_descs = (_translate("Settings", "Error"),
-                           _translate("Settings", "Unsatisfied items of settings file. (info: {0}) Using default settings instead."),
-                           _translate("Settings", "Version is not compatible for settings file: {0}. Using default settings instead."),
-                           _translate("Settings", "Settings file is broken. Using default settings instead."),
-                           _translate("Settings", "Unable to load these settings with value: {0}."),)
+        self._err_descs = (
+            _translate("Settings", "Error"),
+            _translate("Settings", "Values stored in settings file are invalid. (info: {0}) Using default settings instead."),
+            _translate("Settings", "Version is not compatible for settings file: {0}. Using default settings instead."),
+            _translate("Settings", "Settings file is broken. Using default settings instead."),
+            _translate("Settings", "Unable to set these items with values: {0}."),
+        )
 
-        lang_descs = []
-        for lang in self.global_langs:
-            lang_descs.append(_translate("Settings", lang))
+        self._lang_descs = (
+            _translate("Settings", "en"),
+            _translate("Settings", "ar"),
+            _translate("Settings", "be"),
+            _translate("Settings", "bg"),
+            _translate("Settings", "ca"),
+            _translate("Settings", "cs"),
+            _translate("Settings", "da"),
+            _translate("Settings", "de"),
+            _translate("Settings", "el"),
+            _translate("Settings", "es"),
+            _translate("Settings", "et"),
+            _translate("Settings", "fi"),
+            _translate("Settings", "fr"),
+            _translate("Settings", "hr"),
+            _translate("Settings", "hu"),
+            _translate("Settings", "is"),
+            _translate("Settings", "it"),
+            _translate("Settings", "iw"),
+            _translate("Settings", "ja"),
+            _translate("Settings", "ko"),
+            _translate("Settings", "lt"),
+            _translate("Settings", "lv"),
+            _translate("Settings", "mk"),
+            _translate("Settings", "nl"),
+            _translate("Settings", "no"),
+            _translate("Settings", "pl"),
+            _translate("Settings", "pt"),
+            _translate("Settings", "ro"),
+            _translate("Settings", "ru"),
+            _translate("Settings", "sh"),
+            _translate("Settings", "sk"),
+            _translate("Settings", "sl"),
+            _translate("Settings", "sq"),
+            _translate("Settings", "sr"),
+            _translate("Settings", "sv"),
+            _translate("Settings", "th"),
+            _translate("Settings", "tr"),
+            _translate("Settings", "uk"),
+            _translate("Settings", "zh"),
+            _translate("Settings", "default"),
+        )
 
-        self._lang_descs = tuple(lang_descs)
+        # init lang cobox values. (part 2)
+        for idx in range(len(self.argu.lang_paths)):
+            lang_path = self.argu.lang_paths[idx]
+            abbr_name = os.path.basename(lang_path[1]).split(".")[0]
+            self.st_cobox_21.setItemText(idx, self._lang_descs[lang_path[0]] + " ({})".format(abbr_name))

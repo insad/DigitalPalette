@@ -3,6 +3,7 @@
 from clibs import info as dpinfo
 import os
 import json
+import re
 
 
 class Argument(object):
@@ -10,7 +11,7 @@ class Argument(object):
     Argument object. Manage setting args.
     """
 
-    def __init__(self, default_settings, settings_file):
+    def __init__(self, default_settings, settings_file, langs_dir):
         """
         Load initial settings.
         """
@@ -19,6 +20,23 @@ class Argument(object):
         self.lang = ("en", "zh_cn")
 
         self.default_settings = default_settings
+
+        # loading langs.
+        self.global_langs = (
+            "en", "ar", "be", "bg", "ca", "cs", "da", "de", "el", "es", 
+            "et", "fi", "fr", "hr", "hu", "is", "it", "iw", "ja", "ko", 
+            "lt", "lv", "mk", "nl", "no", "pl", "pt", "ro", "ru", "sh", 
+            "sk", "sl", "sq", "sr", "sv", "th", "tr", "uk", "zh"
+        )
+
+        lang_paths = [(39, "default"),]
+        for lang in os.listdir(langs_dir):
+            if lang.split(".")[-1] == "qm" and os.path.isfile(os.sep.join((langs_dir, lang))):
+                glang = re.split("\.|_|-", lang)[0]
+                if glang in self.global_langs:
+                    lang_paths.append((self.global_langs.index(glang), os.sep.join((langs_dir, lang))))
+        
+        self.lang_paths = tuple(lang_paths)
         
         self.err = None
 
@@ -43,7 +61,7 @@ class Argument(object):
                     except Exception as erro:
                         self.err = (1, str(erro))
                 else:
-                    self.err = (2, str(uss["version"]))
+                    self.err = (2, str(uss[-1]))
 
             if self.err:
                 self.settings = tuple(list(self.default_settings) + [dpinfo.current_version(),])
@@ -90,15 +108,15 @@ class Argument(object):
                     lst[idx] = self.parse_selection(value, self.hm_rules)
 
                 elif idx == 21:
-                    lst[idx] = self.parse_selection(uss[21], self.lang)
+                    lst[idx] = self.parse_lang(value, by_idx=True)
 
                 elif idx == 22:
-                    lst[idx] = self.parse_bool(uss[22])
+                    lst[idx] = self.parse_bool(value)
 
                 else:
                     raise ValueError("Index out of range.")
             
-            except:
+            except Exception as err:
                 err_lst.append((idx, value))
         
         self.settings = tuple(lst)
@@ -146,7 +164,7 @@ class Argument(object):
         lst.append(self.parse_selection_list(uss[18], int, 4, list(range(8))))      # "graph_types", 
         lst.append(self.parse_selection_list(uss[19], int, 4, list(range(4))))      # "graph_chls", 
         lst.append(self.parse_selection(uss[20], self.hm_rules))                    # "hm_rule", 
-        lst.append(self.parse_selection(uss[21], self.lang))                        # "lang", 
+        lst.append(self.parse_lang(uss[21], by_idx=False))                          # "lang", 
         lst.append(self.parse_bool(uss[22]))                                        # "press_move", 
     
         return lst
@@ -197,3 +215,20 @@ class Argument(object):
                 return tuple(value)
         
         raise ValueError("parse_color failed.")
+
+    def parse_lang(self, value, by_idx=False):
+        lang_lst = (0, "default")
+
+        if isinstance(value, (tuple, list)):
+            for i in range(len(self.lang_paths) - 1):
+                lang_name = os.path.basename(self.lang_paths[i + 1][1]).split(".")[0]
+                if by_idx:
+                    if value[0] == i + 1:
+                        lang_lst = (i + 1, lang_name)
+                        break
+                else:
+                    if value[1] == lang_name:
+                        lang_lst = (i + 1, lang_name)
+                        break
+            
+        return lang_lst

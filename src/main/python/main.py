@@ -56,7 +56,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             [0, 7, 7, 7],     # 18 # "graph_types":  # Graph types corresponding to temporary files.
             [0, 1, 2, 3],     # 19 #  "graph_chls":  # Graph channels corresponding to temporary files.
             "analogous",      # 20 # "hm_rule":      # Initial harmony rule.
-            "en",             # 21 # "lang":         # default language.
+            (0, "default"),   # 21 # "lang":         # default language.
             True,             # 22 # "press_move":   # Press anywhere in wheel will move activated color tag to the selected color.
         )
 
@@ -154,8 +154,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self.actionSettings.triggered.connect(self._settings.show)
 
-        self._ori_lang = self._settings.argu.settings[21]
-
+        self._ori_lang = ""
         self._func_reload_local_lang_()
 
 
@@ -216,40 +215,55 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             cube_square.reload_settings(self._settings.argu.settings)
             cube_square.update()
         
-        """
-        if self._env.settings["lang"] != self._lang_path.split(os.sep)[-1].split(".")[0]:
-            self._func_reload_local_lang_()
-        """
+        self._func_reload_local_lang_()
         self.update()
 
-
     def _func_reload_local_lang_(self):
-        pass
-        """"
-        if self._settings.argu.settings[21] != self._ori_lang:
-            lang_pkgs = os.listdir(os.sep.join((".", "language")
-        self._lang_path = os.sep.join((".", "language", self._settings.argu.settings[21] + ".qm"))
-        if os.path.isfile(self._lang_path):
-            self._tr.load(self._lang_path)
-            self._app.installTranslator(self._tr)
-            self.retranslateUi(self)
-            self._func_tr_()
-            self._cwgt_wheel._func_tr_()
-            self._cwgt_graph._func_tr_()
-        """
+        lang = self._settings.argu.lang_paths[self._settings.argu.settings[21][0]][1]
         
+        if lang == "default":
+            if self._ori_lang:
+                self._app.removeTranslator(self._tr)
+
+                self.retranslateUi(self)
+                self._settings.retranslateUi(self._settings)
+                self._func_tr_()
+                self._cwgt_wheel._func_tr_()
+                self._cwgt_graph._func_tr_()
+                self._settings._func_tr_()
+
+                self._ori_lang = ""
+
+        else:
+            if lang != self._ori_lang:
+                self._app.removeTranslator(self._tr)
+
+                self._tr.load(lang)
+                self._app.installTranslator(self._tr)
+
+                self.retranslateUi(self)
+                self._settings.retranslateUi(self._settings)
+                self._func_tr_()
+                self._cwgt_wheel._func_tr_()
+                self._cwgt_graph._func_tr_()
+                self._settings._func_tr_()
+
+                self._ori_lang = lang
+
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
-        self._info_descs = (_translate("DigitalPalette", "About"),
-                            _translate("DigitalPalette", "DigitalPalette Info"),
-                            _translate("DigitalPalette", "----- ----- ----- -----"),
-                            _translate("DigitalPalette", "Version: {0}"),
-                            _translate("DigitalPalette", "Author: {1}"),
-                            _translate("DigitalPalette", "Update: {2}"),
-                            _translate("DigitalPalette", "Github: {3}"),
-                            _translate("DigitalPalette", "----- ----- ----- -----"),
-                            _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),)
+        self._info_descs = (
+            _translate("DigitalPalette", "About"),
+            _translate("DigitalPalette", "DigitalPalette Info"),
+            _translate("DigitalPalette", "----- ----- ----- -----"),
+            _translate("DigitalPalette", "Version: {0}"),
+            _translate("DigitalPalette", "Author: {1}"),
+            _translate("DigitalPalette", "Update: {2}"),
+            _translate("DigitalPalette", "Github: {3}"),
+            _translate("DigitalPalette", "----- ----- ----- -----"),
+            _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),
+        )
 
 
 if __name__ == "__main__":

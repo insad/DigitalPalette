@@ -4,141 +4,121 @@
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="278"/>
-        <source>Error</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../main.py" line="278"/>
-        <source>Unknown version of settings file. Using default settings instead.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../main.py" line="278"/>
-        <source>Version is not compatible for settings file: {0}. Using default settings instead.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>DigitalPalette Info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>----- ----- ----- -----</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>Version: {0}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>Author: {1}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>Update: {2}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="283"/>
+        <location filename="../../main.py" line="256"/>
         <source>Github: {3}</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../main.py" line="278"/>
-        <source>Settings file is broken. Using default settings instead.</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>Graph</name>
     <message>
-        <location filename="../../cwgts/graph.py" line="563"/>
-        <source>Double click here to open a graph.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Reading RGB data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Detecting image RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Generating vertical RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Generating horizontal RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Integrating final RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Transforming RGB to HSV data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Detecting image HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Generating vertical HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Generating horizontal HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Integrating final HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="565"/>
+        <location filename="../../cwgts/graph.py" line="571"/>
         <source>Finishing.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="577"/>
+        <location filename="../../cwgts/graph.py" line="585"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="577"/>
+        <location filename="../../cwgts/graph.py" line="585"/>
         <source>Couldn&apos;t create temporary directory.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="577"/>
+        <location filename="../../cwgts/graph.py" line="585"/>
         <source>Please open only one image in once time.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/graph.py" line="567"/>
+        <source>Double click here to open an image.</source>
         <translation></translation>
     </message>
 </context>
@@ -266,59 +246,287 @@
     </message>
 </context>
 <context>
-    <name>Wheel</name>
+    <name>Settings</name>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/settings.py" line="211"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/settings.py" line="211"/>
+        <source>Version is not compatible for settings file: {0}. Using default settings instead.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="211"/>
+        <source>Settings file is broken. Using default settings instead.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>en</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>ar</source>
+        <translation>Arabic</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>be</source>
+        <translation>Byelorussian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>bg</source>
+        <translation>Bulgarian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>ca</source>
+        <translation>Catalan</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>cs</source>
+        <translation>Czech</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>da</source>
+        <translation>Danish</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>de</source>
+        <translation>German</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>el</source>
+        <translation>Greek</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>es</source>
+        <translation>Spanish</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>et</source>
+        <translation>Estonian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>fi</source>
+        <translation>Finnish</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>fr</source>
+        <translation>French</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>hr</source>
+        <translation>Croatian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>hu</source>
+        <translation>Hungarian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>is</source>
+        <translation>Icelandic</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>it</source>
+        <translation>Italian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>iw</source>
+        <translation>Hebrew</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>ja</source>
+        <translation>Japanese</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>ko</source>
+        <translation>Korean</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>lt</source>
+        <translation>Lithuanian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>lv</source>
+        <translation>Latvian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>mk</source>
+        <translation>Macedonian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>nl</source>
+        <translation>Dutch</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>no</source>
+        <translation>Norwegian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>pl</source>
+        <translation>Polish</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>pt</source>
+        <translation>Portuguese</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>ro</source>
+        <translation>Romanian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>ru</source>
+        <translation>Russian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>sh</source>
+        <translation>Serbo-Croatian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>sk</source>
+        <translation>Slovak</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>sl</source>
+        <translation>Slovenian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>sq</source>
+        <translation>Albanian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>sr</source>
+        <translation>Serbian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>sv</source>
+        <translation>Swedish</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>th</source>
+        <translation>Thai</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>tr</source>
+        <translation>Turkish</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>uk</source>
+        <translation>Ukrainian</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>zh</source>
+        <translation>Chinese</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="219"/>
+        <source>default</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="211"/>
+        <source>Values stored in settings file are invalid. (info: {0}) Using default settings instead.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/settings.py" line="211"/>
+        <source>Unable to set these items with values: {0}.</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Wheel</name>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="451"/>
+        <source>Error</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Unknown version of data file {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Color {0} doesn&apos;t exist in data file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>The HSV tag of color {0} doesn&apos;t exist in data file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Color {0} with HSV value is invalid: {1}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Version is not compatible for data file: {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Harmony rule is invalid: {0}. Using custom instead.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Harmony rule doesn&apos;t exist in data file. Use custom instead.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Data files can only be imported in color wheel interface.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Unknown data file extension: {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="454"/>
+        <location filename="../../cwgts/wheel.py" line="451"/>
         <source>Data file is broken.</source>
         <translation></translation>
     </message>
@@ -472,258 +680,253 @@
 <context>
     <name>setting_dialog</name>
     <message>
-        <location filename="../setting_dialog.py" line="602"/>
+        <location filename="../setting_dialog.py" line="610"/>
         <source>Language</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="603"/>
-        <source>English</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../setting_dialog.py" line="605"/>
+        <location filename="../setting_dialog.py" line="611"/>
         <source>Color Square</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="606"/>
+        <location filename="../setting_dialog.py" line="612"/>
         <source>Color square length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="621"/>
+        <location filename="../setting_dialog.py" line="627"/>
         <source>Color wheel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="608"/>
+        <location filename="../setting_dialog.py" line="616"/>
         <source>Color wheel radius</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="609"/>
+        <location filename="../setting_dialog.py" line="618"/>
         <source>Color tag radius</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="610"/>
+        <location filename="../setting_dialog.py" line="619"/>
         <source>Color bar length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="611"/>
+        <location filename="../setting_dialog.py" line="617"/>
         <source>Activated tag color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="612"/>
+        <location filename="../setting_dialog.py" line="615"/>
         <source>Inactivated tag color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="613"/>
+        <location filename="../setting_dialog.py" line="614"/>
         <source>Bar edge color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="638"/>
+        <location filename="../setting_dialog.py" line="644"/>
         <source>Graph view</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="615"/>
+        <location filename="../setting_dialog.py" line="622"/>
         <source>Drag hint radius</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="616"/>
+        <location filename="../setting_dialog.py" line="621"/>
         <source>Layer separation width</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="617"/>
+        <location filename="../setting_dialog.py" line="623"/>
         <source>Drag hint color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="618"/>
+        <location filename="../setting_dialog.py" line="625"/>
         <source>Selection point color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="619"/>
+        <location filename="../setting_dialog.py" line="624"/>
         <source>Reference point color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="620"/>
+        <location filename="../setting_dialog.py" line="626"/>
         <source>Interface</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="622"/>
+        <location filename="../setting_dialog.py" line="628"/>
         <source>H range from</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="627"/>
+        <location filename="../setting_dialog.py" line="633"/>
         <source>to</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="624"/>
+        <location filename="../setting_dialog.py" line="630"/>
         <source>S range from</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="626"/>
+        <location filename="../setting_dialog.py" line="632"/>
         <source>V range from</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="628"/>
+        <location filename="../setting_dialog.py" line="634"/>
         <source>Harmony rule</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="629"/>
+        <location filename="../setting_dialog.py" line="635"/>
         <source>Analogous</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="630"/>
+        <location filename="../setting_dialog.py" line="636"/>
         <source>Monochromatic</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="631"/>
+        <location filename="../setting_dialog.py" line="637"/>
         <source>Triad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="632"/>
+        <location filename="../setting_dialog.py" line="638"/>
         <source>Tetrad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="633"/>
+        <location filename="../setting_dialog.py" line="639"/>
         <source>Pentad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="634"/>
+        <location filename="../setting_dialog.py" line="640"/>
         <source>Complementary</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="635"/>
+        <location filename="../setting_dialog.py" line="641"/>
         <source>Shades</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="636"/>
+        <location filename="../setting_dialog.py" line="642"/>
         <source>Custom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="637"/>
+        <location filename="../setting_dialog.py" line="643"/>
         <source>Press and select instantly</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="639"/>
+        <location filename="../setting_dialog.py" line="645"/>
         <source>Graph types</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="664"/>
+        <location filename="../setting_dialog.py" line="670"/>
         <source>RGB-Normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="665"/>
+        <location filename="../setting_dialog.py" line="671"/>
         <source>RGB-Vertical</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="666"/>
+        <location filename="../setting_dialog.py" line="672"/>
         <source>RGB-Horizontal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="667"/>
+        <location filename="../setting_dialog.py" line="673"/>
         <source>RGB-Final</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="668"/>
+        <location filename="../setting_dialog.py" line="674"/>
         <source>HSV-Normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="669"/>
+        <location filename="../setting_dialog.py" line="675"/>
         <source>HSV-Vertical</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="670"/>
+        <location filename="../setting_dialog.py" line="676"/>
         <source>HSV-Horizontal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="671"/>
+        <location filename="../setting_dialog.py" line="677"/>
         <source>HSV-Final</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="672"/>
+        <location filename="../setting_dialog.py" line="678"/>
         <source>Graph channels</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="685"/>
+        <location filename="../setting_dialog.py" line="691"/>
         <source>All</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="686"/>
+        <location filename="../setting_dialog.py" line="692"/>
         <source>1 R/H</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="687"/>
+        <location filename="../setting_dialog.py" line="693"/>
         <source>2 G/S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="688"/>
+        <location filename="../setting_dialog.py" line="694"/>
         <source>3 B/V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="689"/>
+        <location filename="../setting_dialog.py" line="695"/>
         <source>Zoom ratio per step</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="690"/>
+        <location filename="../setting_dialog.py" line="696"/>
         <source>Move distance per step</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="691"/>
+        <location filename="../setting_dialog.py" line="697"/>
         <source>Selection scope</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="692"/>
+        <location filename="../setting_dialog.py" line="698"/>
         <source>Rule</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../setting_dialog.py" line="604"/>
-        <source>中文</source>
+        <location filename="../setting_dialog.py" line="609"/>
+        <source>Work space</source>
         <translation></translation>
     </message>
 </context>

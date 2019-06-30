@@ -448,14 +448,16 @@ class Wheel(QWidget):
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
-        self._err_descs = (_translate("Wheel", "Error"),
-                           _translate("Wheel", "Color {0} doesn't exist in data file."),
-                           _translate("Wheel", "The HSV tag of color {0} doesn't exist in data file."),
-                           _translate("Wheel", "Color {0} with HSV value is invalid: {1}."),
-                           _translate("Wheel", "Version is not compatible for data file: {0}."),
-                           _translate("Wheel", "Unknown version of data file {0}."),
-                           _translate("Wheel", "Harmony rule is invalid: {0}. Using custom instead."),
-                           _translate("Wheel", "Harmony rule doesn't exist in data file. Use custom instead."),
-                           _translate("Wheel", "Data files can only be imported in color wheel interface."),
-                           _translate("Wheel", "Unknown data file extension: {0}."),
-                           _translate("Wheel", "Data file is broken."),)
+        self._err_descs = (
+            _translate("Wheel", "Error"),
+            _translate("Wheel", "Color {0} doesn't exist in data file."),
+            _translate("Wheel", "The HSV tag of color {0} doesn't exist in data file."),
+            _translate("Wheel", "Color {0} with HSV value is invalid: {1}."),
+            _translate("Wheel", "Version is not compatible for data file: {0}."),
+            _translate("Wheel", "Unknown version of data file {0}."),
+            _translate("Wheel", "Harmony rule is invalid: {0}. Using custom instead."),
+            _translate("Wheel", "Harmony rule doesn't exist in data file. Use custom instead."),
+            _translate("Wheel", "Data files can only be imported in color wheel interface."),
+            _translate("Wheel", "Unknown data file extension: {0}."),
+            _translate("Wheel", "Data file is broken."),
+        )

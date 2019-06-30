@@ -4,13 +4,13 @@ import re
 
 
 def current_version():
-    return "v1.0.18-beta"
+    return "v1.0.19-beta"
 
 def website():
     return "https://github.com/liujiacode/DigitalPalette"
 
 def update_date():
-    return "2019.06.29"
+    return "2019.06.30"
 
 def if_version_compatible(version):
     version_cmp = False

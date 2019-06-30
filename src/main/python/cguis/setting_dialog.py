@@ -47,7 +47,7 @@ class Ui_setting_dialog(object):
         self.st_label_lang.setObjectName("st_label_lang")
         self.gridLayout_7.addWidget(self.st_label_lang, 0, 0, 1, 1)
         self.st_cobox_21 = QtWidgets.QComboBox(self.st_gbox_lang)
-        self.st_cobox_21.setMinimumSize(QtCore.QSize(120, 0))
+        self.st_cobox_21.setMinimumSize(QtCore.QSize(200, 0))
         self.st_cobox_21.setObjectName("st_cobox_21")
         self.gridLayout_7.addWidget(self.st_cobox_21, 0, 1, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(322, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
