@@ -16,7 +16,7 @@ class Settings(QDialog, Ui_setting_dialog):
 
     settings_changed = pyqtSignal(bool)
 
-    def __init__(self, default_settings):
+    def __init__(self, default_settings, resources):
         """
         Init the settings view area.
 
@@ -33,8 +33,8 @@ class Settings(QDialog, Ui_setting_dialog):
         self.setWindowIcon(app_icon)
         self.setWindowTitle("Settings")
 
-        # load settings.
-        self.argu = Argument(default_settings, os.sep.join((".", "settings.json")), os.sep.join((".", "language")))
+        # load settings. src\main\resources\base\language
+        self.argu = Argument(default_settings, os.sep.join((".", "settings.json")), os.sep.join((resources, "languages")))
 
         # init lang cobox values. (part 1)
         for lang_path in self.argu.lang_paths:
@@ -45,7 +45,7 @@ class Settings(QDialog, Ui_setting_dialog):
 
         if self.argu.err:
             QMessageBox.warning(self, self._err_descs[0], self._err_descs[self.argu.err[0]].format(self.argu.err[1]))
-            self.argu.save_settings("./settings.json")
+            self.argu.save_settings()
 
         # init button values.
         self.reset_all(self.argu.settings)
@@ -187,7 +187,7 @@ class Settings(QDialog, Ui_setting_dialog):
             QMessageBox.warning(self, self._err_descs[0], self._err_descs[4].format(err_lst))
 
         self.settings_changed.emit(True)
-        self.argu.save_settings("./settings.json")
+        self.argu.save_settings()
 
         self.reset_all(self.argu.settings)
         self._changed = {}
@@ -200,7 +200,7 @@ class Settings(QDialog, Ui_setting_dialog):
         self.argu.reset_settings()
         
         self.settings_changed.emit(True)
-        self.argu.save_settings("./settings.json")
+        self.argu.save_settings()
 
         self.reset_all(self.argu.settings)
         self._changed = {}

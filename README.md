@@ -2,7 +2,7 @@
 Digital palette for selecting harmonious colors.
 
 # Version
-v1.0.20-beta
+v1.0.21-beta
 
 # Author
 Liu Jia
@@ -27,5 +27,6 @@ Liu Jia
 * 2019.06.28: Add Chinese translation.
 * 2019.06.29: Repair data opening presentations.
 * 2019.06.29: Add translation method.
+* 2019.06.30: Repair translation method.
 * 2019.06.30: Repair translation method.
 * 2019.06.30: Repair translation method.

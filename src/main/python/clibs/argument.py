@@ -20,6 +20,7 @@ class Argument(object):
         self.lang = ("en", "zh_cn")
 
         self.default_settings = default_settings
+        self._store = settings_file
 
         # loading langs.
         self.global_langs = (
@@ -43,9 +44,9 @@ class Argument(object):
         
         self.err = None
 
-        if os.path.isfile(settings_file):
+        if os.path.isfile(self._store):
             uss = []
-            with open(settings_file, "r") as sf:
+            with open(self._store, "r") as sf:
                 try:
                     uss = json.load(sf)
                 except:
@@ -125,12 +126,12 @@ class Argument(object):
         self.settings = tuple(lst)
         return err_lst
 
-    def save_settings(self, settings_file):
+    def save_settings(self):
         """
         Save settings to file.
         """
 
-        with open(settings_file, "w") as sf:
+        with open(self._store, "w") as sf:
             json.dump(self.settings, sf, indent=4)
 
     def load_settings(self, uss):

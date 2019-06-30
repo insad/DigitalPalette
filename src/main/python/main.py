@@ -25,7 +25,7 @@ import os
 
 
 class DigitalPalette(QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, resources):
         super().__init__()
         self.setupUi(self)
 
@@ -61,7 +61,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             True,             # 22 # "press_move":   # Press anywhere in wheel will move activated color tag to the selected color.
         )
 
-        self._settings = Settings(default_settings)
+        self._settings = Settings(default_settings, resources)
         self._settings.settings_changed.connect(self._func_reload_settings_)
 
         # init translator.
@@ -268,7 +268,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
-    DP = DigitalPalette()
+    DP = DigitalPalette(appctxt.get_resource('.'))
     DP.show()
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
     sys.exit(exit_code)
