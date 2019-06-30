@@ -9,6 +9,7 @@ Software Foundation. See the GNU General Public License
 for more details.
 """
 
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox
 from cguis.main_window import Ui_MainWindow
 from cguis.resource import view_rc
@@ -222,17 +223,16 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         lang = self._settings.argu.lang_paths[self._settings.argu.settings[21][0]][1]
         
         if lang == "default":
-            if self._ori_lang:
-                self._app.removeTranslator(self._tr)
+            self._app.removeTranslator(self._tr)
 
-                self.retranslateUi(self)
-                self._settings.retranslateUi(self._settings)
-                self._func_tr_()
-                self._cwgt_wheel._func_tr_()
-                self._cwgt_graph._func_tr_()
-                self._settings._func_tr_()
+            self.retranslateUi(self)
+            self._settings.retranslateUi(self._settings)
+            self._func_tr_()
+            self._cwgt_wheel._func_tr_()
+            self._cwgt_graph._func_tr_()
+            self._settings._func_tr_()
 
-                self._ori_lang = ""
+            self._ori_lang = ""
 
         else:
             if lang != self._ori_lang:
@@ -267,7 +267,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
     DP = DigitalPalette()
     DP.show()
-    sys.exit(app.exec())
+    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    sys.exit(exit_code)

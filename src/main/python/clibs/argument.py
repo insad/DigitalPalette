@@ -30,12 +30,15 @@ class Argument(object):
         )
 
         lang_paths = [(39, "default"),]
-        for lang in os.listdir(langs_dir):
-            if lang.split(".")[-1] == "qm" and os.path.isfile(os.sep.join((langs_dir, lang))):
-                glang = re.split("\.|_|-", lang)[0]
-                if glang in self.global_langs:
-                    lang_paths.append((self.global_langs.index(glang), os.sep.join((langs_dir, lang))))
-        
+        if os.path.isdir(langs_dir):
+            for lang in os.listdir(langs_dir):
+                if lang.split(".")[-1] == "qm" and os.path.isfile(os.sep.join((langs_dir, lang))):
+                    glang = re.split("\.|_|-", lang)[0]
+                    if glang in self.global_langs:
+                        lang_paths.append((self.global_langs.index(glang), os.sep.join((langs_dir, lang))))
+        else:
+            os.makedirs(langs_dir)
+
         self.lang_paths = tuple(lang_paths)
         
         self.err = None
