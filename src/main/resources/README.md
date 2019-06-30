@@ -1,4 +1,3 @@
 ![Sample app icon](../icons/linux/128.png)
 
-This directory contains the following resources:
-* "base/languages/*.qm": languages for translations.
+This directory contains resources requared by this application.

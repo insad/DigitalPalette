@@ -11,7 +11,7 @@ class Argument(object):
     Argument object. Manage setting args.
     """
 
-    def __init__(self, default_settings, settings_file, langs_dir):
+    def __init__(self, default_settings, settings_dir, langs_dir):
         """
         Load initial settings.
         """
@@ -20,7 +20,12 @@ class Argument(object):
         self.lang = ("en", "zh_cn")
 
         self.default_settings = default_settings
-        self._store = settings_file
+        store = settings_dir
+
+        if not os.path.isdir(store):
+            os.makedirs(store)
+
+        self._store = os.sep.join((store, "settings.json"))
 
         # loading langs.
         self.global_langs = (

@@ -34,7 +34,7 @@ class Settings(QDialog, Ui_setting_dialog):
         self.setWindowTitle("Settings")
 
         # load settings. src\main\resources\base\language
-        self.argu = Argument(default_settings, os.sep.join((".", "settings.json")), os.sep.join((resources, "languages")))
+        self.argu = Argument(default_settings, os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette")), os.sep.join((resources, "languages")))
 
         # init lang cobox values. (part 1)
         for lang_path in self.argu.lang_paths:

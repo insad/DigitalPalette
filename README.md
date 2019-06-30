@@ -1,11 +1,16 @@
 # DigitalPalette
-Digital palette for selecting harmonious colors.
+![Sample app icon](src/main/icons/linux/256.png)
+
+DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
 
 # Version
-v1.0.21-beta
+v1.0.22-beta
 
 # Author
 Liu Jia
+
+# License
+DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
 
 # Update
 * 2019.06.18: Init DigitalPalette.
@@ -30,3 +35,4 @@ Liu Jia
 * 2019.06.30: Repair translation method.
 * 2019.06.30: Repair translation method.
 * 2019.06.30: Repair translation method.
+* 2019.06.30: Change icon. Add windows installer method.
