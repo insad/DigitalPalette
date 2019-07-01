@@ -1,4 +1,4 @@
-![Sample app icon](full/icon_full_256.png)
+![Sample app icon](full/icon_full_128.png)
 
 This directory contains the icons that are displayed for your app. Feel free to
 change them.
