@@ -1,18 +1,27 @@
 # DigitalPalette
-![Sample app icon](src/main/icons/linux/256.png)
+![Sample app icon](src/main/icons/full/icon_full_256.png)
 
 DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
 
 # Version
-v1.0.24-beta
+1.0.25 (develop)
 
 # Author
 Liu Jia
 
+# Basic Requirements
+fbs (0.8.3), PyQt5 (5.9.2), numpy (1.16.4), Pillow (6.0.0).
+
+# Compilation
+The running and packing methods are base on [fman build system](https://github.com/mherrmann/fbs).
+1. `$ fbs run       # running directly.`
+2. `$ fbs freeze    # packing up into a folder.`
+3. `$ fbs installer # creating a installer.`
+
 # License
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
 
-# Update
+# Updates
 * 2019.06.18: Init DigitalPalette.
 * 2019.06.18: Repair HSV color selections.
 * 2019.06.19: Add plain text exportation method.
@@ -38,3 +47,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 * 2019.06.30: Change icon. Add windows installer method.
 * 2019.06.30: Repair temporary directory close method.
 * 2019.06.30: Repair image loading method in Ubuntu.
+* 2019.07.01: Change icon. Add information.
