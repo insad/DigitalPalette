@@ -8,6 +8,7 @@ from clibs.trans2d import get_outer_box
 from clibs.image3c import Image3C
 from cwgts.view import View
 import numpy as np
+import sys
 
 
 class Graph(QWidget):
@@ -288,8 +289,13 @@ class Graph(QWidget):
 
     def dragEnterEvent(self, event):
         image = event.mimeData().text()
+        # ubuntu would add \r\n at end.
+        image = image[:-2] if image[-2:] == "\r\n" else image
+        image = image[:-1] if image[-1:] == "\n" else image
+        
         if self._load_finished and image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff") and image[:4] == "file":
-            self._accepted_file = image[8:]
+            # ubuntu need / at start.
+            self._accepted_file = image[8:] if sys.platform[:3].lower() == "win" else image[7:]
             event.accept()
         else:
             event.ignore()
