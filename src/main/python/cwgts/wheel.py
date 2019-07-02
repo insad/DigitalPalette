@@ -216,6 +216,7 @@ class Wheel(QWidget):
 
             if np.linalg.norm(point - self._center) < self._radius:
                 aly_accepted = True
+                self._create.backup()
 
                 for idx in range(5):
                     if np.linalg.norm(point - self._color_centers[idx]) < self._color_radius:
@@ -266,6 +267,7 @@ class Wheel(QWidget):
                 color = Color(self._create.color_set[self._active_color_idx])
                 color.overflow_s(np.linalg.norm(point - self._center) / self._radius)
                 color.h = get_theta_center(self._center, point)
+                self._create.recover()
                 self._create.modify(self._env_hm_rule, self._active_color_idx, color)
                 event.accept()
                 self.update()

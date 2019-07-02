@@ -41,9 +41,19 @@ class Create(object):
             c = Color((h, s, v), ctp="hsv")
             self._color_set.append(c)
 
+        # for some times backup image not create as expected in cwgts/wheel.py.
+        self.backup()
+
     @property
     def color_set(self):
         return self._color_set
+
+    def backup(self):
+        self._ori_color_set = tuple([i.hsv for i in self._color_set])
+    
+    def recover(self):
+        for i in range(5):
+            self._color_set[i].hsv = self._ori_color_set[i]
 
     def rotate(self, delta_h, delta_s, delta_v):
         for idx in range(5):
@@ -79,11 +89,17 @@ class Create(object):
 
         elif idx < 5:
             if idx == 1 or idx == 2:
-                angle = (self._color_set[0].h - pr_color.h) / idx
+                angle = self._color_set[0].h - pr_color.h
             elif idx == 3 or idx == 4:
-                angle = (pr_color.h - self._color_set[0].h) / (idx - 2)
+                angle = pr_color.h - self._color_set[0].h
             else:
                 raise ValueError("unexpect index in analogous modify: {}.".format(idx))
+
+            # place the turning point at relative 180 deg.
+            if idx == 2 or idx == 4:
+                angle = angle - 360 if angle > 180 else angle
+                angle = angle + 360 if angle < -180 else angle
+                angle /= 2
 
             self._color_set[1].h = self._color_set[0].h - angle
             self._color_set[2].h = self._color_set[0].h - angle * 2
