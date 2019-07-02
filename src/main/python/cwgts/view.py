@@ -215,7 +215,6 @@ class View(QWidget, Ui_graph_view):
 
         # once loaded.
         self._img = None
-        self._img_loaded = False
 
         # for zooming image.
         self._zoom = 1.0
@@ -259,20 +258,18 @@ class View(QWidget, Ui_graph_view):
         self.graph_label.st_color = self._env_st_color
         self.graph_label.it_color = self._env_it_color
 
-    def paintEvent(self, event):
-        self._wid = self.geometry().width()
-        self._hig = self.geometry().height()
+    def reload_img(self):
+        wid = self.geometry().width()
+        hig = self.geometry().height()
 
-        if self._img_loaded:
-            resized_img = self._img.scaled(self._wid, self._hig, Qt.KeepAspectRatio)
-            img_wid = resized_img.size().width()
-            img_hig = resized_img.size().height()
-            self.graph_label.setGeometry((self._wid - img_wid) / 2, (self._hig - img_hig) / 2, img_wid, img_hig)
-            self.graph_label.setPixmap(QPixmap.fromImage(resized_img))
-            self.graph_label.show()
+        resized_img = self._img.scaled(wid, hig, Qt.KeepAspectRatio)
+        img_wid = resized_img.size().width()
+        img_hig = resized_img.size().height()
+        self.graph_label.setGeometry((wid - img_wid) / 2, (hig - img_hig) / 2, img_wid, img_hig)
+        self.graph_label.setPixmap(QPixmap.fromImage(resized_img))
+        self.graph_label.show()
 
-            self._zoom = 1.0
-            self._img_loaded = False
+        self._zoom = 1.0
 
     def wheelEvent(self, event):
         point = (event.x(), event.y())
@@ -323,21 +320,25 @@ class View(QWidget, Ui_graph_view):
         """
         Zoom graphs.
         """
-        if self._img:
-            self._zoom *= ratio
 
-            resized_img = self._img.scaled(self._wid * self._zoom, self._hig * self._zoom, Qt.KeepAspectRatio)
-            img_wid = resized_img.size().width()
-            img_hig = resized_img.size().height()
+        wid = self.geometry().width()
+        hig = self.geometry().height()
+        local_center = center if center else (wid / 2, hig / 2)
 
-            lab_x = self.graph_label.geometry().x()
-            lab_y = self.graph_label.geometry().y()
+        self._zoom *= ratio
 
-            z_lab_x = center[0] - ((center[0] - lab_x) * ratio)
-            z_lab_y = center[1] - ((center[1] - lab_y) * ratio)
+        resized_img = self._img.scaled(wid * self._zoom, hig * self._zoom, Qt.KeepAspectRatio)
+        img_wid = resized_img.size().width()
+        img_hig = resized_img.size().height()
 
-            self.graph_label.setGeometry(z_lab_x, z_lab_y, img_wid, img_hig)
-            self.graph_label.setPixmap(QPixmap.fromImage(resized_img))
+        lab_x = self.graph_label.geometry().x()
+        lab_y = self.graph_label.geometry().y()
+
+        z_lab_x = local_center[0] - ((local_center[0] - lab_x) * ratio)
+        z_lab_y = local_center[1] - ((local_center[1] - lab_y) * ratio)
+
+        self.graph_label.setGeometry(z_lab_x, z_lab_y, img_wid, img_hig)
+        self.graph_label.setPixmap(QPixmap.fromImage(resized_img))
 
     def _func_move_(self, delta_x, delta_y):
         lab_x = self.graph_label.geometry().x()
@@ -360,21 +361,19 @@ class View(QWidget, Ui_graph_view):
     
     def slot_load_img(self, img):
         self._img = img
-        self._img_loaded = True
+        self.reload_img()
         self.update()
     
     def slot_zoom_in(self, value):
-        center = (self._wid / 2, self._hig / 2)
-        self._func_zoom_(center, self._env_zoom_step)
+        self._func_zoom_(None, self._env_zoom_step)
         self.update()
     
     def slot_zoom_out(self, value):
-        center = (self._wid / 2, self._hig / 2)
-        self._func_zoom_(center, 1 / self._env_zoom_step)
+        self._func_zoom_(None, 1 / self._env_zoom_step)
         self.update()
 
     def slot_reset_img(self, value):
-        self._img_loaded = True
+        self.reload_img()
 
     def slot_move_up(self, value):
         self._func_move_(0, -1 * self._env_move_step)

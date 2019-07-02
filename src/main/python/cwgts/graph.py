@@ -98,9 +98,6 @@ class Graph(QWidget):
             from_graph_label.selected_pt_rtos.connect(self.slot_set_graph_colors)
 
         self._image_imported = False    # image is opend.
-        self._graph_changed = True      # changing graphs.
-        self._ori_wid = 0               # original width.
-        self._ori_hig = 0               # original height.
         self._ori_gph = [5, 5, 5, 5]    # original graph type. set 5 which doesn't exist for initialize.
         self._ori_chl = [5, 5, 5, 5]    # original channel. set 5 which doesn't exist for initialize.
 
@@ -176,17 +173,12 @@ class Graph(QWidget):
             painter.end()
 
             # update graph view sizes and contents.
-            if self._wid != self._ori_wid or self._hig != self._ori_hig or self._graph_changed:
-                self._func_show_()
-                self._func_resize_()
-                self._func_update_view_()
-                
-                self._ori_wid = int(self._wid)
-                self._ori_hig = int(self._hig)
-                self._ori_gph = list(self._env_graph_types)
-                self._ori_chl = list(self._env_graph_chls)
-                
-                self._graph_changed = False
+            self._func_show_()
+            self._func_resize_()
+            self._func_update_view_()
+
+            self._ori_gph = list(self._env_graph_types)
+            self._ori_chl = list(self._env_graph_chls)
 
         # paint loading interface.
         elif self._image_imported and not self._load_finished:
@@ -254,7 +246,6 @@ class Graph(QWidget):
                 if (np.abs(pos_rto - self._pos_rto) > 1E-4).any():
                     self._pos_rto = pos_rto
                     self._view_seq = show_list
-                    self._graph_changed = True
 
                     event.accept()
                     self.update()
@@ -274,7 +265,6 @@ class Graph(QWidget):
             if (np.abs(pos_rto - self._pos_rto) > 1E-4).any():
                 self._pos_rto = pos_rto
                 self._view_seq = show_list
-                self._graph_changed = True
 
                 event.accept()
                 self.update()
@@ -319,8 +309,7 @@ class Graph(QWidget):
         for i in self._view_seq:
             if self._env_graph_types[i] != self._ori_gph[i] or self._env_graph_chls[i] != self._ori_chl[i]:
                 img = self._image3c.load_image(self._env_graph_types[i], self._env_graph_chls[i])
-                graph_view = self._graph_views[i]
-                graph_view.slot_load_img(img)
+                self._graph_views[i].slot_load_img(img)
 
     def _func_resize_(self):
         """
@@ -435,9 +424,8 @@ class Graph(QWidget):
             self._func_show_()
             self._load_finished = False
             self._image_imported = True
-            self._graph_changed = True
             self.update()
-            
+
         else:
             QMessageBox.warning(self, self._err_descs[0], self._err_descs[2])
 
@@ -450,7 +438,6 @@ class Graph(QWidget):
             if graph_type != self._env_graph_types[graph_idx]:
                 self._env_graph_types[graph_idx] = graph_type
 
-                self._graph_changed = True
                 self.update()
 
         return _func_
@@ -464,7 +451,6 @@ class Graph(QWidget):
             if channel != self._env_graph_chls[graph_idx]:
                 self._env_graph_chls[graph_idx] = channel
 
-                self._graph_changed = True
                 self.update()
 
         return _func_
@@ -473,8 +459,6 @@ class Graph(QWidget):
         """
         Update graph view when changing from wheel to graph in main loop. It would recover colors to None.
         """
-
-        self._graph_changed = True
 
         if self._env_hm_rule == "custom":
             self._graph_views[0].graph_label.slot_recover()
