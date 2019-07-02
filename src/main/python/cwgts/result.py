@@ -78,6 +78,11 @@ class Result(QWidget, Ui_scroll_result):
             cube_square.selected_hex.connect(cube_ledit.setText)
             cube_ledit.textChanged.connect(cube_square.slot_change_hex_code)
 
+    def paintEvent(self, event):
+        for i in range(5):
+            color_sqr = getattr(self, "color_{}".format(i))
+            color_sqr.setMinimumHeight(color_sqr.geometry().width() * 0.54)
+
 
     # ===== ===== ===== inner functions ===== ===== =====
 

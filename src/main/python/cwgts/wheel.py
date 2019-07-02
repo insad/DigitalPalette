@@ -133,9 +133,9 @@ class Wheel(QWidget):
             color_box = get_outer_box(color_center, self._color_radius)
 
             if idx == self._active_color_idx:
-                painter.setPen(QPen(QColor(*self._env_at_color), 5))
+                painter.setPen(QPen(QColor(*self._env_at_color), 3))
             else:
-                painter.setPen(QPen(QColor(*self._env_ia_color), 3))
+                painter.setPen(QPen(QColor(*self._env_ia_color), 2))
             painter.drawLine(QPoint(*self._center), QPoint(*color_center))
             painter.setBrush(QColor(*color.rgb))
             painter.drawEllipse(*color_box)
@@ -148,9 +148,9 @@ class Wheel(QWidget):
         re_wid = wid * (1 - self._env_radius) / 2 * self._env_bar_widratio
         re_wid = self._color_radius * 3 if self._color_radius * 3 < re_wid else re_wid
 
-        bar_1_center = (wid * (1 - self._env_radius) / 4, hig / 2)
+        bar_1_center = ((wid - self._radius * 2) / 4, hig / 2)
         self._bar_1_box = (bar_1_center[0] - re_wid / 2, bar_1_center[1] - hig * self._env_bar_widratio / 2, re_wid, hig * self._env_bar_widratio)
-        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
+        painter.setPen(QPen(QColor(*self._env_vb_color), 2))
         lgrad = QLinearGradient(self._bar_1_box[0], self._bar_1_box[1], self._bar_1_box[0], self._bar_1_box[3])
         lgrad.setColorAt(1.0, Qt.white)
         lgrad.setColorAt(0.0, Qt.black)
@@ -159,13 +159,13 @@ class Wheel(QWidget):
 
         self._cir_1_center = (bar_1_center[0], self._bar_1_box[1] + self._bar_1_box[3] * current_v)
         cir_1_box = get_outer_box(self._cir_1_center, self._color_radius)
-        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
+        painter.setPen(QPen(QColor(*self._env_vb_color), 2))
         painter.setBrush(QBrush(Qt.NoBrush))
         painter.drawEllipse(*cir_1_box)
 
-        bar_2_center = (wid - wid * (1 - self._env_radius) / 4, hig / 2)
+        bar_2_center = (wid - (wid - self._radius * 2) / 4, hig / 2)
         self._bar_2_box = (bar_2_center[0] - re_wid / 2, bar_2_center[1] - hig * self._env_bar_widratio / 2, re_wid, hig * self._env_bar_widratio)
-        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
+        painter.setPen(QPen(QColor(*self._env_vb_color), 2))
         lgrad = QLinearGradient(self._bar_2_box[0], self._bar_2_box[1], self._bar_2_box[0], self._bar_2_box[3])
         lgrad.setColorAt(1.0, QColor(*current_color.rgb))
         lgrad.setColorAt(0.0, Qt.black)
@@ -174,7 +174,7 @@ class Wheel(QWidget):
 
         self._cir_2_center = (bar_2_center[0], self._bar_2_box[1] + self._bar_2_box[3] * current_v)
         cir_2_box = get_outer_box(self._cir_2_center, self._color_radius)
-        painter.setPen(QPen(QColor(*self._env_vb_color), 3))
+        painter.setPen(QPen(QColor(*self._env_vb_color), 2))
         painter.setBrush(QBrush(Qt.NoBrush))
         painter.drawEllipse(*cir_2_box)
 

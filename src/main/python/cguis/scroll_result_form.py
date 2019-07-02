@@ -2,12 +2,11 @@
 
 # Form implementation generated from reading ui file 'scroll_result_form.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.2
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_scroll_result(object):
     def setupUi(self, scroll_result):
@@ -40,8 +39,8 @@ class Ui_scroll_result(object):
         self.gridLayout_8.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_8.setObjectName("gridLayout_8")
         self.color_2 = QtWidgets.QWidget(self.cube_2)
-        self.color_2.setMinimumSize(QtCore.QSize(100, 80))
-        self.color_2.setMaximumSize(QtCore.QSize(16777215, 65))
+        self.color_2.setMinimumSize(QtCore.QSize(100, 54))
+        self.color_2.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.color_2.setObjectName("color_2")
         self.gridLayout_8.addWidget(self.color_2, 0, 0, 1, 4)
         spacerItem = QtWidgets.QSpacerItem(21, 16, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -173,8 +172,8 @@ class Ui_scroll_result(object):
         self.gridLayout_5.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_5.setObjectName("gridLayout_5")
         self.color_1 = QtWidgets.QWidget(self.cube_1)
-        self.color_1.setMinimumSize(QtCore.QSize(100, 80))
-        self.color_1.setMaximumSize(QtCore.QSize(16777215, 65))
+        self.color_1.setMinimumSize(QtCore.QSize(100, 54))
+        self.color_1.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.color_1.setObjectName("color_1")
         self.gridLayout_5.addWidget(self.color_1, 0, 0, 1, 4)
         spacerItem3 = QtWidgets.QSpacerItem(21, 16, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -306,8 +305,8 @@ class Ui_scroll_result(object):
         self.gridLayout_2.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.color_0 = QtWidgets.QWidget(self.cube_0)
-        self.color_0.setMinimumSize(QtCore.QSize(100, 80))
-        self.color_0.setMaximumSize(QtCore.QSize(16777215, 65))
+        self.color_0.setMinimumSize(QtCore.QSize(100, 54))
+        self.color_0.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.color_0.setObjectName("color_0")
         self.gridLayout_2.addWidget(self.color_0, 0, 0, 1, 4)
         spacerItem6 = QtWidgets.QSpacerItem(21, 16, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -439,8 +438,8 @@ class Ui_scroll_result(object):
         self.gridLayout_11.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_11.setObjectName("gridLayout_11")
         self.color_3 = QtWidgets.QWidget(self.cube_3)
-        self.color_3.setMinimumSize(QtCore.QSize(100, 80))
-        self.color_3.setMaximumSize(QtCore.QSize(16777215, 65))
+        self.color_3.setMinimumSize(QtCore.QSize(100, 54))
+        self.color_3.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.color_3.setObjectName("color_3")
         self.gridLayout_11.addWidget(self.color_3, 0, 0, 1, 4)
         spacerItem9 = QtWidgets.QSpacerItem(21, 16, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -572,8 +571,8 @@ class Ui_scroll_result(object):
         self.gridLayout_14.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_14.setObjectName("gridLayout_14")
         self.color_4 = QtWidgets.QWidget(self.cube_4)
-        self.color_4.setMinimumSize(QtCore.QSize(100, 80))
-        self.color_4.setMaximumSize(QtCore.QSize(16777215, 65))
+        self.color_4.setMinimumSize(QtCore.QSize(100, 54))
+        self.color_4.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.color_4.setObjectName("color_4")
         self.gridLayout_14.addWidget(self.color_4, 0, 0, 1, 4)
         spacerItem12 = QtWidgets.QSpacerItem(21, 16, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -753,5 +752,4 @@ class Ui_scroll_result(object):
         self.lb_HSV_h_4.setText(_translate("scroll_result", "H"))
         self.lb_HSV_s_4.setText(_translate("scroll_result", "S"))
         self.lb_HSV_v_4.setText(_translate("scroll_result", "V"))
-
 

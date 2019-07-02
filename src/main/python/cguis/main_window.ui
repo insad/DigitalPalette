@@ -24,16 +24,22 @@
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
-         <verstretch>1</verstretch>
+         <verstretch>3</verstretch>
         </sizepolicy>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <widget class="QWidget" name="toolbox" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>3</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>180</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -56,20 +62,20 @@
             <string>Rule</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
-            <property name="leftMargin">
-             <number>11</number>
-            </property>
-            <property name="topMargin">
-             <number>11</number>
-            </property>
-            <property name="rightMargin">
-             <number>11</number>
-            </property>
-            <property name="bottomMargin">
-             <number>11</number>
-            </property>
             <item row="0" column="0">
              <widget class="QRadioButton" name="rbtn_analogous">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Analogous</string>
               </property>
@@ -78,8 +84,20 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0" colspan="2">
+            <item row="1" column="0">
              <widget class="QRadioButton" name="rbtn_monochromatic">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Monochromatic</string>
               </property>
@@ -87,6 +105,18 @@
             </item>
             <item row="2" column="0">
              <widget class="QRadioButton" name="rbtn_triad">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Triad</string>
               </property>
@@ -94,6 +124,18 @@
             </item>
             <item row="3" column="0">
              <widget class="QRadioButton" name="rbtn_tetrad">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Tetrad</string>
               </property>
@@ -101,13 +143,37 @@
             </item>
             <item row="4" column="0">
              <widget class="QRadioButton" name="rbtn_pentad">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Pentad</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="0" colspan="2">
+            <item row="5" column="0">
              <widget class="QRadioButton" name="rbtn_complementary">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Complementary</string>
               </property>
@@ -115,6 +181,18 @@
             </item>
             <item row="6" column="0">
              <widget class="QRadioButton" name="rbtn_shades">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Shades</string>
               </property>
@@ -122,6 +200,18 @@
             </item>
             <item row="7" column="0">
              <widget class="QRadioButton" name="rbtn_custom">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Custom</string>
               </property>
@@ -136,19 +226,6 @@
                <size>
                 <width>20</width>
                 <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="7" column="1">
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>25</width>
-                <height>20</height>
                </size>
               </property>
              </spacer>
@@ -173,9 +250,15 @@
         </property>
        </widget>
        <widget class="QWidget" name="property" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>3</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>180</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -200,26 +283,37 @@
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="0">
              <widget class="QPushButton" name="pbtn_Import">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Import</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>31</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="1" column="0">
              <widget class="QPushButton" name="pbtn_Export">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Export</string>
               </property>
@@ -227,6 +321,18 @@
             </item>
             <item row="2" column="0">
              <widget class="QPushButton" name="pbtn_Create">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Create</string>
               </property>
@@ -234,6 +340,18 @@
             </item>
             <item row="3" column="0">
              <widget class="QPushButton" name="pbtn_Extract">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Extract</string>
               </property>
@@ -261,20 +379,20 @@
             <string>Mode</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
-            <property name="leftMargin">
-             <number>11</number>
-            </property>
-            <property name="topMargin">
-             <number>11</number>
-            </property>
-            <property name="rightMargin">
-             <number>11</number>
-            </property>
-            <property name="bottomMargin">
-             <number>11</number>
-            </property>
             <item row="0" column="0">
              <widget class="QCheckBox" name="cbox_RGB">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>RGB</string>
               </property>
@@ -283,21 +401,20 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="cbox_HSV">
+              <property name="minimumSize">
                <size>
-                <width>73</width>
-                <height>20</height>
+                <width>90</width>
+                <height>0</height>
                </size>
               </property>
-             </spacer>
-            </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QCheckBox" name="cbox_HSV">
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>HSV</string>
               </property>
