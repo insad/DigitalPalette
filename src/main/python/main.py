@@ -40,7 +40,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             (0.68, 1.0),      # 1  # "s_range":      # S range for initial random HSV color set.
             (0.68, 1.0),      # 2  # "v_range":      # V range for initial random HSV color set.
             0.8,              # 3  # "radius":       # Color wheel radius (ratio) compared with work space width.
-            0.05,             # 4  # "color_radius": # Color tag radius (ratio)  compared with work space width.
+            0.08,             # 4  # "color_radius": # Color tag radius (ratio)  compared with work space width.
             0.1,              # 5  # "tip_radius":   # Circle tip radius in graph view.
             0.9,              # 6  # "widratio":     # Color square width / height ratio compared with cube size.
             0.8,              # 7  # "bar_widratio": # V value bar height ratio compared with work space.

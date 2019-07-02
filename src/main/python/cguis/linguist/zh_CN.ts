@@ -132,7 +132,7 @@
     <message>
         <location filename="../main_window.py" line="191"/>
         <source>Analogous</source>
-        <translation>类比</translation>
+        <translation>类似</translation>
     </message>
     <message>
         <location filename="../main_window.py" line="192"/>
@@ -142,17 +142,17 @@
     <message>
         <location filename="../main_window.py" line="193"/>
         <source>Triad</source>
-        <translation>三元群</translation>
+        <translation>三元组</translation>
     </message>
     <message>
         <location filename="../main_window.py" line="194"/>
         <source>Tetrad</source>
-        <translation>四元群</translation>
+        <translation>四元组</translation>
     </message>
     <message>
         <location filename="../main_window.py" line="195"/>
         <source>Pentad</source>
-        <translation>五元群</translation>
+        <translation>五元组</translation>
     </message>
     <message>
         <location filename="../main_window.py" line="196"/>
@@ -792,7 +792,7 @@
     <message>
         <location filename="../setting_dialog.py" line="635"/>
         <source>Analogous</source>
-        <translation>类比</translation>
+        <translation>类似</translation>
     </message>
     <message>
         <location filename="../setting_dialog.py" line="636"/>
@@ -802,17 +802,17 @@
     <message>
         <location filename="../setting_dialog.py" line="637"/>
         <source>Triad</source>
-        <translation>三元群</translation>
+        <translation>三元组</translation>
     </message>
     <message>
         <location filename="../setting_dialog.py" line="638"/>
         <source>Tetrad</source>
-        <translation>四元群</translation>
+        <translation>四元组</translation>
     </message>
     <message>
         <location filename="../setting_dialog.py" line="639"/>
         <source>Pentad</source>
-        <translation>五元群</translation>
+        <translation>五元组</translation>
     </message>
     <message>
         <location filename="../setting_dialog.py" line="640"/>
