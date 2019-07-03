@@ -127,3 +127,7 @@ test*
 *_bak.*
 *.bak
 bak*
+
+# share
+release/
+share/
