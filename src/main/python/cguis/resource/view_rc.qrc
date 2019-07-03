@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="images">
-    <file>images/icon_256.png</file>
-    <file>images/icon_grey.png</file>
-  </qresource>
-</RCC>
