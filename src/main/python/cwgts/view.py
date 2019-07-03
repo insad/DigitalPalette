@@ -296,7 +296,8 @@ class View(QWidget, Ui_graph_view):
             self.update()
 
         else:
-            event.ignore()
+            # accept to prevent conflicts with graph events.
+            event.accept()
 
     def mouseMoveEvent(self, event):
         point = (event.x(), event.y())
@@ -308,7 +309,8 @@ class View(QWidget, Ui_graph_view):
             self.update()
 
         else:
-            event.ignore()
+            # accept to prevent conflicts with graph events.
+            event.accept()
 
     def mouseReleaseEvent(self, event):
         self._moving = False

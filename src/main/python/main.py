@@ -147,13 +147,14 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.pbtn_Import.clicked.connect(self._cwgt_wheel.slot_import)
         self.pbtn_Export.clicked.connect(self._cwgt_wheel.slot_export)
 
-        self.actionAbout.triggered.connect(self._show_info_)
-        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.website())))
-
         self.pbtn_Create.clicked.connect(self._func_resetup_wheel_)
         self.pbtn_Extract.clicked.connect(self._func_resetup_graph_)
 
         self.actionSettings.triggered.connect(self._settings.show)
+
+        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.update_site())))
+        self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.main_site())))
+        self.actionAbout.triggered.connect(self._show_info_)
 
         self._ori_lang = ""
         self._func_reload_local_lang_()
@@ -170,7 +171,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     # show DigitalPalette information.
     def _show_info_(self):
-        QMessageBox.information(self, self._info_descs[0], "\n".join(self._info_descs[1:]).format(dpinfo.current_version(), "Liu Jia", dpinfo.update_date(), dpinfo.website()))
+        QMessageBox.information(self, self._info_descs[0], "\n".join(self._info_descs[1:]).format(dpinfo.current_version(), "Liu Jia", dpinfo.update_date(), dpinfo.main_site()))
 
     def _func_resetup_wheel_(self):
         if self._cwgt_wheel.isVisible():
@@ -262,13 +263,13 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self._info_descs = (
             _translate("DigitalPalette", "About"),
-            _translate("DigitalPalette", "DigitalPalette Info"),
-            _translate("DigitalPalette", "----- ----- ----- -----"),
+            _translate("DigitalPalette", "DigitalPalette"),
+            _translate("DigitalPalette", "-----------------------"),
             _translate("DigitalPalette", "Version: {0}"),
             _translate("DigitalPalette", "Author: {1}"),
             _translate("DigitalPalette", "Update: {2}"),
             _translate("DigitalPalette", "Github: {3}"),
-            _translate("DigitalPalette", "----- ----- ----- -----"),
+            _translate("DigitalPalette", "-----------------------"),
             _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),
         )
 

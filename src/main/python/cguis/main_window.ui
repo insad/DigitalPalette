@@ -497,7 +497,9 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionHomepage"/>
     <addaction name="actionUpdate"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
@@ -543,6 +545,11 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionHomepage">
+   <property name="text">
+    <string>Homepage</string>
    </property>
   </action>
  </widget>

@@ -4,120 +4,120 @@
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="256"/>
+        <location filename="../../main.py" line="266"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="256"/>
-        <source>DigitalPalette Info</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../main.py" line="256"/>
-        <source>----- ----- ----- -----</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../main.py" line="256"/>
+        <location filename="../../main.py" line="266"/>
         <source>Version: {0}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="256"/>
+        <location filename="../../main.py" line="266"/>
         <source>Author: {1}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="256"/>
+        <location filename="../../main.py" line="266"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="256"/>
+        <location filename="../../main.py" line="266"/>
         <source>Update: {2}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="256"/>
+        <location filename="../../main.py" line="266"/>
         <source>Github: {3}</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="266"/>
+        <source>DigitalPalette</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="266"/>
+        <source>-----------------------</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>Graph</name>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Reading RGB data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Detecting image RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Generating vertical RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Generating horizontal RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Integrating final RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Transforming RGB to HSV data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Detecting image HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Generating vertical HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Generating horizontal HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Integrating final HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="571"/>
+        <location filename="../../cwgts/graph.py" line="561"/>
         <source>Finishing.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="585"/>
+        <location filename="../../cwgts/graph.py" line="575"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="585"/>
+        <location filename="../../cwgts/graph.py" line="575"/>
         <source>Couldn&apos;t create temporary directory.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="585"/>
+        <location filename="../../cwgts/graph.py" line="575"/>
         <source>Please open only one image in once time.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="567"/>
+        <location filename="../../cwgts/graph.py" line="557"/>
         <source>Double click here to open an image.</source>
         <translation></translation>
     </message>
@@ -125,123 +125,128 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../main_window.py" line="190"/>
+        <location filename="../main_window.py" line="223"/>
         <source>Rule</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="191"/>
+        <location filename="../main_window.py" line="224"/>
         <source>Analogous</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="192"/>
+        <location filename="../main_window.py" line="225"/>
         <source>Monochromatic</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="193"/>
+        <location filename="../main_window.py" line="226"/>
         <source>Triad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="194"/>
+        <location filename="../main_window.py" line="227"/>
         <source>Tetrad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="195"/>
+        <location filename="../main_window.py" line="228"/>
         <source>Pentad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="196"/>
+        <location filename="../main_window.py" line="229"/>
         <source>Complementary</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="197"/>
+        <location filename="../main_window.py" line="230"/>
         <source>Shades</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="198"/>
+        <location filename="../main_window.py" line="231"/>
         <source>Custom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="199"/>
+        <location filename="../main_window.py" line="232"/>
         <source>Operation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="211"/>
+        <location filename="../main_window.py" line="244"/>
         <source>Import</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="212"/>
+        <location filename="../main_window.py" line="245"/>
         <source>Export</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="210"/>
+        <location filename="../main_window.py" line="243"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="214"/>
+        <location filename="../main_window.py" line="247"/>
         <source>Extract</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="204"/>
+        <location filename="../main_window.py" line="237"/>
         <source>Mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="205"/>
+        <location filename="../main_window.py" line="238"/>
         <source>RGB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="206"/>
+        <location filename="../main_window.py" line="239"/>
         <source>HSV</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="207"/>
+        <location filename="../main_window.py" line="240"/>
         <source>File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="208"/>
+        <location filename="../main_window.py" line="241"/>
         <source>Edit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="209"/>
+        <location filename="../main_window.py" line="242"/>
         <source>Help</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="213"/>
+        <location filename="../main_window.py" line="246"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="215"/>
+        <location filename="../main_window.py" line="248"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="216"/>
+        <location filename="../main_window.py" line="249"/>
         <source>Update</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../main_window.py" line="217"/>
+        <location filename="../main_window.py" line="250"/>
         <source>Settings</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../main_window.py" line="251"/>
+        <source>Homepage</source>
         <translation></translation>
     </message>
 </context>
@@ -476,57 +481,57 @@
 <context>
     <name>Wheel</name>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Unknown version of data file {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Color {0} doesn&apos;t exist in data file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>The HSV tag of color {0} doesn&apos;t exist in data file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Color {0} with HSV value is invalid: {1}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Version is not compatible for data file: {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Harmony rule is invalid: {0}. Using custom instead.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Harmony rule doesn&apos;t exist in data file. Use custom instead.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Data files can only be imported in color wheel interface.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Unknown data file extension: {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="451"/>
+        <location filename="../../cwgts/wheel.py" line="453"/>
         <source>Data file is broken.</source>
         <translation></translation>
     </message>
@@ -632,47 +637,47 @@
 <context>
     <name>scroll_result</name>
     <message>
-        <location filename="../scroll_result_form.py" line="747"/>
+        <location filename="../scroll_result_form.py" line="746"/>
         <source>#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="748"/>
+        <location filename="../scroll_result_form.py" line="747"/>
         <source>RGB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="749"/>
+        <location filename="../scroll_result_form.py" line="748"/>
         <source>R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="750"/>
+        <location filename="../scroll_result_form.py" line="749"/>
         <source>G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="751"/>
+        <location filename="../scroll_result_form.py" line="750"/>
         <source>B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="752"/>
+        <location filename="../scroll_result_form.py" line="751"/>
         <source>HSV</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="753"/>
+        <location filename="../scroll_result_form.py" line="752"/>
         <source>H</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="754"/>
+        <location filename="../scroll_result_form.py" line="753"/>
         <source>S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../scroll_result_form.py" line="755"/>
+        <location filename="../scroll_result_form.py" line="754"/>
         <source>V</source>
         <translation></translation>
     </message>

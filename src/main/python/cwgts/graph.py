@@ -216,25 +216,22 @@ class Graph(QWidget):
             painter.end()
 
     def mouseDoubleClickEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.LeftButton and not self._image_imported:
             p_x = event.x()
             p_y = event.y()
 
-            if not self._image_imported:
-                box = (self._wid * 0.2, self._hig * 0.2, self._wid * 0.6, self._hig * 0.6)
+            box = (self._wid * 0.2, self._hig * 0.2, self._wid * 0.6, self._hig * 0.6)
 
-                if box[0] < p_x < (box[0] + box[2]) and box[1] < p_y < (box[1] + box[3]):
-                    self.slot_open_graph()
-                    
-                    event.accept()
-                    self.update()
-                else:
-                    event.ignore()
+            if box[0] < p_x < (box[0] + box[2]) and box[1] < p_y < (box[1] + box[3]):
+                self.slot_open_graph()
+
+                event.accept()
+                self.update()
             else:
                 event.ignore()
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.LeftButton and self._load_finished:
             point = np.array((event.x(), event.y()))
             tip_center = np.array((self._wid, self._hig)) * self._pos_rto
 
@@ -242,6 +239,7 @@ class Graph(QWidget):
                 pos_rto = point / np.array((self._wid, self._hig))
                 pos_rto, show_list = self._func_pos_absorp_(pos_rto)
                 self._pos_moving = True
+                self.setCursor(Qt.SizeAllCursor)
 
                 if (np.abs(pos_rto - self._pos_rto) > 1E-4).any():
                     self._pos_rto = pos_rto
@@ -275,7 +273,7 @@ class Graph(QWidget):
 
     def mouseReleaseEvent(self, event):
         self._pos_moving = False
-
+        self.setCursor(Qt.ArrowCursor)
 
     def dragEnterEvent(self, event):
         image = event.mimeData().text()
@@ -289,7 +287,7 @@ class Graph(QWidget):
             event.accept()
         else:
             event.ignore()
-    
+
     def dropEvent(self, event):
         if self._accepted_file:
             self.slot_open_image_file(self._accepted_file)
