@@ -7,8 +7,8 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 1.0.30 (developing)
 
 # Tutorial (教程)
-[Tutorial in English](tutorials\tutorial_English.md)  
-[中文教程](tutorials\tutorial_Chinese.md)
+[Tutorial in English](tutorials/tutorial_English.md)  
+[中文教程](tutorials/tutorial_Chinese.md)
 
 # Download (下载)
 | Type      | Windows (32 bit) | Windows (64 bit) |
@@ -16,8 +16,8 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 | Packet    | Link             | Link             |
 | Installer | Link             | Link             |
 
-# Author
+# Author (作者)
 Liu Jia
 
-# License
+# License (许可证)
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
