@@ -38,7 +38,7 @@ The interfacial layout of DigitalPalette is displayed as bellow, where:
 * Option bar is surrounded by the orange square, which includes a set of harmony rules.
 * Tool bar is surrounded by the purple square, which include the common operations and color modes.
 * Work area is surrounded by the green square.
-* Result area is surrounded by the yellow square, which includes the color set informations such as the **hex** code, **RGB** values and **HSV** values of colors, etc..
+* Result area is surrounded by the yellow square, which includes the color set informations such as the **hex** code, **RGB** values and **HSV** values of colors, etc..  
 ![Layout](usage/1.png)
 
 ## Create colors from color wheel
