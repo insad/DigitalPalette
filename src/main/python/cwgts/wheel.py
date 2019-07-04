@@ -64,7 +64,7 @@ class Wheel(QWidget):
         self._bar_2_actived = False # for mouse press, move on bar 2.
 
         self._func_tr_()
-    
+
     def reload_settings(self, settings):
         self._pr_h_range = settings[0]
         self._pr_s_range = settings[1]

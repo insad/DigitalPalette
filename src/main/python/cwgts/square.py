@@ -41,14 +41,11 @@ class Square(QWidget):
         self.reload_settings(settings)
 
         self._color = Color()
-        self._ori_color = Color(self._color)
 
         self._emit_rgb = False   # emit selected_r, selected_g, selected_b
         self._emit_hsv = False   # emit selected_h, selected_s, selected_v
-        self._emit_color = False # emit selected_hsv.
 
         self._acitvated_state = False   # acitvate state.
-        self._emit_activated = True     # emit selected_active to wheel.
         self._activated_on = True       # set False to deactive and remain color 0 for graph view.
 
     def reload_settings(self, settings):
@@ -77,30 +74,17 @@ class Square(QWidget):
 
         painter.end()
 
-        if self._color != self._ori_color:
-            if self._emit_rgb:
-                self.selected_r.emit(self._color.r)
-                self.selected_g.emit(self._color.g)
-                self.selected_b.emit(self._color.b)
-                self._emit_rgb = False
+        if self._emit_rgb:
+            self.selected_r.emit(self._color.r)
+            self.selected_g.emit(self._color.g)
+            self.selected_b.emit(self._color.b)
+            self._emit_rgb = False
 
-            if self._emit_hsv:
-                self.selected_h.emit(self._color.h)
-                self.selected_s.emit(self._color.s)
-                self.selected_v.emit(self._color.v)
-                self._emit_hsv = False
-
-            if self._emit_color:
-                self.selected_hsv.emit(self._color.hsv)
-                self._emit_color = False
-
-            self.selected_hex.emit(self._color.hex_code)
-
-            self._ori_color = Color(self._color)
-
-        if self._emit_activated:
-            self.selected_active.emit(self._acitvated_state)
-            self._emit_activated = False
+        if self._emit_hsv:
+            self.selected_h.emit(self._color.h)
+            self.selected_s.emit(self._color.s)
+            self.selected_v.emit(self._color.v)
+            self._emit_hsv = False
 
     def mousePressEvent(self, event):
         if self._activated_on and event.button() == Qt.LeftButton:
@@ -109,7 +93,10 @@ class Square(QWidget):
 
             if self._box[0] < p_x < (self._box[0] + self._box[2]) and self._box[1] < p_y < (self._box[1] + self._box[3]):
                 self._acitvated_state = True
-                self._emit_activated = True
+
+                # emit activated state to wheel.
+                self.selected_active.emit(self._acitvated_state)
+
                 event.accept()
                 self.update()
             else:
@@ -124,11 +111,12 @@ class Square(QWidget):
 
             if self._box[0] < p_x < (self._box[0] + self._box[2]) and self._box[1] < p_y < (self._box[1] + self._box[3]):
                 self._acitvated_state = True
-                self._emit_activated = True
+                self.selected_active.emit(self._acitvated_state)
 
                 _color = QColorDialog.getColor(QColor(*self._color.rgb))
                 if _color.isValid():
                     self._color.rgb = (_color.red(), _color.green(), _color.blue())
+                    self.selected_hsv.emit(self._color.hsv)
 
                 event.accept()
                 self.update()
@@ -148,7 +136,6 @@ class Square(QWidget):
         if state != self._acitvated_state:
             self._acitvated_state = bool(state)
 
-            self._emit_activated = False
             self.update()
 
     def slot_spbox_change_active_state(self, state):
@@ -160,7 +147,8 @@ class Square(QWidget):
         if state != self._acitvated_state:
             self._acitvated_state = bool(state)
 
-            self._emit_activated = True
+            # emit activated state to wheel.
+            self.selected_active.emit(self._acitvated_state)
             self.update()
 
     def slot_change_color(self, hsv):
@@ -173,7 +161,8 @@ class Square(QWidget):
 
             self._emit_rgb = True
             self._emit_hsv = True
-            self._emit_color = False
+
+            self.selected_hex.emit(self._color.hex_code)
             self.update()
     
     def slot_change_graph_color(self, rgb):
@@ -186,7 +175,9 @@ class Square(QWidget):
 
             self._emit_rgb = True
             self._emit_hsv = True
-            self._emit_color = True
+
+            self.selected_hsv.emit(self._color.hsv)
+            self.selected_hex.emit(self._color.hex_code)
             self.update()
 
     def slot_change_rgb(self, tag):
@@ -200,8 +191,10 @@ class Square(QWidget):
                 self._color.setti(tag, value)
                 self._emit_rgb = False
                 self._emit_hsv = True
+
                 # keep similar with slot_change_hsv.
                 self.selected_hsv.emit(self._color.hsv)
+                self.selected_hex.emit(self._color.hex_code)
                 self.update()
         return _func_
 
@@ -212,12 +205,14 @@ class Square(QWidget):
 
         assert tag in ("h", "s", "v")
         def _func_(value):
-            if abs(value - self._color.getti(tag)) > 1E-3:
+            if abs(value - self._color.getti(tag)) > 1.5E-3:
                 self._color.setti(tag, value)
                 self._emit_rgb = True
                 self._emit_hsv = False
+
                 # paint event would not triggered when rgb color not changed (even hsv changed).
                 self.selected_hsv.emit(self._color.hsv)
+                self.selected_hex.emit(self._color.hex_code)
                 self.update()
         return _func_
 
@@ -231,10 +226,12 @@ class Square(QWidget):
             if pr_hex_code != self._color.hex_code:
                 self._color.setti_hex_code(pr_hex_code)
                 self._acitvated_state = True
-                self._emit_activated = True
+                self.selected_active.emit(self._acitvated_state)
+
                 self._emit_rgb = True
                 self._emit_hsv = True
-                self._emit_color = True
+
+                self.selected_hsv.emit(self._color.hsv)
                 self.update()
         except:
             pass
