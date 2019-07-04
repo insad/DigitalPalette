@@ -26,7 +26,7 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 4. Click "Finish" to finish the installation and run DigitalPalette.  
 ![Finish](installation/3.png)
 
-# Basic Usage
+# Usage
 ## Change the language
 Currently we only provide English and Chinese translations. You could generate translation files by PyQt5 tools and put it into the language directory.  
 ...
@@ -96,3 +96,9 @@ Currently DigitalPalette can import color data in DigitalPalette Json File Forma
 
 ## Extract Colors from an image
 Currently DigitalPalette doesn't support to extract harmonious colors from an image automatically, and only provides tools for analysis and selections.  
+
+# Author
+Liu Jia
+
+# License
+DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
