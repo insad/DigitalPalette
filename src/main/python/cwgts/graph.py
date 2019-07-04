@@ -9,6 +9,7 @@ from clibs.image3c import Image3C
 from cwgts.view import View
 import numpy as np
 import sys
+import os
 
 
 class Graph(QWidget):
@@ -390,11 +391,12 @@ class Graph(QWidget):
         Slot func. Import a graph by double click label.
         """
         if self._load_finished:
-            cb_file = QFileDialog.getOpenFileName(filter="All Graphs (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; \
-                                                          PNG Graph (*.png);; \
-                                                          BMP Graph (*.bmp);; \
-                                                          JPEG Graph (*.jpg *.jpeg);; \
-                                                          TIFF Graph (*.tif *.tiff);;")
+            default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
+            if not os.path.isdir(default_path):
+                os.makedirs(default_path)
+            
+            cb_filter = "All Graphs (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; PNG Graph (*.png);; BMP Graph (*.bmp);; JPEG Graph (*.jpg *.jpeg);; TIFF Graph (*.tif *.tiff);;"
+            cb_file = QFileDialog.getOpenFileName(None, self._dia_descs[0], default_path, filter=cb_filter)
 
             if cb_file[0]:
                 self.slot_open_image_file(cb_file[0])
@@ -574,4 +576,8 @@ class Graph(QWidget):
             _translate("Graph", "Error"),
             _translate("Graph", "Please open only one image in once time."),
             _translate("Graph", "Couldn't create temporary directory."),
+        )
+
+        self._dia_descs = (
+            _translate("Graph", "Extract"),
         )

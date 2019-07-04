@@ -44,20 +44,20 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             0.1,              # 5  # "tip_radius":   # Circle tip radius in graph view.
             0.9,              # 6  # "widratio":     # Color square width / height ratio compared with cube size.
             0.8,              # 7  # "bar_widratio": # V value bar height ratio compared with work space.
-            1.3,              # 8  # "zoom_step":    # zoom ratio for each step.
-            5,                # 9  # "move_step":    # graph move lengtho for each step.
-            10,               # 10 # "select_dist":  # minimal selecting distance.
+            1.3,              # 8  # "zoom_step":    # Zoom ratio for each step.
+            5,                # 9  # "move_step":    # Graph move lengtho for each step.
+            10,               # 10 # "select_dist":  # Minimal selecting distance.
             5,                # 11 # "half_sp":      # Half of spacing between two views in graph.
-            (0,   0,   0  ),  # 12 # "at_color":     # activated color for color tag in wheel and square. For wheel.py and square.py.
-            (200, 200, 200),  # 13 # "ia_color":     # inactivated color for color tags in wheel and squares. For wheel.py and square.py.
+            (0,   0,   0  ),  # 12 # "at_color":     # Activated color for color tag in wheel and square. For wheel.py and square.py.
+            (200, 200, 200),  # 13 # "ia_color":     # Inactivated color for color tags in wheel and squares. For wheel.py and square.py.
             (230, 230, 230),  # 14 # "vb_color":     # V value bar edge color.
             (100, 100, 100),  # 15 # "vs_color":     # View window tip color.
-            (100, 100, 100),  # 16 # "st_color":     # select circle color in graph views.
-            (200, 200, 200),  # 17 # "it_color":     # referenced select circle color in graph views.
+            (100, 100, 100),  # 16 # "st_color":     # Select circle color in graph views.
+            (200, 200, 200),  # 17 # "it_color":     # Referenced select circle color in graph views.
             [0, 7, 7, 7],     # 18 # "graph_types":  # Graph types corresponding to temporary files.
             [0, 1, 2, 3],     # 19 #  "graph_chls":  # Graph channels corresponding to temporary files.
             "analogous",      # 20 # "hm_rule":      # Initial harmony rule.
-            (0, "default"),   # 21 # "lang":         # default language.
+            (0, "default"),   # 21 # "lang":         # Default language.
             True,             # 22 # "press_move":   # Press anywhere in wheel will move activated color tag to the selected color.
         )
 

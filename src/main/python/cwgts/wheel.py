@@ -367,9 +367,12 @@ class Wheel(QWidget):
 
     def slot_export(self):
         default_name = "{}".format(time.strftime("digipale_%Y_%m_%d", time.localtime()))
-        cb_file = QFileDialog.getSaveFileName(None, "Export", default_name, filter="DigitalPalette Json File (*.json);; \
-                                                                                    Plain Text (*.txt);; \
-                                                                                    Swatch File (*.aco)")
+        default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
+        if not os.path.isdir(default_path):
+            os.makedirs(default_path)
+
+        cb_filter = "DigitalPalette Json File (*.json);; Plain Text (*.txt);; Swatch File (*.aco)"
+        cb_file = QFileDialog.getSaveFileName(None, self._dia_descs[0],  os.sep.join((default_path, default_name)), filter=cb_filter)
 
         if cb_file[0]:
             if cb_file[0].split(".")[-1].lower() == "json":
@@ -402,7 +405,12 @@ class Wheel(QWidget):
 
         cb_file = [None,]
         if interface_cmp:
-            cb_file = QFileDialog.getOpenFileName(filter="DigitalPalette Json File (*.json)")
+            default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
+            if not os.path.isdir(default_path):
+                os.makedirs(default_path)
+
+            cb_filter = "DigitalPalette Json File (*.json)"
+            cb_file = QFileDialog.getOpenFileName(None, self._dia_descs[1], default_path, filter=cb_filter)
     
         if cb_file[0]:
             file_cmp = True
@@ -462,4 +470,9 @@ class Wheel(QWidget):
             _translate("Wheel", "Data files can only be imported in color wheel interface."),
             _translate("Wheel", "Unknown data file extension: {0}."),
             _translate("Wheel", "Data file is broken."),
+        )
+
+        self._dia_descs = (
+            _translate("Wheel", "Export"),
+            _translate("Wheel", "Import"),
         )

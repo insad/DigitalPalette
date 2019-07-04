@@ -47,78 +47,83 @@
 <context>
     <name>Graph</name>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Reading RGB data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Detecting image RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating vertical RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating horizontal RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Integrating final RGB space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Transforming RGB to HSV data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Detecting image HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating vertical HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating horizontal HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Integrating final HSV space edges.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Finishing.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="575"/>
+        <location filename="../../cwgts/graph.py" line="577"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="575"/>
+        <location filename="../../cwgts/graph.py" line="577"/>
         <source>Couldn&apos;t create temporary directory.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="575"/>
+        <location filename="../../cwgts/graph.py" line="577"/>
         <source>Please open only one image in once time.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="557"/>
+        <location filename="../../cwgts/graph.py" line="559"/>
         <source>Double click here to open an image.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/graph.py" line="583"/>
+        <source>Extract</source>
         <translation></translation>
     </message>
 </context>
@@ -481,58 +486,68 @@
 <context>
     <name>Wheel</name>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Unknown version of data file {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Color {0} doesn&apos;t exist in data file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>The HSV tag of color {0} doesn&apos;t exist in data file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Color {0} with HSV value is invalid: {1}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Version is not compatible for data file: {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Harmony rule is invalid: {0}. Using custom instead.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Harmony rule doesn&apos;t exist in data file. Use custom instead.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Data files can only be imported in color wheel interface.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Unknown data file extension: {0}.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Data file is broken.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="475"/>
+        <source>Export</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="475"/>
+        <source>Import</source>
         <translation></translation>
     </message>
 </context>

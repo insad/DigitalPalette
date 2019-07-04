@@ -4,7 +4,7 @@ import re
 
 
 def current_version():
-    return "v1.0.30-dev"
+    return "v1.0.31-dev"
 
 def main_site():
     return "https://github.com/liujiacode/DigitalPalette"
@@ -13,7 +13,7 @@ def update_site():
     return "https://github.com/liujiacode/DigitalPalette/releases"
 
 def update_date():
-    return "2019.07.03"
+    return "2019.07.04"
 
 def if_version_compatible(version):
     version_cmp = False

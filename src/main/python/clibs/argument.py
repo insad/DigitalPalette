@@ -19,7 +19,6 @@ class Argument(object):
         self.hm_rules = ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom")
         self.lang = ("en", "zh_cn")
 
-        self.default_settings = default_settings
         store = settings_dir
 
         if not os.path.isdir(store):
@@ -46,7 +45,12 @@ class Argument(object):
             os.makedirs(langs_dir)
 
         self.lang_paths = tuple(lang_paths)
-        
+
+        # parse the default lang path before loading.
+        _default_settings = list(default_settings)
+        _default_settings[21] = self.parse_lang(_default_settings[21], by_idx=False)
+        self.default_settings = tuple(_default_settings)
+
         self.err = None
 
         if os.path.isfile(self._store):
@@ -81,7 +85,7 @@ class Argument(object):
             self.settings = tuple(list(self.default_settings) + [dpinfo.current_version(),])
 
     def reset_settings(self):
-         self.settings = tuple(list(self.default_settings) + [dpinfo.current_version(),])
+        self.settings = tuple(list(self.default_settings) + [dpinfo.current_version(),])
 
     def modify_settings(self, idx_values):
         lst = list(self.settings)

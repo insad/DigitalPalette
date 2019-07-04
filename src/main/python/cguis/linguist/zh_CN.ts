@@ -47,79 +47,84 @@
 <context>
     <name>Graph</name>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Reading RGB data.</source>
         <translation>正在读取RGB数据。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Detecting image RGB space edges.</source>
         <translation>正在检测RGB空间下的图片边缘。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating vertical RGB space edges.</source>
         <translation>正在生成RGB空间下的垂直边缘。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating horizontal RGB space edges.</source>
         <translation>正在生成RGB空间下的水平边缘。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Integrating final RGB space edges.</source>
         <translation>正在合成RGB空间下边缘的最终形式。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Transforming RGB to HSV data.</source>
         <translation>正在将RGB数据转换成HSV数据。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Detecting image HSV space edges.</source>
         <translation>正在检测HSV空间下的图片边缘。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating vertical HSV space edges.</source>
         <translation>正在生成HSV空间下的垂直边缘。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Generating horizontal HSV space edges.</source>
         <translation>正在生成HSV空间下的水平边缘。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Integrating final HSV space edges.</source>
         <translation>正在合成HSV空间下边缘的最终形式。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="561"/>
+        <location filename="../../cwgts/graph.py" line="563"/>
         <source>Finishing.</source>
         <translation>结束。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="575"/>
+        <location filename="../../cwgts/graph.py" line="577"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="575"/>
+        <location filename="../../cwgts/graph.py" line="577"/>
         <source>Couldn&apos;t create temporary directory.</source>
         <translation>未能创建临时文件夹。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="575"/>
+        <location filename="../../cwgts/graph.py" line="577"/>
         <source>Please open only one image in once time.</source>
         <translation>请一次仅打开一张图片。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/graph.py" line="557"/>
+        <location filename="../../cwgts/graph.py" line="559"/>
         <source>Double click here to open an image.</source>
         <translation>双击此处打开图片。</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/graph.py" line="583"/>
+        <source>Extract</source>
+        <translation>提取</translation>
     </message>
 </context>
 <context>
@@ -481,59 +486,69 @@
 <context>
     <name>Wheel</name>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Unknown version of data file {0}.</source>
         <translation>数据文件{0}的版本未知。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Color {0} doesn&apos;t exist in data file.</source>
         <translation>未能在数据文件中找到关于颜色{0}的信息。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>The HSV tag of color {0} doesn&apos;t exist in data file.</source>
         <translation>未能在数据文件中找到颜色{0}的HSV标志。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Color {0} with HSV value is invalid: {1}.</source>
         <translation>无效的颜色{0}HSV数据：{1}。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Version is not compatible for data file: {0}.</source>
         <translation>数据文件的版本不兼容：{0}。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Harmony rule is invalid: {0}. Using custom instead.</source>
         <translation>无效的调和规则：{0}。使用自定义规则。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Harmony rule doesn&apos;t exist in data file. Use custom instead.</source>
         <translation>未能在数据文件中找到调和规则。使用自定义规则。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Data files can only be imported in color wheel interface.</source>
         <translation>仅可在色轮界面下导入数据文件。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Unknown data file extension: {0}.</source>
         <translation>未知的数据文件扩展名：{0}。</translation>
     </message>
     <message>
-        <location filename="../../cwgts/wheel.py" line="453"/>
+        <location filename="../../cwgts/wheel.py" line="461"/>
         <source>Data file is broken.</source>
         <translation>数据文件已损坏。</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="475"/>
+        <source>Export</source>
+        <translation>导出</translation>
+    </message>
+    <message>
+        <location filename="../../cwgts/wheel.py" line="475"/>
+        <source>Import</source>
+        <translation>导入</translation>
     </message>
 </context>
 <context>
