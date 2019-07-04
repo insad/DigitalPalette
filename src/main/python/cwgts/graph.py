@@ -99,15 +99,10 @@ class Graph(QWidget):
             from_graph_label.selected_pt_rtos.connect(self.slot_set_graph_colors)
 
         self._image_imported = False    # image is opend.
-        self._ori_gph = [5, 5, 5, 5]    # original graph type. set 5 which doesn't exist for initialize.
-        self._ori_chl = [5, 5, 5, 5]    # original channel. set 5 which doesn't exist for initialize.
 
         # for collecting selected colors in views.
         self._ref_graph = None  # referenced rgb data from import image.
 
-        # for recover colors from wheel to graph interface.
-        self._ori_colors = [np.array((0, 0, 0))] * 5
-        
         # for func resize.
         self._pos_rto = np.array([0.5, 0.5])
         self._pos_moving = False
@@ -144,7 +139,6 @@ class Graph(QWidget):
             self.update()
 
     def paintEvent(self, event):
-
         self._wid = self.geometry().width()
         self._hig = self.geometry().height()
 
@@ -176,10 +170,6 @@ class Graph(QWidget):
             # update graph view sizes and contents.
             self._func_show_()
             self._func_resize_()
-            self._func_update_view_()
-
-            self._ori_gph = list(self._env_graph_types)
-            self._ori_chl = list(self._env_graph_chls)
 
         # paint loading interface.
         elif self._image_imported and not self._load_finished:
@@ -300,15 +290,13 @@ class Graph(QWidget):
 
     # ===== ===== ===== inner functions ===== ===== =====
 
-    def _func_update_view_(self):
+    def _func_update_view_(self, idx):
         """
         Update graph view.
         """
 
-        for i in self._view_seq:
-            if self._env_graph_types[i] != self._ori_gph[i] or self._env_graph_chls[i] != self._ori_chl[i]:
-                img = self._image3c.load_image(self._env_graph_types[i], self._env_graph_chls[i])
-                self._graph_views[i].slot_load_img(img)
+        img = self._image3c.load_image(self._env_graph_types[idx], self._env_graph_chls[idx])
+        self._graph_views[idx].slot_load_img(img)
 
     def _func_resize_(self):
         """
@@ -406,13 +394,12 @@ class Graph(QWidget):
 
     def slot_open_image_file(self, image):
         if self._image3c.check_temp_dir():
-            self._ori_gph = [5, 5, 5, 5]
-            self._ori_chl = [5, 5, 5, 5]
-
             for i in range(4):
+                self._func_update_view_(i)
+
                 graph_label = self._graph_views[i].graph_label
                 graph_label.slot_clear_all()
-            
+
             self._image3c.import_image(image)
             self._image3c.start()
 
@@ -435,10 +422,10 @@ class Graph(QWidget):
         """
 
         def _func_(graph_type):
-            if graph_type != self._env_graph_types[graph_idx]:
-                self._env_graph_types[graph_idx] = graph_type
+            self._env_graph_types[graph_idx] = graph_type
+            self._func_update_view_(graph_idx)
 
-                self.update()
+            self.update()
 
         return _func_
     
@@ -448,10 +435,10 @@ class Graph(QWidget):
         """
 
         def _func_(channel):
-            if channel != self._env_graph_chls[graph_idx]:
-                self._env_graph_chls[graph_idx] = channel
+            self._env_graph_chls[graph_idx] = channel
+            self._func_update_view_(graph_idx)
 
-                self.update()
+            self.update()
 
         return _func_
 
@@ -535,6 +522,10 @@ class Graph(QWidget):
         self._view_seq = [0, 1, 2, 3]
         self._func_resize_()
         self._func_show_()
+
+        for i in range(4):
+            self._func_update_view_(i)
+        
         self.update()
 
     def slot_set_loading_desc(self, desc_idx):
