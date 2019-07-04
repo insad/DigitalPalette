@@ -17,7 +17,7 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 1. Double click the installer and click "Next".  
 ![Interface](installation/0.png)
 
-2. Read the [License](../LICENSE). Check "I accept the terms of the License Aggrement" if you agree it, then click "Next".  
+2. Read the [License](../LICENSE). Check "I accept the terms of the License Aggrement" if you agree with it, then click "Next".  
 ![License](installation/1.png)
 
 3. Choose an empty directory and click "Install" to start the installation.  
@@ -28,15 +28,16 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 
 # Usage
 ## Change the language
-Currently we only provide English and Chinese translations. You could generate translation files by PyQt5 tools and put it into the language directory.  
-...
+Currently we only provide English and Chinese translations. You could generate translation files by PyQt5 tools and put it into the language directory. You could change the language in two steps:  
+1. Click "Edit" in the menu bar and select "Settings" to open the settings dialog.  
+2. Click the combo box lateral to the "Language" label in "Interface" tab. Select the target language and click "OK" to change the language. 
 
 ## Interfacial Layout
 The interfacial layout of DigitalPalette is displayed as bellow, where:  
 * Title is surrounded by the red square, which indicates the name (DigitalPalette) and current version of this software.
-* Menu bar is surrounded by the blue square, which includes the **import** (File -> Import) and **export** actions (File -> Export) of file, **Quit** action (File -> Quit), **create** (Edit -> Create) and **extract** (Edit -> Extract) actions of color set from color wheel and images as well as setup action of the prefer **settings** (Edit -> Settings) of this software, etc..
-* Option bar is surrounded by the orange square, which includes a set of harmony rules.
-* Tool bar is surrounded by the purple square, which include the common operations and color modes.
+* Menu bar is surrounded by the blue square, which includes the **import** (File -> Import) and **export** actions (File -> Export) of file, **Quit** action (File -> Quit), **create** (Edit -> Create) and **extract** (Edit -> Extract) actions of color set from color wheel and images as well as setup action of the preference **settings** (Edit -> Settings) of this software, etc..
+* Option box is surrounded by the orange square, which includes a set of harmony rules.
+* Tool box is surrounded by the purple square, which include the common operations and color modes.
 * Work area is surrounded by the green square.
 * Result area is surrounded by the yellow square, which includes the color set informations such as the **hex** code, **RGB** values and **HSV** values of colors, etc..  
 ![Layout](usage/1.png)
@@ -78,21 +79,41 @@ Create a set of colors in custom.
 ![Custom](usage/9.png)
 
 ## Export Colors
-Harmonious colors can be exported to a readable and writable file by DigitalPalette for subsequent analysis and usage.  
-...
+Harmonious colors can be exported to a readable and writable file for subsequent analysis and usage. Steps:  
+1. Click the "Export" button in tool box or click "Edit -> Export" from the menu bar to open the file dialog.  
+2. Change the directory, file name and extension and save it.
 
 ## Data Formats
-Currently DigitalPalette can format color data into file with following extensions:  
+Currently DigitalPalette can export color data into a file with following formats:  
 1. DigitalPalette Json File Format (*.json)  
-...
+Data file with this format contains the harmony rule, hex code, RGB and HSV values of colors. This type of file can be imported by DigitalPalette.  
+
 2. Plain Text Format (*.txt)  
-...
+Data file with this format contains the hex code, RGB and HSV values of colors. This type of file can be opened by editors.
+
 3. Swatch File Format (*.aco)  
-...
+Data file with this format contains twenty-five colors, including five harmonious colors and twenty deuterogenic colors. **Note that** the sequence of colors in swatch are: 1-5 selected harmonious colors (prefixed "N"); 6-10 colors with same hue and 100% saturation and lightness values (prefixed "F"); 11-15 colors with same hue and 50% saturation, 100% lightness values (prefixed "S"); 16-20 colors with same hue and 100% saturation, 50% lightness values (prefixed "V"); and 21-25 colors with same hue and 50% saturation and lightness values (prefixed "H").  
 
 ## Import Colors (Swatches)
-Currently DigitalPalette can import color data in DigitalPalette Json File Format. You could import color swatches into general image processing softwares, such as GIMP and Photoshop.  
-...
+Currently DigitalPalette can import color data in DigitalPalette Json File Format. You could import color swatches into general image processing softwares, such as GIMP and Photoshop.
+1. Import DigitalPalette Json File into DigitalPalette  
+Firstly, click the "Import" button in tool box or click "Edit -> Import" from the menu bar to open the file dialog.  
+Then, find the pre-saved file in DigitalPalette Json File Format and click "Open".
+
+2. Import Swatch File into GIMP  
+Firstly, open GIMP and select "Import Palette" with right-buttom cliced in colormap and open the import dialog.  
+Then, find the pre-saved swatch file and click "Import".  
+![GIMP](usage/10.png)
+
+3. Import Swatch File into Photoshop  
+Firstly, open Photoshop and select "Load" in swatch box and open the file dialog.  
+Then, find the pre-saved swatch file and click "Open". The harmonious colors would be added at the end of current swatch.  
+![Photoshop](usage/11.png)
+
+4. Import Swatch File into UDongman Paint  
+Firstly, open UDongman Paint and select "Load" in swatch box and open the file dialog.  
+Then, find the pre-saved swatch file and click "Open". The harmonious colors would be opened in a new swatch.  
+![UDongman Paint](usage/12.png)
 
 ## Extract Colors from an image
 Currently DigitalPalette doesn't support to extract harmonious colors from an image automatically, and only provides tools for analysis and selections.  
