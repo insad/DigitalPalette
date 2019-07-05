@@ -7,10 +7,14 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 1.0.32 (developing)
 
 # Tutorial (教程)
+Get started with DigitalPalette through these tutorials in few minutes.  
+
 * [Tutorial in English](tutorials/tutorial_English.md)  
 * [中文教程](tutorials/tutorial_Chinese.md)
 
 # Download (下载)
+Download the latest developing version of DigitalPalette.  
+
 | Type      | Windows (32 bit) | Windows (64 bit) |
 | --------- | ---------------- | ---------------- |
 | Installer | To be released.  | To be released.  |
