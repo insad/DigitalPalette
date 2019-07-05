@@ -63,6 +63,11 @@ class Wheel(QWidget):
         self._bar_1_actived = False # for mouse press, move on bar 1.
         self._bar_2_actived = False # for mouse press, move on bar 2.
 
+        # default path for importing and exporting.
+        self._default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
+        if not os.path.isdir(self._default_path):
+            os.makedirs(self._default_path)
+
         self._func_tr_()
 
     def reload_settings(self, settings):
@@ -367,14 +372,13 @@ class Wheel(QWidget):
 
     def slot_export(self):
         default_name = "{}".format(time.strftime("digipale_%Y_%m_%d", time.localtime()))
-        default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
-        if not os.path.isdir(default_path):
-            os.makedirs(default_path)
 
         cb_filter = "DigitalPalette Json File (*.json);; Plain Text (*.txt);; Swatch File (*.aco)"
-        cb_file = QFileDialog.getSaveFileName(None, self._dia_descs[0],  os.sep.join((default_path, default_name)), filter=cb_filter)
+        cb_file = QFileDialog.getSaveFileName(None, self._dia_descs[0],  os.sep.join((self._default_path, default_name)), filter=cb_filter)
 
         if cb_file[0]:
+            self._default_path = os.path.dirname(cb_file[0])
+
             if cb_file[0].split(".")[-1].lower() == "json":
                 color_dict = {"version": dpinfo.current_version(), "harmony_rule": self._env_hm_rule}
                 color_dict.update(self._create.export_color_set())
@@ -405,14 +409,12 @@ class Wheel(QWidget):
 
         cb_file = [None,]
         if interface_cmp:
-            default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
-            if not os.path.isdir(default_path):
-                os.makedirs(default_path)
-
             cb_filter = "DigitalPalette Json File (*.json)"
-            cb_file = QFileDialog.getOpenFileName(None, self._dia_descs[1], default_path, filter=cb_filter)
+            cb_file = QFileDialog.getOpenFileName(None, self._dia_descs[1], self._default_path, filter=cb_filter)
     
         if cb_file[0]:
+            self._default_path = os.path.dirname(cb_file[0])
+
             file_cmp = True
             color_dict = {}
             with open(cb_file[0], "r") as f:

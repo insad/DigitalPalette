@@ -262,6 +262,9 @@ class View(QWidget, Ui_graph_view):
         wid = self.geometry().width()
         hig = self.geometry().height()
 
+        wid = 10 if wid < 10 else wid
+        hig = 10 if hig < 10 else hig
+
         resized_img = self._img.scaled(wid, hig, Qt.KeepAspectRatio)
         img_wid = resized_img.size().width()
         img_hig = resized_img.size().height()

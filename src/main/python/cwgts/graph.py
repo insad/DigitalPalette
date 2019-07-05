@@ -115,6 +115,11 @@ class Graph(QWidget):
         self.setAcceptDrops(True)
         self._accepted_file = ""
 
+        # default path for importing and exporting.
+        self._default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
+        if not os.path.isdir(self._default_path):
+            os.makedirs(self._default_path)
+
         # translate interface.
         self._func_tr_()
 
@@ -290,13 +295,14 @@ class Graph(QWidget):
 
     # ===== ===== ===== inner functions ===== ===== =====
 
-    def _func_update_view_(self, idx):
+    def _func_update_view_(self, idxes):
         """
         Update graph view.
         """
 
-        img = self._image3c.load_image(self._env_graph_types[idx], self._env_graph_chls[idx])
-        self._graph_views[idx].slot_load_img(img)
+        for idx in idxes:
+            img = self._image3c.load_image(self._env_graph_types[idx], self._env_graph_chls[idx])
+            self._graph_views[idx].slot_load_img(img)
 
     def _func_resize_(self):
         """
@@ -379,14 +385,12 @@ class Graph(QWidget):
         Slot func. Import a graph by double click label.
         """
         if self._load_finished:
-            default_path = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
-            if not os.path.isdir(default_path):
-                os.makedirs(default_path)
-            
             cb_filter = "All Graphs (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; PNG Graph (*.png);; BMP Graph (*.bmp);; JPEG Graph (*.jpg *.jpeg);; TIFF Graph (*.tif *.tiff);;"
-            cb_file = QFileDialog.getOpenFileName(None, self._dia_descs[0], default_path, filter=cb_filter)
+            cb_file = QFileDialog.getOpenFileName(None, self._dia_descs[0], self._default_path, filter=cb_filter)
 
             if cb_file[0]:
+                self._default_path = os.path.dirname(cb_file[0])
+
                 self.slot_open_image_file(cb_file[0])
         
         else:
@@ -395,8 +399,6 @@ class Graph(QWidget):
     def slot_open_image_file(self, image):
         if self._image3c.check_temp_dir():
             for i in range(4):
-                self._func_update_view_(i)
-
                 graph_label = self._graph_views[i].graph_label
                 graph_label.slot_clear_all()
 
@@ -411,6 +413,7 @@ class Graph(QWidget):
             self._func_show_()
             self._load_finished = False
             self._image_imported = True
+
             self.update()
 
         else:
@@ -423,7 +426,7 @@ class Graph(QWidget):
 
         def _func_(graph_type):
             self._env_graph_types[graph_idx] = graph_type
-            self._func_update_view_(graph_idx)
+            self._func_update_view_((graph_idx,))
 
             self.update()
 
@@ -436,7 +439,7 @@ class Graph(QWidget):
 
         def _func_(channel):
             self._env_graph_chls[graph_idx] = channel
-            self._func_update_view_(graph_idx)
+            self._func_update_view_((graph_idx,))
 
             self.update()
 
@@ -514,18 +517,16 @@ class Graph(QWidget):
         Loading finished process.
         """
 
-        self._load_finished = state
+        self._load_finished = True
         self._pro_bar.hide()
         self._icon_label.hide()
         self._load_label.hide()
 
         self._view_seq = [0, 1, 2, 3]
         self._func_resize_()
+        self._func_update_view_(tuple(range(4)))
         self._func_show_()
 
-        for i in range(4):
-            self._func_update_view_(i)
-        
         self.update()
 
     def slot_set_loading_desc(self, desc_idx):
