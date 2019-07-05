@@ -55,3 +55,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 * 2019.07.03: Repair graph resize event.
 * 2019.07.04: Modify translations.
 * 2019.07.05: Repair loading and graph resize event.
+* 2019.07.05: Repair closing process.

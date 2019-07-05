@@ -252,6 +252,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 self._ori_lang = lang
 
     def closeEvent(self, event):
+        self._settings.close()
         self._cwgt_wheel.close()
         self._cwgt_graph.close()
         self._cwgt_result.close()
