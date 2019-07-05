@@ -56,7 +56,7 @@ Create a set of colors with same hue and different saturation and lightness valu
 ![Monochromatic](English/usage/3.png)
 
 3. **Triad**  
-Create a set of colors with hue values in trisection.  
+Create a set of colors with hue values in trigonal distributions.  
 ![Triad](English/usage/4.png)
 
 4. **Tetrad**  
@@ -64,7 +64,7 @@ Create a set of colors with colors complementary to each other in pairs.
 ![Tetrad](English/usage/5.png)
 
 5. **Pentad**  
-Create a set of colors with hue values in quinquesection.  
+Create a set of colors with hue values in pentagonal distributions.  
 ![Pentad](English/usage/6.png)
 
 6. **Complementary**  
