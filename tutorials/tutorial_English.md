@@ -93,7 +93,7 @@ Data file with this format contains the harmony rule, hex code, RGB and HSV valu
 Data file with this format contains the hex code, RGB and HSV values of colors. This type of file can be opened by editors.
 
 3. Swatch File Format (*.aco)  
-Data file with this format contains twenty-five colors, including five harmonious colors and twenty deuterogenic colors. **Note that** the sequence of colors in swatch are: 1-5 selected harmonious colors (prefixed "N"); 6-10 colors with same hue and 100% saturation and lightness values (prefixed "F"); 11-15 colors with same hue and 50% saturation, 100% lightness values (prefixed "S"); 16-20 colors with same hue and 100% saturation, 50% lightness values (prefixed "V"); and 21-25 colors with same hue and 50% saturation and lightness values (prefixed "H").  
+Data file with this format contains twenty-five colors, including five harmonious colors and twenty colors derived from them. **Note that** the sequence of colors in swatch are: 1-5 selected harmonious colors (prefixed "N"); 6-10 colors with same hue and 100% saturation and lightness values (prefixed "F"); 11-15 colors with same hue and 50% saturation, 100% lightness values (prefixed "S"); 16-20 colors with same hue and 100% saturation, 50% lightness values (prefixed "V"); and 21-25 colors with same hue and 50% saturation and lightness values (prefixed "H").  
 
 ## Import Colors (Swatches)
 Currently DigitalPalette can import color data in DigitalPalette Json File Format. You could import color swatches into general image processing softwares, such as GIMP and Photoshop.
