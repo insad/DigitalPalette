@@ -28,7 +28,7 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 
 # Usage
 ## Change the language
-Currently we only provide English and Chinese translations. You could generate translation files in other languages by PyQt5 tools and put it into the language directory. Then you could change the language in two steps:  
+Currently we only provide English and Chinese translations. You could generate translation files of any other languages by PyQt5 tools and put it into the language directory. Then you could change the language in two steps:  
 1. Click "Edit" in the menu bar and select "Settings" to open the settings dialog.  
 2. Click the combo box lateral to the "Language" label in "Interface" tab. Select the target language and click "OK" to change the interfacial language.  
 ![Language](English/usage/0.png)
@@ -108,7 +108,7 @@ Then, find the pre-saved swatch file and click "Import".
 
 3. Import Swatch File into Photoshop  
 Firstly, open Photoshop and select "Load" in swatch box and open the file dialog.  
-Then, find the pre-saved swatch file and click "Open". The harmonious colors would be added at the end of current swatch.  
+Then, find the pre-saved swatch file and click "Open". The harmonious colors would be added to the end of current swatch.  
 ![Photoshop](Chinese/usage/11.png)
 
 4. Import Swatch File into UDongman Paint  
