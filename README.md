@@ -20,6 +20,8 @@ Download the latest developing version of DigitalPalette.
 | Installer | To be released.  | To be released.  |
 | Packet    | To be released.  | To be released.  |
 
+<br/>
+
 | 中文版 | Windows (32 位) | Windows (64 位) |
 | --- | --- | --- |
 | 安装程序 | 即将发布. | 即将发布. |
