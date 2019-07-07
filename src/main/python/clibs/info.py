@@ -4,7 +4,7 @@ import re
 
 
 def current_version():
-    return "v1.0.33-pre"
+    return "v1.0.34-pre"
 
 def main_site():
     return "https://liujiacode.github.io/DigitalPalette"

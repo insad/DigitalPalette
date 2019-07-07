@@ -118,8 +118,7 @@ class Image3C(QThread):
 
         for i in range(hsv_data.shape[0]):
             for j in range(hsv_data.shape[1]):
-                h, s, v = Color.rgb_to_hsv(rgb_data[i][j])
-                hsv_data[i][j] = np.array((h / 360.0, s, v), dtype=np.float32)
+                hsv_data[i][j] = Color.rgb_to_hsv(rgb_data[i][j])
 
             self.process.emit(next_process + i)
         
@@ -140,14 +139,21 @@ class Image3C(QThread):
         vtl_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
-                h_result = hsv_data[i][j + 2][0] + hsv_data[i + 1][j + 2][0] * 2 + hsv_data[i + 2][j + 2][0] - hsv_data[i][j][0] - hsv_data[i + 1][j][0] * 2 - hsv_data[i + 2][j][0]
+                h_result_0 = abs(hsv_data[i + 0][j + 2][0] - hsv_data[i + 0][j][0])
+                h_result_1 = abs(hsv_data[i + 1][j + 2][0] - hsv_data[i + 1][j][0])
+                h_result_2 = abs(hsv_data[i + 2][j + 2][0] - hsv_data[i + 2][j][0])
+
                 s_result = hsv_data[i][j + 2][1] + hsv_data[i + 1][j + 2][1] * 2 + hsv_data[i + 2][j + 2][1] - hsv_data[i][j][1] - hsv_data[i + 1][j][1] * 2 - hsv_data[i + 2][j][1]
                 v_result = hsv_data[i][j + 2][2] + hsv_data[i + 1][j + 2][2] * 2 + hsv_data[i + 2][j + 2][2] - hsv_data[i][j][2] - hsv_data[i + 1][j][2] * 2 - hsv_data[i + 2][j][2]
 
-                # 510 = 255 * 2.0, 127.5 = 255 / 2.0.
-                h_result = abs(h_result)
-                h_result = 510.0 - h_result * 127.5 if h_result > 2.0 else h_result * 127.5
-                vtl_results[i][j] = np.array((h_result, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
+                # normalize.
+                h_result_0 = 360.0 - h_result_0 if h_result_0 > 180.0 else h_result_0
+                h_result_1 = 360.0 - h_result_1 if h_result_1 > 180.0 else h_result_1
+                h_result_2 = 360.0 - h_result_2 if h_result_2 > 180.0 else h_result_2
+
+                h_result = h_result_0 * 0.25 / 180.0 + h_result_1 * 0.5 / 180.0 + h_result_2 * 0.25 / 180.0
+
+                vtl_results[i][j] = np.array((h_result * 255, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
             self.process.emit(next_process + i)
 
         self.save_rgb_temp_data(vtl_results, "5")
@@ -160,14 +166,21 @@ class Image3C(QThread):
         hrz_results = np.zeros(results_shape, dtype=np.uint8)
         for i in range(results_shape[0]):
             for j in range(results_shape[1]):
-                h_result = hsv_data[i + 2][j][0] + hsv_data[i + 2][j + 1][0] * 2 + hsv_data[i + 2][j + 2][0] - hsv_data[i][j][0] - hsv_data[i][j + 1][0] * 2 - hsv_data[i][j + 2][0]
+                h_result_0 = abs(hsv_data[i + 2][j + 0][0] - hsv_data[i][j + 0][0])
+                h_result_1 = abs(hsv_data[i + 2][j + 1][0] - hsv_data[i][j + 1][0])
+                h_result_2 = abs(hsv_data[i + 2][j + 2][0] - hsv_data[i][j + 2][0])
+
                 s_result = hsv_data[i + 2][j][1] + hsv_data[i + 2][j + 1][1] * 2 + hsv_data[i + 2][j + 2][1] - hsv_data[i][j][1] - hsv_data[i][j + 1][1] * 2 - hsv_data[i][j + 2][1]
                 v_result = hsv_data[i + 2][j][2] + hsv_data[i + 2][j + 1][2] * 2 + hsv_data[i + 2][j + 2][2] - hsv_data[i][j][2] - hsv_data[i][j + 1][2] * 2 - hsv_data[i][j + 2][2]
 
-                # 510 = 255 * 2.0, 127.5 = 255 / 2.0.
-                h_result = abs(h_result)
-                h_result = 510.0 - h_result * 127.5 if h_result > 2.0 else h_result * 127.5
-                hrz_results[i][j] = np.array((h_result, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
+                # normalize.
+                h_result_0 = 360.0 - h_result_0 if h_result_0 > 180.0 else h_result_0
+                h_result_1 = 360.0 - h_result_1 if h_result_1 > 180.0 else h_result_1
+                h_result_2 = 360.0 - h_result_2 if h_result_2 > 180.0 else h_result_2
+
+                h_result = h_result_0 * 0.25 / 180.0 + h_result_1 * 0.5 / 180.0 + h_result_2 * 0.25 / 180.0
+
+                hrz_results[i][j] = np.array((h_result * 255, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
             self.process.emit(next_process + i)
 
         self.save_rgb_temp_data(hrz_results, "6")
@@ -197,9 +210,9 @@ class Image3C(QThread):
 
         for i in range(rgb_data.shape[0]):
             for j in range(rgb_data.shape[1]):
-                r_channel[i][j][0] = rgb_data[i][j][0].astype(np.uint8)
-                g_channel[i][j][1] = rgb_data[i][j][1].astype(np.uint8)
-                b_channel[i][j][2] = rgb_data[i][j][2].astype(np.uint8)
+                r_channel[i][j][0] = rgb_data[i][j][0]
+                g_channel[i][j][1] = rgb_data[i][j][1]
+                b_channel[i][j][2] = rgb_data[i][j][2]
         
         return r_channel, g_channel, b_channel
     
@@ -226,9 +239,9 @@ class Image3C(QThread):
         for i in range(hsv_data.shape[0]):
             for j in range(hsv_data.shape[1]):
                 h, s, v = hsv_data[i][j]
-                h_channel[i][j] = Color.hsv_to_rgb((h * 360.0, 1, 1)).astype(np.uint8)
-                s_channel[i][j] = Color.hsv_to_rgb((360.0, s, 1)).astype(np.uint8)
-                v_channel[i][j] = Color.hsv_to_rgb((360.0, 1, v)).astype(np.uint8)
+                h_channel[i][j] = Color.hsv_to_rgb((h, 1, 1))
+                s_channel[i][j] = Color.hsv_to_rgb((0, s, 1))
+                v_channel[i][j] = Color.hsv_to_rgb((0, 1, v))
         
         h_chl = QImage(h_channel, h_channel.shape[1], h_channel.shape[0], h_channel.shape[1] * 3, QImage.Format_RGB888)
         h_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
