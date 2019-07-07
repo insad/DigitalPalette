@@ -4,7 +4,7 @@
 !define PRODUCT_NAME "DigitalPalette"
 !define PRODUCT_VERSION "1.0.34"
 !define PRODUCT_PUBLISHER "Liu Jia"
-!define PRODUCT_WEB_SITE "https://github.com/liujiacode/DigitalPalette"
+!define PRODUCT_WEB_SITE "https://liujiacode.github.io/DigitalPalette"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\DigitalPalette.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
