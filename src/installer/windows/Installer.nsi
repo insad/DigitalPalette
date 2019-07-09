@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "DigitalPalette"
-!define PRODUCT_VERSION "1.0.34"
+!define PRODUCT_VERSION "1.0.35"
 !define PRODUCT_PUBLISHER "Liu Jia"
 !define PRODUCT_WEB_SITE "https://liujiacode.github.io/DigitalPalette"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\DigitalPalette.exe"
@@ -94,18 +94,12 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\README.md"
-  Delete "$INSTDIR\LICENSE"
-  Delete "$INSTDIR\DigitalPalette.exe"
-  RMDir /r "$INSTDIR"
-
   Delete "$SMPROGRAMS\DigitalPalette\Uninstall.lnk"
   Delete "$DESKTOP\DigitalPalette.lnk"
   Delete "$SMPROGRAMS\DigitalPalette\DigitalPalette.lnk"
 
   RMDir "$SMPROGRAMS\DigitalPalette"
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
