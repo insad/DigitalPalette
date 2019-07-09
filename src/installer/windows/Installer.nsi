@@ -98,7 +98,7 @@ Section Uninstall
   Delete "$INSTDIR\README.md"
   Delete "$INSTDIR\LICENSE"
   Delete "$INSTDIR\DigitalPalette.exe"
-  Delete "$INSTDIR\*"
+  RMDir /r "$INSTDIR"
 
   Delete "$SMPROGRAMS\DigitalPalette\Uninstall.lnk"
   Delete "$DESKTOP\DigitalPalette.lnk"

@@ -66,7 +66,7 @@ class Square(QWidget):
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         if self._activated_on and self._acitvated_state:
-            painter.setPen(QPen(QColor(*self._env_at_color), 5))
+            painter.setPen(QPen(QColor(*self._env_at_color), 4))
         else:
             painter.setPen(QPen(QColor(*self._env_ia_color), 3))
         painter.setBrush(QColor(*self._color.rgb))
