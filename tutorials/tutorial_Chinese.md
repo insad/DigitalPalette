@@ -4,14 +4,14 @@
 DigitalPalette 是免费开源软件, 您可以使用它创建一组符合一定色彩调和规则的颜色, 并将其应用到您的创作中.
 
 # 版本
-1.0.32 (开发版)
+1.0.35 (预览版)
 
 # 安装方法
 ## 下载
-[Windows (32 bit) 安装程序 (推荐)](Link)  
-[Windows (64 bit) 安装程序](Link)  
-[Windows (32 bit) 压缩包](Link)  
-[Windows (64 bit) 压缩包](Link)  
+[Windows (32 bit) 安装程序 (推荐)](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPaletteSetup_1_0_35_zh_Windows_32.exe)  
+[Windows (64 bit) 安装程序](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPaletteSetup_1_0_35_zh_Windows_64.exe)  
+[Windows (32 bit) 压缩包](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPalette_1_0_35_zh_Windows_32.7z)  
+[Windows (64 bit) 压缩包](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPalette_1_0_35_zh_Windows_64.7z)  
 
 ## 安装
 1. 双击打开下载的安装程序, 点击 "下一步".  

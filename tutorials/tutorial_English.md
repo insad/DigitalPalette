@@ -4,14 +4,14 @@
 DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
 
 # Version
-1.0.32 (developing)
+1.0.35 (preview)
 
 # Installation
 ## Download
-[Windows (32 bit) Installer (Recommend)](Link)  
-[Windows (64 bit) Installer](Link)  
-[Windows (32 bit) Packet](Link)  
-[Windows (64 bit) Packet](Link)  
+[Windows (32 bit) Installer (Recommend)](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPaletteSetup_1_0_35_en_Windows_32.exe)  
+[Windows (64 bit) Installer](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPaletteSetup_1_0_35_en_Windows_64.exe)  
+[Windows (32 bit) Packet](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPalette_1_0_35_en_Windows_32.7z)  
+[Windows (64 bit) Packet](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPalette_1_0_35_en_Windows_64.7z)  
 
 ## Install
 1. Double click the installer and click "Next".  
