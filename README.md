@@ -4,13 +4,13 @@
 DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
 
 # Version
-1.0.35 (preview)
+1.0.36 (develop)
 
 # Author
 Liu Jia
 
 # Basic Requirements
-fbs (0.8.3), PyQt5 (5.9.2), numpy (1.16.4) and Pillow (6.0.0).
+fbs (0.8.3), PyQt5 (5.9.2), numpy (1.16.4) and Pillow (6.2.0).
 
 # Compilation
 The running and packing methods are base on fbs.
@@ -23,3 +23,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 
 # Updates
 * 2019.07.09: Release the preview version (1.0.35) of DigitalPalette.
+* 2019.10.24: Upgrade module Pillow to 6.2.0.
