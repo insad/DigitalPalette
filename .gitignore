@@ -131,3 +131,5 @@ bak*
 # share
 release/
 share/
+MyColors/
+settings.json

@@ -11,12 +11,27 @@ import os
 class Image3C(QThread):
     """
     Image transformations.
+
+    Graph categories (finished signals):
+        0: normal rgb data;
+        1: vertical rgb space edge data;
+        2: horizontal rgb space edge data;
+        3: final rgb space edge data;
+        4: normal hsv data;
+        5: vertical hsv space edge data;
+        6: horizontal hsv space edge data;
+        7: final hsv space edge data.
+
+    Graph channels:
+        0: rgb or hsv full data.
+        1: r or h channel data;
+        2: g or s channel data;
+        3: b or v channel data.
     """
 
-    process = pyqtSignal(int)
-    describe = pyqtSignal(int)
-    ref_rgb = pyqtSignal(np.ndarray)
-    finished = pyqtSignal(bool)
+    ps_proceses = pyqtSignal(int)
+    ps_describe = pyqtSignal(int)
+    ps_finished = pyqtSignal(int)
 
     def __init__(self):
         """
@@ -24,203 +39,369 @@ class Image3C(QThread):
         """
 
         super().__init__()
-        
+
+        # load args.
         self._temp_dir = QTemporaryDir()
-    
+        self._rgb_data = None
+        self._hsv_data = None
+        self._rgb_ext_data = None
+        self._hsv_ext_data = None
+        self._rgb_vtl_data = None
+        self._rgb_hrz_data = None
+        self._hsv_vtl_data = None
+        self._hsv_hrz_data = None
+
+        self._run_image = None
+        self._run_category = None
+
+    # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
+
+    def initialize(self, image):
+        self._run_image = image
+        self._rgb_data = None
+        self._hsv_data = None
+        self._rgb_ext_data = None
+        self._hsv_ext_data = None
+        self._rgb_vtl_data = None
+        self._rgb_hrz_data = None
+        self._hsv_vtl_data = None
+        self._hsv_hrz_data = None
+
+    def set_category(self, category):
+        self._run_category = category
+
+    def get_data_shape(self):
+        return self._rgb_data.shape
+
+    def get_data_value(self, i, j):
+        return self._rgb_data[i][j]
+
     def check_temp_dir(self):
         return self._temp_dir.isValid()
-    
+
     def remove_temp_dir(self):
         self._temp_dir.remove()
 
-    def import_image(self, image_file):
-        """
-        Import a image from file and detect the H, S, V value edges of imported image.
-        Total steps = 4 + results_shape[0] + 1 + results_shape[0] + 1 + 3 + hsv_data.shape[0] + 2 + results_shape[0] + 1 + results_shape[0] + 1 + 1
-                    = 6 + rgb_data.shape[0] * 5
-
-        Parameters:
-          image_file - string. image file path.
-
-        Returns:
-          np.ndarray. referenced rgb color.
-        """
-
-        self._image_file = image_file
-    
     def run(self):
-        # ===== ===== ===== RGB part ===== ===== =====
+        func = getattr(self, "run_{}".format(self._run_category))
+        func((0, 100))
 
-        # import rgb data.
-        self.describe.emit(0)
-        rgb_data = np.array(Image.open(self._image_file).convert("RGB"), dtype=np.uint8)
-        self.ref_rgb.emit(rgb_data)
-        self.process.emit(1)
+    def run_rgb_extend(self):
+        """
+        Extend rgb data into extended rgb data for Sobel edge detection.
+        """
 
-        self.save_rgb_temp_data(rgb_data, "0")
-        self.process.emit(2)
+        if not isinstance(self._rgb_ext_data, np.ndarray):
+            self._rgb_ext_data = np.insert(self._rgb_data, 0, self._rgb_data[1, :], axis=0)
+            self._rgb_ext_data = np.insert(self._rgb_ext_data, self._rgb_ext_data.shape[0], self._rgb_ext_data[self._rgb_ext_data.shape[0] - 2, :], axis=0)
+            self._rgb_ext_data = np.insert(self._rgb_ext_data, 0, self._rgb_ext_data[:, 1], axis=1)
+            self._rgb_ext_data = np.insert(self._rgb_ext_data, self._rgb_ext_data.shape[1], self._rgb_ext_data[:, self._rgb_ext_data.shape[1] - 2], axis=1)
 
-        # rgb space Sobel edge detection.
-        self.describe.emit(1)
-        results_shape = (rgb_data.shape[0] - 2, rgb_data.shape[1] - 2, 3)
-        self.process.emit(3)
+    def run_hsv_extend(self):
+        """
+        Extend rgb data into extended rgb data for Sobel edge detection.
+        """
 
-        next_process = 4
+        if not isinstance(self._hsv_ext_data, np.ndarray):
+            self._hsv_ext_data = np.insert(self._hsv_data, 0, self._hsv_data[1, :], axis=0)
+            self._hsv_ext_data = np.insert(self._hsv_ext_data, self._hsv_ext_data.shape[0], self._hsv_ext_data[self._hsv_ext_data.shape[0] - 2, :], axis=0)
+            self._hsv_ext_data = np.insert(self._hsv_ext_data, 0, self._hsv_ext_data[:, 1], axis=1)
+            self._hsv_ext_data = np.insert(self._hsv_ext_data, self._hsv_ext_data.shape[1], self._hsv_ext_data[:, self._hsv_ext_data.shape[1] - 2], axis=1)
 
-        # rgb vertical.
-        self.describe.emit(2)
-        vtl_results = np.zeros(results_shape, dtype=np.uint8)
-        for i in range(results_shape[0]):
-            for j in range(results_shape[1]):
-                r_result = rgb_data[i][j + 2][0] + rgb_data[i + 1][j + 2][0] * 2 + rgb_data[i + 2][j + 2][0] - rgb_data[i][j][0] - rgb_data[i + 1][j][0] * 2 - rgb_data[i + 2][j][0]
-                g_result = rgb_data[i][j + 2][1] + rgb_data[i + 1][j + 2][1] * 2 + rgb_data[i + 2][j + 2][1] - rgb_data[i][j][1] - rgb_data[i + 1][j][1] * 2 - rgb_data[i + 2][j][1]
-                b_result = rgb_data[i][j + 2][2] + rgb_data[i + 1][j + 2][2] * 2 + rgb_data[i + 2][j + 2][2] - rgb_data[i][j][2] - rgb_data[i + 1][j][2] * 2 - rgb_data[i + 2][j][2]
-                vtl_results[i][j] = np.array((abs(r_result) / 4, abs(g_result) / 4, abs(b_result) / 4), dtype=np.uint8)
-            self.process.emit(next_process + i)
+    def run_0(self, process_scope):
+        """
+        Run normal rgb data.
 
-        self.save_rgb_temp_data(vtl_results, "1")
-        self.process.emit(next_process + results_shape[0])
+        Args:
+            process_scope (tuple or list): in format (start point, total length), e.g. (0, 100).
+        """
 
-        next_process += results_shape[0] + 1
-        
-        # rgb horizontal.
-        self.describe.emit(3)
-        hrz_results = np.zeros(results_shape, dtype=np.uint8)
-        for i in range(results_shape[0]):
-            for j in range(results_shape[1]):
-                r_result = rgb_data[i + 2][j][0] + rgb_data[i + 2][j + 1][0] * 2 + rgb_data[i + 2][j + 2][0] - rgb_data[i][j][0] - rgb_data[i][j + 1][0] * 2 - rgb_data[i][j + 2][0]
-                g_result = rgb_data[i + 2][j][1] + rgb_data[i + 2][j + 1][1] * 2 + rgb_data[i + 2][j + 2][1] - rgb_data[i][j][1] - rgb_data[i][j + 1][1] * 2 - rgb_data[i][j + 2][1]
-                b_result = rgb_data[i + 2][j][2] + rgb_data[i + 2][j + 1][2] * 2 + rgb_data[i + 2][j + 2][2] - rgb_data[i][j][2] - rgb_data[i][j + 1][2] * 2 - rgb_data[i][j + 2][2]
-                hrz_results[i][j] = np.array((abs(r_result) / 4, abs(g_result) / 4, abs(b_result) / 4), dtype=np.uint8)
-            self.process.emit(next_process + i)
+        self.ps_describe.emit(1)
+        self.ps_proceses.emit(int(process_scope[0]))
+        img_data = Image.open(self._run_image).convert("RGB")
 
-        self.save_rgb_temp_data(hrz_results, "2")
-        self.process.emit(next_process + results_shape[0])
+        self.ps_proceses.emit(int(process_scope[0] + process_scope[1] * 0.25))
+        self._rgb_data = np.array(img_data, dtype=np.uint8)
 
-        next_process += results_shape[0] + 1
+        # generating rgb data.
+        self.ps_describe.emit(2)
+        self.ps_proceses.emit(int(process_scope[0] + process_scope[1] * 0.60))
+        self.save_rgb_temp_data(self._rgb_data, 0)
 
-        # rgb final.
-        self.describe.emit(4)
-        fnl_results = (np.sqrt(vtl_results.astype(np.uint32) ** 2 + hrz_results.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
-        self.process.emit(next_process)
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(process_scope[0] + process_scope[1]))
+        self.ps_finished.emit(0)
 
-        self.save_rgb_temp_data(fnl_results, "3")
-        self.process.emit(next_process + 1)
+    def run_4(self, process_scope):
+        """
+        Run normal hsv data.
 
-        # ===== ===== ===== HSV part ===== ===== =====
+        Args:
+            process_scope (tuple or list): in format (start point, total length), e.g. (0, 100).
+        """
 
-        # transform from rgb to hsv.
-        self.describe.emit(5)
-        hsv_data = np.zeros(rgb_data.shape, dtype=np.float32) # = hsv * 1.0 (/ 360)
-        self.process.emit(next_process + 2)
+        if not isinstance(self._rgb_data, np.ndarray):
+            self.run_0((process_scope[0], process_scope[1] * 0.10))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.10, process_scope[1] * 0.90)
 
-        next_process += 3
+        else:
+            pro_scope = tuple(process_scope)
 
-        for i in range(hsv_data.shape[0]):
-            for j in range(hsv_data.shape[1]):
-                hsv_data[i][j] = Color.rgb_to_hsv(rgb_data[i][j])
+        # generating hsv data.
+        self.ps_describe.emit(3)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        self._hsv_data = np.zeros(self._rgb_data.shape, dtype=np.float32)
 
-            self.process.emit(next_process + i)
-        
-        next_process += hsv_data.shape[0]
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.25))
+        for i in range(self._hsv_data.shape[0]):
+            for j in range(self._hsv_data.shape[1]):
+                self._hsv_data[i][j] = Color.rgb2hsv(self._rgb_data[i][j])
 
-        self.save_hsv_temp_data(hsv_data, "4")
-        self.process.emit(next_process)
+        self.ps_describe.emit(4)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.60))
+        self.save_hsv_temp_data(self._hsv_data, 4)
 
-        # hsv space Sobel edge detection.
-        self.describe.emit(6)
-        results_shape = (hsv_data.shape[0] - 2, hsv_data.shape[1] - 2, 3)
-        self.process.emit(next_process + 1)
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self.ps_finished.emit(4)
 
-        next_process += 2
+    def run_1(self, process_scope):
+        """
+        Run vertical rgb space edge data.
+        """
 
-        # hsv vertical.
-        self.describe.emit(7)
-        vtl_results = np.zeros(results_shape, dtype=np.uint8)
-        for i in range(results_shape[0]):
-            for j in range(results_shape[1]):
-                h_result_0 = abs(hsv_data[i + 0][j + 2][0] - hsv_data[i + 0][j][0])
-                h_result_1 = abs(hsv_data[i + 1][j + 2][0] - hsv_data[i + 1][j][0])
-                h_result_2 = abs(hsv_data[i + 2][j + 2][0] - hsv_data[i + 2][j][0])
+        if not isinstance(self._rgb_data, np.ndarray):
+            self.run_0((process_scope[0], process_scope[1] * 0.20))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
 
-                s_result = hsv_data[i][j + 2][1] + hsv_data[i + 1][j + 2][1] * 2 + hsv_data[i + 2][j + 2][1] - hsv_data[i][j][1] - hsv_data[i + 1][j][1] * 2 - hsv_data[i + 2][j][1]
-                v_result = hsv_data[i][j + 2][2] + hsv_data[i + 1][j + 2][2] * 2 + hsv_data[i + 2][j + 2][2] - hsv_data[i][j][2] - hsv_data[i + 1][j][2] * 2 - hsv_data[i + 2][j][2]
+        else:
+            pro_scope = tuple(process_scope)
 
-                # normalize.
+        # get extended rgb data.
+        self.run_rgb_extend()
+
+        self.ps_describe.emit(5)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        self._rgb_vtl_data = np.zeros((self._rgb_data.shape[0], self._rgb_data.shape[1], 3), dtype=np.uint8)
+
+        # generating rgb vertical edge data.
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
+        for i in range(self._rgb_data.shape[0]):
+            for j in range(self._rgb_data.shape[1]):
+                r_result = self._rgb_ext_data[i][j + 2][0] + self._rgb_ext_data[i + 1][j + 2][0] * 2 + self._rgb_ext_data[i + 2][j + 2][0] - self._rgb_ext_data[i][j][0] - self._rgb_ext_data[i + 1][j][0] * 2 - self._rgb_ext_data[i + 2][j][0]
+                g_result = self._rgb_ext_data[i][j + 2][1] + self._rgb_ext_data[i + 1][j + 2][1] * 2 + self._rgb_ext_data[i + 2][j + 2][1] - self._rgb_ext_data[i][j][1] - self._rgb_ext_data[i + 1][j][1] * 2 - self._rgb_ext_data[i + 2][j][1]
+                b_result = self._rgb_ext_data[i][j + 2][2] + self._rgb_ext_data[i + 1][j + 2][2] * 2 + self._rgb_ext_data[i + 2][j + 2][2] - self._rgb_ext_data[i][j][2] - self._rgb_ext_data[i + 1][j][2] * 2 - self._rgb_ext_data[i + 2][j][2]
+                self._rgb_vtl_data[i][j] = np.array((abs(r_result) / 4, abs(g_result) / 4, abs(b_result) / 4), dtype=np.uint8)
+
+        self.ps_describe.emit(6)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.80))
+        self.save_rgb_temp_data(self._rgb_vtl_data, 1)
+
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self.ps_finished.emit(1)
+
+    def run_2(self, process_scope):
+        """
+        Run horizontal rgb space edge data.
+        """
+
+        if not isinstance(self._rgb_data, np.ndarray):
+            self.run_0((process_scope[0], process_scope[1] * 0.20))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
+
+        else:
+            pro_scope = tuple(process_scope)
+
+        # get extended rgb data.
+        self.run_rgb_extend()
+
+        self.ps_describe.emit(7)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        self._rgb_hrz_data = np.zeros((self._rgb_data.shape[0], self._rgb_data.shape[1], 3), dtype=np.uint8)
+
+        # generating rgb vertical edge data.
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
+        for i in range(self._rgb_data.shape[0]):
+            for j in range(self._rgb_data.shape[1]):
+                r_result = self._rgb_ext_data[i + 2][j][0] + self._rgb_ext_data[i + 2][j + 1][0] * 2 + self._rgb_ext_data[i + 2][j + 2][0] - self._rgb_ext_data[i][j][0] - self._rgb_ext_data[i][j + 1][0] * 2 - self._rgb_ext_data[i][j + 2][0]
+                g_result = self._rgb_ext_data[i + 2][j][1] + self._rgb_ext_data[i + 2][j + 1][1] * 2 + self._rgb_ext_data[i + 2][j + 2][1] - self._rgb_ext_data[i][j][1] - self._rgb_ext_data[i][j + 1][1] * 2 - self._rgb_ext_data[i][j + 2][1]
+                b_result = self._rgb_ext_data[i + 2][j][2] + self._rgb_ext_data[i + 2][j + 1][2] * 2 + self._rgb_ext_data[i + 2][j + 2][2] - self._rgb_ext_data[i][j][2] - self._rgb_ext_data[i][j + 1][2] * 2 - self._rgb_ext_data[i][j + 2][2]
+                self._rgb_hrz_data[i][j] = np.array((abs(r_result) / 4, abs(g_result) / 4, abs(b_result) / 4), dtype=np.uint8)
+
+        self.ps_describe.emit(8)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.80))
+        self.save_rgb_temp_data(self._rgb_hrz_data, 2)
+
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self.ps_finished.emit(2)
+
+    def run_3(self, process_scope):
+        """
+        Run final rgb space edge data.
+        """
+
+        if not isinstance(self._rgb_vtl_data, np.ndarray):
+            self.run_1((process_scope[0], process_scope[1] * 0.50))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.50, process_scope[1] * 0.50)
+
+        else:
+            pro_scope = tuple(process_scope)
+
+        if not isinstance(self._rgb_hrz_data, np.ndarray):
+            self.run_2((pro_scope[0], pro_scope[1] * 0.50))
+            pro_scope = (pro_scope[0] + pro_scope[1] * 0.50, pro_scope[1] * 0.50)
+
+        else:
+            pro_scope = tuple(pro_scope)
+
+        # generating rgb final edge data.
+        self.ps_describe.emit(9)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        fnl_results = (np.sqrt(self._rgb_vtl_data.astype(np.uint32) ** 2 + self._rgb_hrz_data.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
+
+        self.ps_describe.emit(10)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.80))
+        self.save_rgb_temp_data(fnl_results, 3)
+
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self._rgb_vtl_data = None
+        self._rgb_hrz_data = None
+        self.ps_finished.emit(3)
+
+    def run_5(self, process_scope):
+        """
+        Run vertical hsv space edge data.
+        """
+
+        if not isinstance(self._hsv_data, np.ndarray):
+            self.run_4((process_scope[0], process_scope[1] * 0.20))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
+
+        else:
+            pro_scope = tuple(process_scope)
+
+        # get extended hsv data.
+        self.run_hsv_extend()
+
+        self.ps_describe.emit(11)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        self._hsv_vtl_data = np.zeros((self._hsv_data.shape[0], self._hsv_data.shape[1], 3), dtype=np.float32)
+
+        # generating hsv vertical edge data.
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
+        for i in range(self._hsv_data.shape[0]):
+            for j in range(self._hsv_data.shape[1]):
+                h_result_0 = abs(self._hsv_ext_data[i + 0][j + 2][0] - self._hsv_ext_data[i + 0][j][0])
+                h_result_1 = abs(self._hsv_ext_data[i + 1][j + 2][0] - self._hsv_ext_data[i + 1][j][0])
+                h_result_2 = abs(self._hsv_ext_data[i + 2][j + 2][0] - self._hsv_ext_data[i + 2][j][0])
                 h_result_0 = 360.0 - h_result_0 if h_result_0 > 180.0 else h_result_0
                 h_result_1 = 360.0 - h_result_1 if h_result_1 > 180.0 else h_result_1
                 h_result_2 = 360.0 - h_result_2 if h_result_2 > 180.0 else h_result_2
+                h_result = h_result_0 + h_result_1 * 2 + h_result_2
+                s_result = self._hsv_ext_data[i][j + 2][1] + self._hsv_ext_data[i + 1][j + 2][1] * 2 + self._hsv_ext_data[i + 2][j + 2][1] - self._hsv_ext_data[i][j][1] - self._hsv_ext_data[i + 1][j][1] * 2 - self._hsv_ext_data[i + 2][j][1]
+                v_result = self._hsv_ext_data[i][j + 2][2] + self._hsv_ext_data[i + 1][j + 2][2] * 2 + self._hsv_ext_data[i + 2][j + 2][2] - self._hsv_ext_data[i][j][2] - self._hsv_ext_data[i + 1][j][2] * 2 - self._hsv_ext_data[i + 2][j][2]
+                self._hsv_vtl_data[i][j] = np.array((h_result * 0.3542, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
 
-                h_result = h_result_0 * 0.25 / 180.0 + h_result_1 * 0.5 / 180.0 + h_result_2 * 0.25 / 180.0
+        self.ps_describe.emit(12)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.80))
+        self.save_rgb_temp_data(self._hsv_vtl_data, 5)
 
-                vtl_results[i][j] = np.array((h_result * 255, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
-            self.process.emit(next_process + i)
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self.ps_finished.emit(5)
 
-        self.save_rgb_temp_data(vtl_results, "5")
-        self.process.emit(next_process + results_shape[0])
+    def run_6(self, process_scope):
+        """
+        Run horizontal hsv space edge data.
+        """
 
-        next_process += results_shape[0] + 1
+        if not isinstance(self._hsv_data, np.ndarray):
+            self.run_4((process_scope[0], process_scope[1] * 0.20))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
 
-        # hsv horizontal.
-        self.describe.emit(8)
-        hrz_results = np.zeros(results_shape, dtype=np.uint8)
-        for i in range(results_shape[0]):
-            for j in range(results_shape[1]):
-                h_result_0 = abs(hsv_data[i + 2][j + 0][0] - hsv_data[i][j + 0][0])
-                h_result_1 = abs(hsv_data[i + 2][j + 1][0] - hsv_data[i][j + 1][0])
-                h_result_2 = abs(hsv_data[i + 2][j + 2][0] - hsv_data[i][j + 2][0])
+        else:
+            pro_scope = tuple(process_scope)
 
-                s_result = hsv_data[i + 2][j][1] + hsv_data[i + 2][j + 1][1] * 2 + hsv_data[i + 2][j + 2][1] - hsv_data[i][j][1] - hsv_data[i][j + 1][1] * 2 - hsv_data[i][j + 2][1]
-                v_result = hsv_data[i + 2][j][2] + hsv_data[i + 2][j + 1][2] * 2 + hsv_data[i + 2][j + 2][2] - hsv_data[i][j][2] - hsv_data[i][j + 1][2] * 2 - hsv_data[i][j + 2][2]
+        # get extended hsv data.
+        self.run_hsv_extend()
 
-                # normalize.
+        self.ps_describe.emit(13)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        self._hsv_hrz_data = np.zeros((self._hsv_data.shape[0], self._hsv_data.shape[1], 3), dtype=np.float32)
+
+        # generating hsv vertical edge data.
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
+        for i in range(self._hsv_data.shape[0]):
+            for j in range(self._hsv_data.shape[1]):
+                h_result_0 = abs(self._hsv_ext_data[i + 2][j + 0][0] - self._hsv_ext_data[i][j + 0][0])
+                h_result_1 = abs(self._hsv_ext_data[i + 2][j + 1][0] - self._hsv_ext_data[i][j + 1][0])
+                h_result_2 = abs(self._hsv_ext_data[i + 2][j + 2][0] - self._hsv_ext_data[i][j + 2][0])
                 h_result_0 = 360.0 - h_result_0 if h_result_0 > 180.0 else h_result_0
                 h_result_1 = 360.0 - h_result_1 if h_result_1 > 180.0 else h_result_1
                 h_result_2 = 360.0 - h_result_2 if h_result_2 > 180.0 else h_result_2
+                h_result = h_result_0 + h_result_1 * 2 + h_result_2
+                s_result = self._hsv_ext_data[i + 2][j][1] + self._hsv_ext_data[i + 2][j + 1][1] * 2 + self._hsv_ext_data[i + 2][j + 2][1] - self._hsv_ext_data[i][j][1] - self._hsv_ext_data[i][j + 1][1] * 2 - self._hsv_ext_data[i][j + 2][1]
+                v_result = self._hsv_ext_data[i + 2][j][2] + self._hsv_ext_data[i + 2][j + 1][2] * 2 + self._hsv_ext_data[i + 2][j + 2][2] - self._hsv_ext_data[i][j][2] - self._hsv_ext_data[i][j + 1][2] * 2 - self._hsv_ext_data[i][j + 2][2]
+                self._hsv_hrz_data[i][j] = np.array((h_result * 0.3542, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
 
-                h_result = h_result_0 * 0.25 / 180.0 + h_result_1 * 0.5 / 180.0 + h_result_2 * 0.25 / 180.0
+        self.ps_describe.emit(14)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.80))
+        self.save_rgb_temp_data(self._hsv_hrz_data, 6)
 
-                hrz_results[i][j] = np.array((h_result * 255, abs(s_result) * 63.75, abs(v_result) * 63.75), dtype=np.uint8)
-            self.process.emit(next_process + i)
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self.ps_finished.emit(6)
 
-        self.save_rgb_temp_data(hrz_results, "6")
-        self.process.emit(next_process + results_shape[0])
-
-        next_process += results_shape[0] + 1
-
-        # hsv final.
-        self.describe.emit(9)
-        fnl_results = (np.sqrt(vtl_results.astype(np.uint32) ** 2 + hrz_results.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
-        self.process.emit(next_process)
-
-        self.save_rgb_temp_data(fnl_results, "7")
-        self.process.emit(next_process + 1)
-
-        self.describe.emit(10)
-        self.finished.emit(True)
-
-    def read_rgb_channels(self, rgb_data):
+    def run_7(self, process_scope):
         """
-        Read R, G, B part channels of rgb data.
+        Run final hsv space edge data.
         """
 
-        r_channel = np.zeros(rgb_data.shape, dtype=np.uint8)
-        g_channel = np.zeros(rgb_data.shape, dtype=np.uint8)
-        b_channel = np.zeros(rgb_data.shape, dtype=np.uint8)
+        if not isinstance(self._hsv_vtl_data, np.ndarray):
+            self.run_5((process_scope[0], process_scope[1] * 0.50))
+            pro_scope = (process_scope[0] + process_scope[1] * 0.50, process_scope[1] * 0.50)
 
-        for i in range(rgb_data.shape[0]):
-            for j in range(rgb_data.shape[1]):
-                r_channel[i][j][0] = rgb_data[i][j][0]
-                g_channel[i][j][1] = rgb_data[i][j][1]
-                b_channel[i][j][2] = rgb_data[i][j][2]
-        
-        return r_channel, g_channel, b_channel
-    
+        else:
+            pro_scope = tuple(process_scope)
+
+        if not isinstance(self._hsv_hrz_data, np.ndarray):
+            self.run_6((pro_scope[0], pro_scope[1] * 0.50))
+            pro_scope = (pro_scope[0] + pro_scope[1] * 0.50, pro_scope[1] * 0.50)
+
+        else:
+            pro_scope = tuple(pro_scope)
+
+        # generating rgb final edge data.
+        self.ps_describe.emit(15)
+        self.ps_proceses.emit(int(pro_scope[0]))
+        fnl_results = (np.sqrt(self._hsv_vtl_data.astype(np.uint32) ** 2 + self._hsv_hrz_data.astype(np.uint32) ** 2) / np.sqrt(2)).astype(np.uint8)
+
+        self.ps_describe.emit(16)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.80))
+        self.save_rgb_temp_data(fnl_results, 7)
+
+        self.ps_describe.emit(0)
+        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
+        self._hsv_vtl_data = None
+        self._hsv_hrz_data = None
+        self.ps_finished.emit(7)
+
     def save_rgb_temp_data(self, rgb_data, prefix):
         rgb = QImage(rgb_data, rgb_data.shape[1], rgb_data.shape[0], rgb_data.shape[1] * 3, QImage.Format_RGB888)
         rgb.save(self._temp_dir.path() + os.sep + "{}_0.png".format(prefix))
 
-        r_chl, g_chl, b_chl = self.read_rgb_channels(rgb_data)
+        r_chl = np.zeros(rgb_data.shape, dtype=np.uint8)
+        g_chl = np.zeros(rgb_data.shape, dtype=np.uint8)
+        b_chl = np.zeros(rgb_data.shape, dtype=np.uint8)
+
+        for i in range(rgb_data.shape[0]):
+            for j in range(rgb_data.shape[1]):
+                r_chl[i][j][0] = rgb_data[i][j][0]
+                g_chl[i][j][1] = rgb_data[i][j][1]
+                b_chl[i][j][2] = rgb_data[i][j][2]
 
         r_chl = QImage(r_chl, r_chl.shape[1], r_chl.shape[0], r_chl.shape[1] * 3, QImage.Format_RGB888)
         r_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
@@ -239,10 +420,10 @@ class Image3C(QThread):
         for i in range(hsv_data.shape[0]):
             for j in range(hsv_data.shape[1]):
                 h, s, v = hsv_data[i][j]
-                h_channel[i][j] = Color.hsv_to_rgb((h, 1, 1))
-                s_channel[i][j] = Color.hsv_to_rgb((0, s, 1))
-                v_channel[i][j] = Color.hsv_to_rgb((0, 1, v))
-        
+                h_channel[i][j] = Color.hsv2rgb((h, 1, 1))
+                s_channel[i][j] = Color.hsv2rgb((0, s, 1))
+                v_channel[i][j] = Color.hsv2rgb((0, 1, v))
+
         h_chl = QImage(h_channel, h_channel.shape[1], h_channel.shape[0], h_channel.shape[1] * 3, QImage.Format_RGB888)
         h_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
 
@@ -252,32 +433,19 @@ class Image3C(QThread):
         v_chl = QImage(v_channel, v_channel.shape[1], v_channel.shape[0], v_channel.shape[1] * 3, QImage.Format_RGB888)
         v_chl.save(self._temp_dir.path() + os.sep + "{}_3.png".format(prefix))
 
-    def load_image(self, graph_type, channel):
+    def load_image(self, category, channel):
         """
-        Load splited images.
-
-        Parameters:
-          graph type - int.
-            0: normal rgb data;
-            1: vertical rgb space edge data;
-            2: horizontal rgb space edge data;
-            3: final rgb space edge data;
-            4: normal hsv data;
-            5: vertical hsv space edge data;
-            6: horizontal hsv space edge data;
-            7: final hsv space edge data.
-          channel - int.
-            0: rgb or hsv full data.
-            1: r or h channel data;
-            2: g or s channel data;
-            3: b or v channel data.
+        Load image with category and channel.
         """
 
-        if graph_type == 4 and channel == 0:
-            img_name = "0_0.png"
+        if category in (0, 4) and channel == 0:
+            img_path = os.sep.join((self._temp_dir.path(), "0_0.png"))
         else:
-            img_name = "{}_{}.png".format(graph_type, channel)
+            img_path = os.sep.join((self._temp_dir.path(), "{}_{}.png".format(category, channel)))
 
-        img = QImage(self._temp_dir.path() + os.sep + img_name)
+        if os.path.isfile(img_path):
+            img = QImage(img_path)
+            return img
 
-        return img
+        else:
+            return None

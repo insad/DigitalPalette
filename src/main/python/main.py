@@ -1,283 +1,347 @@
 # -*- coding: utf-8 -*-
 
-"""
-DigitalPalette is a free software, which is distributed in 
-the hope that it will be useful, but WITHOUT ANY WARRANTY. 
-You can redistribute it and/or modify it under the terms of 
-the GNU General Public License as published by the Free 
-Software Foundation. See the GNU General Public License 
-for more details.
+__LICENSE__ = """
+DigitalPalette is a free software, which is distributed in the hope 
+that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute 
+it and/or modify it under the terms of the GNU General Public License 
+as published by the Free Software Foundation. See the GNU General Public 
+License for more details.
 """
 
+__WEBSITE__ = """
+https://liujiacode.github.io/DigitalPalette
+"""
+
+__VERSION__ = """
+v2.0.0-dev
+"""
+
+__AUTHOR__ = """
+Liu Jia
+"""
+
+__DATE__ = """
+2019.11.24
+"""
+
+import os
+import sys
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox
-from cguis.main_window import Ui_MainWindow
+from PyQt5.QtCore import QCoreApplication, QUrl, QTranslator
+from PyQt5.QtGui import QIcon, QPixmap, QDesktopServices
 from cguis.resource import view_rc
-from cwgts.wheel import Wheel
-from cwgts.graph import Graph
-from cwgts.result import Result
-from cwgts.settings import Settings
-from clibs import info as dpinfo
-from PyQt5.QtGui import QIcon, QDesktopServices, QPixmap
-from PyQt5.QtCore import QUrl, QTranslator, QCoreApplication
-import sys
-import os
+from clibs.args import Args
+from cguis.design.main_window import Ui_MainWindow
+from wgets.wheel import Wheel
+from wgets.graph import Graph
+from wgets.cube import CubeTable
+from wgets.rule import Rule
+from wgets.mode import Mode
+from wgets.operation import Operation
+from wgets.channel import Channel
+from wgets.transformation import Transformation
+from wgets.settings import Settings
 
 
 class DigitalPalette(QMainWindow, Ui_MainWindow):
+    """
+    DigitalPalette main window framework.
+    """
+
     def __init__(self, resources):
+        """
+        Init main window.
+        """
+
         super().__init__()
         self.setupUi(self)
 
-        self.setWindowTitle("DigitalPalette {}".format(dpinfo.current_version()))
+        # load args.
+        self._args = Args(resources)
+
+        # load translations.
+        self._func_tr_()
+
+        # init qt args.
         app_icon = QIcon()
         app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
+        self.setWindowTitle("DigitalPalette {}".format(self._args.info_version))
 
-        # init settings.
-        default_settings = (
-            (0.0, 360.0),     # 0  # "h_range":      # H range for initial random HSV color set.
-            (0.68, 1.0),      # 1  # "s_range":      # S range for initial random HSV color set.
-            (0.68, 1.0),      # 2  # "v_range":      # V range for initial random HSV color set.
-            0.8,              # 3  # "radius":       # Color wheel radius (ratio) compared with work space width.
-            0.08,             # 4  # "color_radius": # Color tag radius (ratio)  compared with work space width.
-            0.1,              # 5  # "tip_radius":   # Circle tip radius in graph view.
-            0.9,              # 6  # "widratio":     # Color square width / height ratio compared with cube size.
-            0.8,              # 7  # "bar_widratio": # V value bar height ratio compared with work space.
-            1.3,              # 8  # "zoom_step":    # Zoom ratio for each step.
-            5,                # 9  # "move_step":    # Graph move lengtho for each step.
-            10,               # 10 # "select_dist":  # Minimal selecting distance.
-            5,                # 11 # "half_sp":      # Half of spacing between two views in graph.
-            (0,   0,   0  ),  # 12 # "at_color":     # Activated color for color tag in wheel and square. For wheel.py and square.py.
-            (200, 200, 200),  # 13 # "ia_color":     # Inactivated color for color tags in wheel and squares. For wheel.py and square.py.
-            (230, 230, 230),  # 14 # "vb_color":     # V value bar edge color.
-            (100, 100, 100),  # 15 # "vs_color":     # View window tip color.
-            (100, 100, 100),  # 16 # "st_color":     # Select circle color in graph views.
-            (200, 200, 200),  # 17 # "it_color":     # Referenced select circle color in graph views.
-            [0, 7, 7, 7],     # 18 # "graph_types":  # Graph types corresponding to temporary files.
-            [0, 1, 2, 3],     # 19 #  "graph_chls":  # Graph channels corresponding to temporary files.
-            "analogous",      # 20 # "hm_rule":      # Initial harmony rule.
-            (0, "default"),   # 21 # "lang":         # Default language.
-            True,             # 22 # "press_move":   # Press anywhere in wheel will move activated color tag to the selected color.
-        )
+        self._setup_workarea()
+        self._setup_result()
+        self._setup_rule()
+        self._setup_mode()
+        self._setup_operation()
+        self._setup_channel()
+        self._setup_transformation()
+        self._setup_settings()
 
-        self._settings = Settings(default_settings, resources)
-        self._settings.settings_changed.connect(self._func_reload_settings_)
+        self.tabifyDockWidget(self.transformation_dock_widget, self.mode_dock_widget)
 
-        # init translator.
+        self.actionImport.triggered.connect(self._wget_operation.import_btn.click)
+        self.actionExport.triggered.connect(self._wget_operation.export_btn.click)
+        self.actionQuit.triggered.connect(self.close)
+
+        self.actionCreate.triggered.connect(self._wget_operation.create_btn.click)
+        self.actionLocate.triggered.connect(self._wget_operation.locate_btn.click)
+        self.actionSettings.triggered.connect(self._wget_settings.showup)
+
+        self.actionRule.triggered.connect(self._inner_show_or_hide(self.rule_dock_widget))
+        self.actionChannel.triggered.connect(self._inner_show_or_hide(self.channel_dock_widget))
+        self.actionOperation.triggered.connect(self._inner_show_or_hide(self.operation_dock_widget))
+        self.actionMode.triggered.connect(self._inner_show_or_hide(self.mode_dock_widget))
+        self.actionTransformation.triggered.connect(self._inner_show_or_hide(self.transformation_dock_widget))
+        self.actionResult.triggered.connect(self._inner_show_or_hide(self.result_dock_widget))
+
+        self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_main_site)))
+        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_update_site)))
+        self.actionAbout.triggered.connect(lambda x: self._show_about())
+
+        # install translator.
         self._tr = QTranslator()
         self._app = QApplication.instance()
+        self._install_translator()
 
-        self._setup_wheel()
-        self._setup_scroll_result()
-        self._setup_interface()
-
-    def _setup_wheel(self):
+    def _setup_workarea(self):
         """
-        Setup work area (wheel or graph).
+        Setup workarea (wheel or graph).
         """
 
-        work_grid_layout = QGridLayout(self.workspace)
-        work_grid_layout.setContentsMargins(2, 2, 2, 2)
+        central_widget_grid_layout = QGridLayout(self.central_widget)
+        central_widget_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self._cwgt_wheel = Wheel(self._settings.argu.settings)
-        work_grid_layout.addWidget(self._cwgt_wheel)
+        self._wget_wheel = Wheel(self._args)
+        self._wget_graph = Graph(self._args)
+        self._wget_graph.hide()
 
-        self._cwgt_graph = Graph(self._settings.argu.settings)
-        self._cwgt_graph.hide()
-        work_grid_layout.addWidget(self._cwgt_graph)
+        central_widget_grid_layout.addWidget(self._wget_wheel)
+        central_widget_grid_layout.addWidget(self._wget_graph)
 
-        self.workspace.setLayout(work_grid_layout)
-
-        # set connections between button hm rule and wheel hm rule.
-        for hm_rule in ("analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades", "custom"):
-            rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
-            rbtn_hm_rule.clicked.connect(self._cwgt_wheel.slot_modify_hm_rule(hm_rule))
-            rbtn_hm_rule.clicked.connect(self._cwgt_graph.slot_set_hm_rule(hm_rule))
-
-        self._cwgt_wheel.selected_hm_rule.connect(self._func_set_hm_rule_buttons) # for loading json files.
-
-    def _setup_scroll_result(self):
+    def _setup_result(self):
         """
-        Setup scroll result area.
+        Setup result (cube).
         """
 
-        rst_grid_layout = QGridLayout(self.result)
-        rst_grid_layout.setContentsMargins(2, 2, 2, 2)
+        result_grid_layout = QGridLayout(self.result_dock_contents)
+        result_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self._cwgt_result = Result(self._settings.argu.settings)
-        rst_grid_layout.addWidget(self._cwgt_result)
-        self.result.setLayout(rst_grid_layout)
+        self._wget_cube_table = CubeTable(self._args)
+        result_grid_layout.addWidget(self._wget_cube_table)
 
-        self._cwgt_result.slot_change_rgb_visibility(self.cbox_RGB.isChecked())
-        self._cwgt_result.slot_change_hsv_visibility(self.cbox_HSV.isChecked())
-        self.cbox_RGB.stateChanged.connect(self._cwgt_result.slot_change_rgb_visibility)
-        self.cbox_HSV.stateChanged.connect(self._cwgt_result.slot_change_hsv_visibility)
+        self._wget_wheel.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color())
+        self._wget_wheel.ps_index_changed.connect(lambda x: self._wget_cube_table.update_index())
 
-        for idx in range(5):
-            cube_square = self._cwgt_result.cube_squares[idx]
+        self._wget_graph.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color())
 
-            # init cube square colors by color set of wheel.
-            cube_square.slot_change_color(self._cwgt_wheel.color_set[idx].hsv)
+        self._wget_cube_table.ps_color_changed.connect(lambda x: self._wget_wheel.update())
+        self._wget_cube_table.ps_color_changed.connect(lambda x: self._wget_graph.update_color_loc())
 
-            # set connection from cube square to corresponding wheel color.
-            cube_square.selected_hsv.connect(self._cwgt_wheel.slot_modify_color(idx))
-
-            # set connection from wheel color to corresponding cube square.
-            wheel_selected_color = getattr(self._cwgt_wheel, "selected_color_{}".format(idx))
-            wheel_selected_color.connect(cube_square.slot_change_color)
-
-            # set connection from graph view color to corresponding cube square.
-            graph_selected_tr_color = getattr(self._cwgt_graph, "selected_tr_color_{}".format(idx))
-            graph_selected_tr_color.connect(cube_square.slot_change_graph_color)
-
-            # set connections bwtween wheel activated color and cube square states.
-            selected_acitve = getattr(self._cwgt_wheel, "selected_acitve_{}".format(idx))
-            selected_acitve.connect(cube_square.slot_wheel_change_active_state)
-            cube_square.selected_active.connect(self._cwgt_wheel.slot_modify_activate_index(idx))
-
-    def _setup_interface(self):
+    def _setup_rule(self):
         """
-        Setup operation. At end.
+        Setup rule.
         """
 
-        hm_rules = getattr(self, "rbtn_{}".format(self._settings.argu.settings[20]))
-        hm_rules.setChecked(True)
+        rule_grid_layout = QGridLayout(self.rule_dock_contents)
+        rule_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self.pbtn_Import.clicked.connect(self._cwgt_wheel.slot_import)
-        self.pbtn_Export.clicked.connect(self._cwgt_wheel.slot_export)
+        self._wget_rule = Rule(self._args)
+        rule_grid_layout.addWidget(self._wget_rule)
 
-        self.pbtn_Create.clicked.connect(self._func_resetup_wheel_)
-        self.pbtn_Extract.clicked.connect(self._func_resetup_graph_)
+        self._wget_rule.ps_rule_changed.connect(lambda x: self._wget_cube_table.modify_rule())
 
-        self.actionSettings.triggered.connect(self._settings.show)
+    def _setup_mode(self):
+        """
+        Setup mode.
+        """
 
-        self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.update_site())))
-        self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(dpinfo.main_site())))
-        self.actionAbout.triggered.connect(self._show_info_)
+        mode_grid_layout = QGridLayout(self.mode_dock_contents)
+        mode_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-        self._ori_lang = ""
-        self._func_reload_local_lang_()
+        self._wget_mode = Mode(self._args)
+        mode_grid_layout.addWidget(self._wget_mode)
 
+        self._wget_mode.ps_mode_changed.connect(lambda x: self._wget_cube_table.modify_box_visibility())
 
-    # ===== ===== ===== inner functions and decorators below ===== ===== =====
+    def _setup_operation(self):
+        """
+        Setup operation.
+        """
 
-    # set hm rule buttons.
-    def _func_set_hm_rule_buttons(self, hm_rule):
-        for pr_hm_rule in self._settings.argu.hm_rules:
-            if pr_hm_rule.lower() == hm_rule:
-                rbtn_hm_rule = getattr(self, "rbtn_{}".format(pr_hm_rule))
-                rbtn_hm_rule.click()
+        operation_grid_layout = QGridLayout(self.operation_dock_contents)
+        operation_grid_layout.setContentsMargins(2, 2, 2, 2)
 
-    # show DigitalPalette information.
-    def _show_info_(self):
-        QMessageBox.information(self, self._info_descs[0], "\n".join(self._info_descs[1:]).format(dpinfo.current_version(), "Liu Jia", dpinfo.update_date(), dpinfo.main_site()))
+        self._wget_operation = Operation(self._args)
+        operation_grid_layout.addWidget(self._wget_operation)
 
-    def _func_resetup_wheel_(self):
-        if self._cwgt_wheel.isVisible():
-            self._cwgt_wheel.slot_recreate()
+        self._wget_operation.ps_create.connect(lambda x: self._inner_create())
+        self._wget_operation.ps_locate.connect(lambda x: self._inner_locate())
+        self._wget_operation.ps_update.connect(lambda x: self._wget_cube_table.update_color())
+        self._wget_operation.ps_update.connect(lambda x: self._wget_rule.update_rule())
+
+    def _setup_channel(self):
+        """
+        Setup channel.
+        """
+
+        channel_grid_layout = QGridLayout(self.channel_dock_contents)
+        channel_grid_layout.setContentsMargins(2, 2, 2, 2)
+
+        self._wget_channel = Channel(self._args)
+        channel_grid_layout.addWidget(self._wget_channel)
+
+        self._wget_channel.ps_channel_changed.connect(lambda x: self._wget_graph.open_category())
+
+    def _setup_transformation(self):
+        """
+        Setup transformation.
+        """
+
+        transformation_grid_layout = QGridLayout(self.transformation_dock_contents)
+        transformation_grid_layout.setContentsMargins(2, 2, 2, 2)
+
+        self._wget_transformation = Transformation(self._args)
+        transformation_grid_layout.addWidget(self._wget_transformation)
+
+        self._wget_transformation.ps_home.connect(lambda x: self._wget_graph.home())
+        self._wget_transformation.ps_move.connect(lambda x: self._wget_graph.move(x[0], x[1]))
+        self._wget_transformation.ps_zoom.connect(lambda x: self._wget_graph.zoom(x, "default"))
+
+    def _setup_settings(self):
+        """
+        Setup settings.
+        """
+
+        self._wget_settings = Settings(self._args)
+
+        self._wget_settings.ps_rule_changed.connect(lambda x: self._wget_cube_table.modify_rule())
+        self._wget_settings.ps_lang_changed.connect(lambda x: self._install_translator())
+        self._wget_settings.ps_settings_changed.connect(lambda x: self._inner_update())
+
+    def _inner_create(self):
+        """
+        For connection in _setup_operation with create sign.
+        """
+
+        if self._wget_wheel.isVisible():
+            self._wget_cube_table.create_set()
+
         else:
-            self._cwgt_wheel.show()
-            self._cwgt_graph.hide()
-            for hm_rule in self._settings.argu.hm_rules[:-1]:
-                rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
-                rbtn_hm_rule.show()
-        
-        for idx in range(5):
-            self._cwgt_result.cube_squares[idx].slot_active_on(True)
+            self._wget_wheel.show()
+            self._wget_graph.hide()
 
-    def _func_resetup_graph_(self):
-        if self._cwgt_graph.isVisible():
-            self._cwgt_graph.slot_open_graph()
+    def _inner_locate(self):
+        """
+        For connection in _setup_operation with locate sign.
+        """
+
+        if self._wget_graph.isVisible():
+            self._wget_graph.open_image_dialog()
+
         else:
-            self._cwgt_wheel.hide()
-            self._cwgt_graph.show()
-            for hm_rule in self._settings.argu.hm_rules[:-1]:
-                rbtn_hm_rule = getattr(self, "rbtn_{}".format(hm_rule))
-                rbtn_hm_rule.hide()
-            
-            self._cwgt_graph.slot_update()
+            self._wget_wheel.hide()
+            self._wget_graph.show()
 
-        for idx in range(5):
-            self._cwgt_result.cube_squares[idx].slot_active_on(False)
-
-    def _func_reload_settings_(self, value):
+    def _inner_update(self):
         """
-        Reload local settings by user settings.
+        Update setable wgets.
         """
 
-        self._cwgt_wheel.reload_settings(self._settings.argu.settings)
-        self._cwgt_wheel.update()
+        self._args.sys_color_set.set_overflow(self._args.overflow)
+        self._args.sys_color_set.set_hsv_ranges(self._args.h_range, self._args.s_range, self._args.v_range)
+        self._wget_wheel.update()
+        self._wget_graph.update_all()
+        self._wget_cube_table.update_all()
+        self._wget_cube_table.modify_box_visibility()
+        self._wget_rule.update_rule()
+        self._wget_mode.update_mode()
 
-        self._cwgt_graph.reload_settings(self._settings.argu.settings)
-        self._cwgt_graph.reload_view_settings()
-        self._cwgt_graph.update()
-
-        for cube_square in self._cwgt_result.cube_squares:
-            cube_square.reload_settings(self._settings.argu.settings)
-            cube_square.update()
-        
-        self._func_reload_local_lang_()
         self.update()
 
-    def _func_reload_local_lang_(self):
-        lang = self._settings.argu.lang_paths[self._settings.argu.settings[21][0]][1]
-        
-        if lang == "default":
-            self._app.removeTranslator(self._tr)
+    def _inner_show_or_hide(self, wget):
+        """
+        Change hidden wget to shown state and change shown wget to hidden state.
+        """
 
-            self.retranslateUi(self)
-            self._settings.retranslateUi(self._settings)
-            self._func_tr_()
-            self._cwgt_wheel._func_tr_()
-            self._cwgt_graph._func_tr_()
-            self._settings._func_tr_()
+        def _func_(self):
+            if wget.isVisible():
+                wget.hide()
 
-            self._ori_lang = ""
+            else:
+                wget.show()
 
-        else:
-            if lang != self._ori_lang:
-                self._app.removeTranslator(self._tr)
+        return _func_
 
-                self._tr.load(lang)
-                self._app.installTranslator(self._tr)
+    def _install_translator(self):
+        self._app.removeTranslator(self._tr)
 
-                self.retranslateUi(self)
-                self._settings.retranslateUi(self._settings)
-                self._func_tr_()
-                self._cwgt_wheel._func_tr_()
-                self._cwgt_graph._func_tr_()
-                self._settings._func_tr_()
+        if self._args.lang != "default":
+            lang = os.sep.join((self._args.resources, "langs", self._args.lang))
+            self._tr.load(lang)
+            self._app.installTranslator(self._tr)
 
-                self._ori_lang = lang
+        self._wget_channel._func_tr_()
+        self._wget_graph._func_tr_()
+        self._wget_operation._func_tr_()
+        self._wget_rule._func_tr_()
+        self._wget_settings.retranslateUi(self._wget_settings)
+        self._wget_settings._func_tr_()
+        self.retranslateUi(self)
+        self._func_tr_()
+
+        self._wget_rule.update_text()
+        self._wget_channel.update_text()
+        self._wget_graph.update_text()
+        self._wget_operation.update_text()
+        self._wget_settings.update_text()
+
+        self.update()
+
+    def _show_about(self):
+        """
+        Show DigitalPalette information.
+        """
+
+        info = "DigitalPalette\n"
+        info += "---------- ---------- ----------\n"
+        info += "{}: {}\n".format(self._info_descs[1], self._args.info_version)
+        info += "{}: {}\n".format(self._info_descs[2], self._args.info_author)
+        info += "{}: {}\n".format(self._info_descs[3], self._args.info_date)
+        info += "{}: {}\n".format(self._info_descs[4], self._args.info_main_site)
+        info += "---------- ---------- ----------\n"
+        info += self._info_descs[5]
+
+        box = QMessageBox.information(self, self._info_descs[0], info)
 
     def closeEvent(self, event):
-        self._settings.close()
-        self._cwgt_wheel.close()
-        self._cwgt_graph.close()
-        self._cwgt_result.close()
+        """
+        Actions before close DigitalPalette.
+        """
+
+        self._wget_graph.close()
+        self._args.save_settings()
 
         event.accept()
+
+    # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
         self._info_descs = (
             _translate("DigitalPalette", "About"),
-            _translate("DigitalPalette", "DigitalPalette"),
-            _translate("DigitalPalette", "-----------------------"),
-            _translate("DigitalPalette", "Version: {0}"),
-            _translate("DigitalPalette", "Author: {1}"),
-            _translate("DigitalPalette", "Update: {2}"),
-            _translate("DigitalPalette", "Github: {3}"),
-            _translate("DigitalPalette", "-----------------------"),
+            _translate("DigitalPalette", "Version"),
+            _translate("DigitalPalette", "Author"),
+            _translate("DigitalPalette", "Update"),
+            _translate("DigitalPalette", "Website"),
             _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),
         )
 
 
 if __name__ == "__main__":
-    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
+    appctxt = ApplicationContext()
     DP = DigitalPalette(appctxt.get_resource('.'))
     DP.show()
-    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    exit_code = appctxt.app.exec_()
     sys.exit(exit_code)
