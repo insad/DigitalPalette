@@ -4,7 +4,7 @@
 DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
 
 # Version
-2.0.0 (develop)
+2.0.1 (develop)
 
 # Author
 Liu Jia
@@ -14,3 +14,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 
 # Updates
 * 2019.11.24 (v2.0.0-dev): Reconstruct the entire code. More functions will be integrated into DigitalPalette in the future.
+* 2019.11.24 (v2.0.1-dev): Repair export formats. Repair title. Add installer scripts. Add shortcuts.

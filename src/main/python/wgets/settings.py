@@ -35,7 +35,6 @@ class Settings(QDialog, Ui_SettingsDialog):
         app_icon = QIcon()
         app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
-        self.setWindowTitle("Settings")
 
         # init comb boxes.
         for lang in self._args.usr_langs:
@@ -48,21 +47,17 @@ class Settings(QDialog, Ui_SettingsDialog):
             self.overflow_comb.addItem("")
 
         # init buttons.
-        btn = self.buttonBox.button(QDialogButtonBox.Ok)
-        btn.setText(self._btn_descs[0])
-        btn.clicked.connect(self.application)
+        self._btn_1 = self.buttonBox.button(QDialogButtonBox.Ok)
+        self._btn_1.clicked.connect(self.application)
 
-        btn = self.buttonBox.button(QDialogButtonBox.Cancel)
-        btn.setText(self._btn_descs[1])
-        btn.clicked.connect(self.close)
+        self._btn_2 = self.buttonBox.button(QDialogButtonBox.Cancel)
+        self._btn_2.clicked.connect(self.close)
 
-        btn = self.buttonBox.button(QDialogButtonBox.Apply)
-        btn.setText(self._btn_descs[2])
-        btn.clicked.connect(self.update_values)
+        self._btn_3 = self.buttonBox.button(QDialogButtonBox.Apply)
+        self._btn_3.clicked.connect(self.update_values)
 
-        btn = self.buttonBox.button(QDialogButtonBox.Reset)
-        btn.setText(self._btn_descs[3])
-        btn.clicked.connect(self.reset_values)
+        self._btn_4 = self.buttonBox.button(QDialogButtonBox.Reset)
+        self._btn_4.clicked.connect(self.reset_values)
 
         self.update_text()
 
@@ -212,6 +207,12 @@ class Settings(QDialog, Ui_SettingsDialog):
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
     def update_text(self):
+        self.setWindowTitle(self._dialog_desc[0])
+        self._btn_1.setText(self._dialog_desc[1])
+        self._btn_2.setText(self._dialog_desc[2])
+        self._btn_3.setText(self._dialog_desc[3])
+        self._btn_4.setText(self._dialog_desc[4])
+
         for idx in range(len(self._args.usr_langs)):
             lang = self._args.usr_langs[idx]
             self.lang_comb.setItemText(idx, "{} ({})".format(self._lang_descs[lang[0]], lang[1].split(".")[0]))
@@ -225,7 +226,8 @@ class Settings(QDialog, Ui_SettingsDialog):
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
-        self._btn_descs = (
+        self._dialog_desc = (
+            _translate("Settings", "Settings"),
             _translate("Settings", "OK"),
             _translate("Settings", "Cancel"),
             _translate("Settings", "Apply"),

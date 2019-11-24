@@ -13,7 +13,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.0.0-dev
+v2.0.1-dev
 """
 
 __AUTHOR__ = """
@@ -27,9 +27,9 @@ __DATE__ = """
 import os
 import sys
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox, QShortcut
 from PyQt5.QtCore import QCoreApplication, QUrl, QTranslator
-from PyQt5.QtGui import QIcon, QPixmap, QDesktopServices
+from PyQt5.QtGui import QIcon, QPixmap, QDesktopServices, QKeySequence
 from cguis.resource import view_rc
 from clibs.args import Args
 from cguis.design.main_window import Ui_MainWindow
@@ -98,6 +98,36 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_main_site)))
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_update_site)))
         self.actionAbout.triggered.connect(lambda x: self._show_about())
+
+        shortcut = QShortcut(QKeySequence("Alt+I"), self)
+        shortcut.activated.connect(self._wget_operation.import_btn.click)
+        shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
+        shortcut.activated.connect(self._wget_operation.import_btn.click)
+
+        shortcut = QShortcut(QKeySequence("Alt+E"), self)
+        shortcut.activated.connect(self._wget_operation.export_btn.click)
+        shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        shortcut.activated.connect(self._wget_operation.export_btn.click)
+
+        shortcut = QShortcut(QKeySequence("Alt+Q"), self)
+        shortcut.activated.connect(self.close)
+        shortcut = QShortcut(QKeySequence("Esc"), self)
+        shortcut.activated.connect(self.close)
+
+        shortcut = QShortcut(QKeySequence("Alt+C"), self)
+        shortcut.activated.connect(self._wget_operation.create_btn.click)
+        shortcut = QShortcut(QKeySequence("Ctrl+W"), self)
+        shortcut.activated.connect(self._wget_operation.create_btn.click)
+
+        shortcut = QShortcut(QKeySequence("Alt+L"), self)
+        shortcut.activated.connect(self._wget_operation.locate_btn.click)
+        shortcut = QShortcut(QKeySequence("Ctrl+G"), self)
+        shortcut.activated.connect(self._wget_operation.locate_btn.click)
+
+        shortcut = QShortcut(QKeySequence("Alt+S"), self)
+        shortcut.activated.connect(self._wget_settings.showup)
+        shortcut = QShortcut(QKeySequence("`"), self)
+        shortcut.activated.connect(self._wget_settings.showup)
 
         # install translator.
         self._tr = QTranslator()

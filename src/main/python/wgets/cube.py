@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QScrollArea, QFrame, QColorDialog
-from PyQt5.QtCore import Qt, QSize, pyqtSignal
-from PyQt5.QtGui import QPainter, QPen, QColor
+from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QScrollArea, QFrame, QColorDialog, QApplication, QShortcut
+from PyQt5.QtCore import Qt, QSize, pyqtSignal, QMimeData
+from PyQt5.QtGui import QPainter, QPen, QColor, QKeySequence
 from cguis.design.scroll_cube import Ui_ScrollCube
 from clibs.color import Color
 
@@ -154,6 +154,31 @@ class CubeTable(QWidget):
 
             self._cubes[idx].le_hec.textChanged.connect(self.modify_color(idx, "direct", "hec"))
 
+        
+        shortcut = QShortcut(QKeySequence("r"), self)
+        shortcut.activated.connect(self.clipboard("rgb"))
+
+        shortcut = QShortcut(QKeySequence("h"), self)
+        shortcut.activated.connect(self.clipboard("hsv"))
+
+        shortcut = QShortcut(QKeySequence("c"), self)
+        shortcut.activated.connect(self.clipboard("hec"))
+
+        shortcut = QShortcut(QKeySequence("1"), self)
+        shortcut.activated.connect(self.active_by_num(2))
+
+        shortcut = QShortcut(QKeySequence("2"), self)
+        shortcut.activated.connect(self.active_by_num(1))
+
+        shortcut = QShortcut(QKeySequence("3"), self)
+        shortcut.activated.connect(self.active_by_num(0))
+
+        shortcut = QShortcut(QKeySequence("4"), self)
+        shortcut.activated.connect(self.active_by_num(3))
+
+        shortcut = QShortcut(QKeySequence("5"), self)
+        shortcut.activated.connect(self.active_by_num(4))
+
     def sizeHint(self):
         return QSize(600, 150)
 
@@ -260,3 +285,39 @@ class CubeTable(QWidget):
             self._cubes[lc_idx].update()
 
         self.update()
+
+    def clipboard(self, ctp):
+        """
+        Set the hec (hex code) values as the clipboard data by shortcut r, h and c.
+        """
+
+        def _func_():
+            data = "["
+
+            for i in (2, 1, 0, 3, 4):
+                color = self._args.sys_color_set[i].getti(ctp)
+                if ctp == "hec":
+                    color = "'#{}'".format(color)
+                data += str(color)
+                data += ", "
+
+            data = data[:-2] + "]"
+
+            mimedata = QMimeData()
+            mimedata.setText(data)
+
+            clipboard = QApplication.clipboard()
+            clipboard.setMimeData(mimedata)
+
+        return _func_
+
+    def active_by_num(self, idx):
+        """
+        Set activated idx by shortcut 1, 2, 3, 4 and 5.
+        """
+
+        def _func_():
+            self._args.sys_activated_idx = idx
+            self.update_index()
+
+        return _func_

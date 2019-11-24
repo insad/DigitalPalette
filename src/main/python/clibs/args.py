@@ -71,7 +71,7 @@ class Args(object):
             self.load_settings(os.sep.join((self.usr_store, "settings.json")))
 
         # software informations.
-        self.info_version = "v2.0.0-dev"
+        self.info_version = "v2.0.1-dev"
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
         self.info_date = "2019.11.24"

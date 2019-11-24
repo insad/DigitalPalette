@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+import binascii
 from clibs.color import Color
 
 
@@ -203,8 +204,8 @@ class ColorSet(object):
             Binary strings.
         """
 
-        swatch_chars_v1 = "00010019"
-        swatch_chars_v2 = "00020019"
+        swatch_chars_v1 = "00010005"
+        swatch_chars_v2 = "00020005"
 
         for i in (2, 1, 0, 3, 4):
             h, s, v = self._color_set[i].hsv
@@ -212,10 +213,7 @@ class ColorSet(object):
             swatch_chars_v1 += pr_chars
 
             swatch_chars_v2 += pr_chars
-            swatch_chars_v2 += "00000003"
-            for char in "DigiPale_":
-                swatch_chars_v2 += "{:0>4x}".format(ord("char"))
-            swatch_chars_v2 += "{:0>4x}0000".format(ord(str(i)))
+            swatch_chars_v2 += "0000{:0>4x}".format(11) + "{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}".format(ord("D"), ord("i"), ord("g"), ord("i"), ord("P"), ord("a"), ord("l"), ord("e"), ord("_")) + "{:0>4x}0000".format(ord(str(i)))
 
         swatch_chars = swatch_chars_v1 + swatch_chars_v2
 
@@ -229,12 +227,12 @@ class ColorSet(object):
             Plain text.
         """
 
-        color_text = "{:<10}{:<8}{:<8}{:<8}{:<12}{:<12}{:<12}{:<8}\n".format("# Index", "R", "G", "B", "H", "S", "V", "Hex")
+        color_text = "{:<12}{:<10}{:<10}{:<10}{:<12}{:<12}{:<12}{:<8}\n".format("# Index", "R", "G", "B", "H", "S", "V", "Hex code")
         for i in (2, 1, 0, 3, 4):
             r, g, b = self._color_set[i].rgb
             h, s, v = self._color_set[i].hsv
-            hex_code = "#" + self._color_set[i].hex_code
-            color_text += "  {:<8}{:<8}{:<8}{:<8}{:<12.3f}{:<12.3f}{:<12.3f}{:<8}\n".format(i, r, g, b, h, s, v, hex_code)
+            hex_code = "#" + self._color_set[i].hec
+            color_text += "  {:<10}{:<10}{:<10}{:<10}{:<12.2f}{:<12.2f}{:<12.2f}{:<8}\n".format(i, r, g, b, h, s, v, hex_code)
 
         return color_text
 

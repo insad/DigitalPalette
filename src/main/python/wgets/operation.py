@@ -179,7 +179,7 @@ class Operation(QWidget):
             with open(cb_file[0], "w") as f:
                 f.write("# DigitalPalette Color Export.\n")
                 f.write("# Version: {}.\n".format(self._args.info_version))
-                f.write("# Harmony Rule: {}.\n".format(self.self._args.hm_rule))
+                f.write("# Harmony Rule: {}.\n".format(self._args.hm_rule))
                 f.write(self._args.sys_color_set.export_text())                    
 
         elif cb_file[0].split(".")[-1].lower() == "aco":

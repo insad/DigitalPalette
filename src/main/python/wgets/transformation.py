@@ -3,8 +3,9 @@
 import os
 import time
 import json
-from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox, QShortcut
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
+from PyQt5.QtGui import QKeySequence
 from clibs.color import Color
 
 
@@ -50,12 +51,18 @@ class Transformation(QWidget):
         scroll_grid_layout.addWidget(btn, 0, 2, 1, 1)
         btn.clicked.connect(lambda x: self.ps_move.emit((0, self._args.move_step * -1)))
 
+        shortcut = QShortcut(QKeySequence("Up"), self)
+        shortcut.activated.connect(btn.click)
+
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
         btn.setMaximumSize(30, 30)
         btn.setText("↓")
         scroll_grid_layout.addWidget(btn, 2, 2, 1, 1)
         btn.clicked.connect(lambda x: self.ps_move.emit((0, self._args.move_step)))
+
+        shortcut = QShortcut(QKeySequence("Down"), self)
+        shortcut.activated.connect(btn.click)
 
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
@@ -64,12 +71,18 @@ class Transformation(QWidget):
         scroll_grid_layout.addWidget(btn, 1, 1, 1, 1)
         btn.clicked.connect(lambda x: self.ps_move.emit((self._args.move_step * -1, 0)))
 
+        shortcut = QShortcut(QKeySequence("Left"), self)
+        shortcut.activated.connect(btn.click)
+
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
         btn.setMaximumSize(30, 30)
         btn.setText("→")
         scroll_grid_layout.addWidget(btn, 1, 3, 1, 1)
         btn.clicked.connect(lambda x: self.ps_move.emit((self._args.move_step, 0)))
+
+        shortcut = QShortcut(QKeySequence("Right"), self)
+        shortcut.activated.connect(btn.click)
 
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
@@ -78,6 +91,9 @@ class Transformation(QWidget):
         scroll_grid_layout.addWidget(btn, 1, 2, 1, 1)
         btn.clicked.connect(lambda x: self.ps_home.emit(True))
 
+        shortcut = QShortcut(QKeySequence("Home"), self)
+        shortcut.activated.connect(btn.click)
+
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
         btn.setMaximumSize(30, 30)
@@ -85,12 +101,18 @@ class Transformation(QWidget):
         scroll_grid_layout.addWidget(btn, 4, 1, 1, 1)
         btn.clicked.connect(lambda x: self.ps_zoom.emit(self._args.zoom_step))
 
+        shortcut = QShortcut(QKeySequence("="), self)
+        shortcut.activated.connect(btn.click)
+
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
         btn.setMaximumSize(30, 30)
         btn.setText("–")
         scroll_grid_layout.addWidget(btn, 4, 3, 1, 1)
         btn.clicked.connect(lambda x: self.ps_zoom.emit(1 / self._args.zoom_step))
+
+        shortcut = QShortcut(QKeySequence("-"), self)
+        shortcut.activated.connect(btn.click)
 
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
         scroll_grid_layout.addItem(spacer, 5, 2, 1, 1)

@@ -97,32 +97,32 @@
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="331"/>
+        <location filename="../../main.py" line="362"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="331"/>
+        <location filename="../../main.py" line="362"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="331"/>
+        <location filename="../../main.py" line="362"/>
         <source>Author</source>
         <translation>作者</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="331"/>
+        <location filename="../../main.py" line="362"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="331"/>
+        <location filename="../../main.py" line="362"/>
         <source>Website</source>
         <translation>网址</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="331"/>
+        <location filename="../../main.py" line="362"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation>DigitalPalette 是自由软件，本着可用的意愿分发，但不作任何担保。您可以在遵守由自由软件基金会发布的 GNU 通用公共许可协议的情况下重新分发并且（或者）修改软件。更多细节请参看 GNU 通用公共许可协议。</translation>
     </message>
@@ -255,7 +255,7 @@
     <message>
         <location filename="../design/main_window.py" line="177"/>
         <source>MainWindow</source>
-        <translation>主窗口</translation>
+        <translation type="obsolete">主窗口</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="178"/>
@@ -295,7 +295,7 @@
     <message>
         <location filename="../design/main_window.py" line="200"/>
         <source>Mode</source>
-        <translation>模式</translation>
+        <translation>显示</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="198"/>
@@ -439,57 +439,57 @@
 <context>
     <name>Rule</name>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Analogous</source>
         <translation>相似组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Monochromatic</source>
         <translation>单色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Triad</source>
         <translation>三色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Tetrad</source>
         <translation>四色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Pentad</source>
         <translation>五色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Complementary</source>
         <translation>补色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Shades</source>
         <translation>浓度组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="235"/>
+        <location filename="../../wgets/settings.py" line="237"/>
         <source>Custom</source>
         <translation>自定组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="246"/>
+        <location filename="../../wgets/settings.py" line="248"/>
         <source>Cutoff</source>
         <translation>截断</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="246"/>
+        <location filename="../../wgets/settings.py" line="248"/>
         <source>Return</source>
         <translation>返回</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="246"/>
+        <location filename="../../wgets/settings.py" line="248"/>
         <source>Repeat</source>
         <translation>重复</translation>
     </message>
@@ -497,397 +497,482 @@
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../../wgets/settings.py" line="228"/>
+        <location filename="../../wgets/settings.py" line="229"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="228"/>
+        <location filename="../../wgets/settings.py" line="229"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="228"/>
+        <location filename="../../wgets/settings.py" line="229"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="228"/>
+        <location filename="../../wgets/settings.py" line="229"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>en</source>
         <translation>英文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>ar</source>
         <translation>阿拉伯文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>be</source>
         <translation>白俄罗斯文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>bg</source>
         <translation>保加利亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>ca</source>
         <translation>加泰罗尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>cs</source>
         <translation>捷克文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>da</source>
         <translation>丹麦文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>de</source>
         <translation>德文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>el</source>
         <translation>希腊文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>es</source>
         <translation>西班牙文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>et</source>
         <translation>爱沙尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>fi</source>
         <translation>芬兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>fr</source>
         <translation>法文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>hr</source>
         <translation>克罗地亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>hu</source>
         <translation>匈牙利文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>is</source>
         <translation>冰岛文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>it</source>
         <translation>意大利文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>iw</source>
         <translation>希伯来文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>ja</source>
         <translation>日文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>ko</source>
         <translation>朝鲜文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>lt</source>
         <translation>立陶宛文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>lv</source>
         <translation>拉托维亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>mk</source>
         <translation>马其顿文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>nl</source>
         <translation>荷兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>no</source>
         <translation>挪威文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>pl</source>
         <translation>波兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>pt</source>
         <translation>葡萄牙文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>ro</source>
         <translation>罗马尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>ru</source>
         <translation>俄文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>sh</source>
         <translation>塞波尼斯-克罗地亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>sk</source>
         <translation>斯洛伐克文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>sl</source>
         <translation>斯洛文尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>sq</source>
         <translation>阿尔巴尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>sr</source>
         <translation>塞尔维亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>sv</source>
         <translation>瑞典文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>th</source>
         <translation>泰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>tr</source>
         <translation>土耳其文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>uk</source>
         <translation>乌克兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>zh</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="252"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>default</source>
         <translation>默认</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/settings.py" line="229"/>
+        <source>Settings</source>
+        <translation>设置</translation>
     </message>
 </context>
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="../design/settings_dialog.py" line="506"/>
+        <location filename="../design/settings_dialog.py" line="729"/>
         <source>Color Square</source>
         <translation>色彩方块</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="491"/>
+        <location filename="../design/settings_dialog.py" line="714"/>
         <source>cubic ratio</source>
         <translation>方块宽度比例</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="509"/>
+        <location filename="../design/settings_dialog.py" line="732"/>
         <source>Color Wheel</source>
         <translation>色彩转轮</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="493"/>
+        <location filename="../design/settings_dialog.py" line="716"/>
         <source>wheel ratio</source>
         <translation>转轮宽度比例</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="494"/>
+        <location filename="../design/settings_dialog.py" line="717"/>
         <source>volum ratio</source>
         <translation>滑条高度比例</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="495"/>
+        <location filename="../design/settings_dialog.py" line="718"/>
         <source>s tag radius</source>
         <translation>转轮中的标签半径比例</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="496"/>
+        <location filename="../design/settings_dialog.py" line="719"/>
         <source>v tag radius</source>
         <translation>滑条中的标签半径比例</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="497"/>
+        <location filename="../design/settings_dialog.py" line="720"/>
         <source>wheel ed wid</source>
         <translation>转轮边缘宽度</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="498"/>
+        <location filename="../design/settings_dialog.py" line="721"/>
         <source>positive wid</source>
         <translation>已激活的标签边缘宽度</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="499"/>
+        <location filename="../design/settings_dialog.py" line="722"/>
         <source>negative wid</source>
         <translation>未激活的标签边缘宽度</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="500"/>
+        <location filename="../design/settings_dialog.py" line="723"/>
         <source>wheel ed color</source>
         <translation>转轮边缘色彩</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="501"/>
+        <location filename="../design/settings_dialog.py" line="724"/>
         <source>positive color</source>
         <translation>已激活的标签边缘色彩</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="502"/>
+        <location filename="../design/settings_dialog.py" line="725"/>
         <source>negative color</source>
         <translation>未激活的标签边缘色彩</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="519"/>
+        <location filename="../design/settings_dialog.py" line="742"/>
         <source>Graph View</source>
         <translation>图像视图</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="504"/>
+        <location filename="../design/settings_dialog.py" line="727"/>
         <source>circle dist</source>
         <translation>圆形标签半径</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="505"/>
+        <location filename="../design/settings_dialog.py" line="728"/>
         <source>Interface</source>
         <translation>界面</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="507"/>
+        <location filename="../design/settings_dialog.py" line="730"/>
         <source>show hsv</source>
         <translation>在结果区域显示 HSV 滑动条</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="508"/>
+        <location filename="../design/settings_dialog.py" line="731"/>
         <source>show rgb</source>
         <translation>在结果区域显示 RGB 滑动条</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="510"/>
+        <location filename="../design/settings_dialog.py" line="733"/>
         <source>h range</source>
         <translation>H 数值的范围从</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="515"/>
+        <location filename="../design/settings_dialog.py" line="738"/>
         <source>to</source>
         <translation>到</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="512"/>
+        <location filename="../design/settings_dialog.py" line="735"/>
         <source>s_range</source>
         <translation>S 数值的范围从</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="514"/>
+        <location filename="../design/settings_dialog.py" line="737"/>
         <source>v_range</source>
         <translation>V 数值的范围从</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="516"/>
+        <location filename="../design/settings_dialog.py" line="739"/>
         <source>hm rule</source>
         <translation>调和规则</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="517"/>
+        <location filename="../design/settings_dialog.py" line="740"/>
         <source>overflow</source>
         <translation>溢出规则</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="518"/>
+        <location filename="../design/settings_dialog.py" line="741"/>
         <source>press move</source>
         <translation>点击时立即移动标签</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="520"/>
+        <location filename="../design/settings_dialog.py" line="743"/>
         <source>zoom step</source>
         <translation>每步放大比例</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="521"/>
+        <location filename="../design/settings_dialog.py" line="744"/>
         <source>move step</source>
         <translation>每步移动距离</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="522"/>
+        <location filename="../design/settings_dialog.py" line="745"/>
         <source>Rule</source>
         <translation>规则</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="523"/>
+        <location filename="../design/settings_dialog.py" line="752"/>
         <source>Work Space</source>
         <translation>工作区域</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="524"/>
+        <location filename="../design/settings_dialog.py" line="747"/>
         <source>lang</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="525"/>
+        <location filename="../design/settings_dialog.py" line="748"/>
         <source>usr color</source>
         <translation>色彩目录</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="526"/>
+        <location filename="../design/settings_dialog.py" line="749"/>
         <source>usr image</source>
         <translation>图像目录</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="527"/>
+        <location filename="../design/settings_dialog.py" line="750"/>
         <source>store loc</source>
         <translation>在本地保存设置</translation>
     </message>
     <message>
-        <location filename="../design/settings_dialog.py" line="528"/>
+        <location filename="../design/settings_dialog.py" line="751"/>
         <source>System</source>
         <translation>系统</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="753"/>
+        <source>Import</source>
+        <translation>导入</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="754"/>
+        <source>Export</source>
+        <translation>导出</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="755"/>
+        <source>Create</source>
+        <translation>创建</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="756"/>
+        <source>Locate</source>
+        <translation>定点</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="757"/>
+        <source>Quit</source>
+        <translation>退出</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="758"/>
+        <source>Settings</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="759"/>
+        <source>Result</source>
+        <translation>结果</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="760"/>
+        <source>Copy RGB group</source>
+        <translation>复制 RGB 组</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="761"/>
+        <source>Copy HSV group</source>
+        <translation>复制 HSV 组</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="762"/>
+        <source>Copy HEC group</source>
+        <translation>复制 HEC 组</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="763"/>
+        <source>Activate Color</source>
+        <translation>激活色彩</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="764"/>
+        <source>Transformation</source>
+        <translation>变换</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="765"/>
+        <source>Move</source>
+        <translation>移动</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="766"/>
+        <source>Zoom</source>
+        <translation>缩放</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="767"/>
+        <source>Reset</source>
+        <translation>重置</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="768"/>
+        <source>Shortcut</source>
+        <translation>快捷键</translation>
     </message>
 </context>
 </TS>

@@ -40,13 +40,12 @@
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_LANGUAGE "SimpChinese"
 
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "..\DigitalPaletteSetup.exe"
-InstallDir "$PROGRAMFILES\DigitalPalette"
+InstallDir "$PROGRAMFILES32\DigitalPalette"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
