@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QRadioButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
+from PyQt5.QtCore import pyqtSignal, QCoreApplication, QSize
 
 
 class Rule(QWidget):

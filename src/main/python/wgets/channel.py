@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QRadioButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QGroupBox
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
+from PyQt5.QtCore import pyqtSignal, QCoreApplication, QSize
 
 
 class Channel(QWidget):
@@ -137,6 +137,7 @@ class Channel(QWidget):
 
     def _func_tr_(self):
         _translate = QCoreApplication.translate
+
         self._gbox_descs = (
             _translate("Channel", "Category"),
             _translate("Channel", "Channel"),

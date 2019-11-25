@@ -30,9 +30,9 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox, QShortcut
 from PyQt5.QtCore import QCoreApplication, QUrl, QTranslator
 from PyQt5.QtGui import QIcon, QPixmap, QDesktopServices, QKeySequence
+from cguis.design.main_window import Ui_MainWindow
 from cguis.resource import view_rc
 from clibs.args import Args
-from cguis.design.main_window import Ui_MainWindow
 from wgets.wheel import Wheel
 from wgets.graph import Graph
 from wgets.cube import CubeTable
@@ -79,6 +79,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._setup_settings()
 
         self.tabifyDockWidget(self.transformation_dock_widget, self.mode_dock_widget)
+        self.tabifyDockWidget(self.channel_dock_widget, self.rule_dock_widget)
 
         self.actionImport.triggered.connect(self._wget_operation.import_btn.click)
         self.actionExport.triggered.connect(self._wget_operation.export_btn.click)

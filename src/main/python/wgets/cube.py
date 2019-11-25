@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QScrollArea, QFrame, QColorDialog, QApplication, QShortcut
+from PyQt5.QtWidgets import QWidget, QGridLayout, QHBoxLayout, QScrollArea, QFrame, QColorDialog, QApplication, QShortcut
 from PyQt5.QtCore import Qt, QSize, pyqtSignal, QMimeData
 from PyQt5.QtGui import QPainter, QPen, QColor, QKeySequence
 from cguis.design.scroll_cube import Ui_ScrollCube

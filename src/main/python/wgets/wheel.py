@@ -2,10 +2,10 @@
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QSize, pyqtSignal
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient
-from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QCoreApplication, QSize, pyqtSignal
-from clibs.color import Color
 from clibs.transpt import get_outer_box, rotate_point_center, get_theta_center
+from clibs.color import Color
 
 
 class Wheel(QWidget):

@@ -760,7 +760,7 @@ class Ui_SettingsDialog(object):
         self.label_18.setText(_translate("SettingsDialog", "Copy RGB group"))
         self.label_20.setText(_translate("SettingsDialog", "Copy HSV group"))
         self.label_23.setText(_translate("SettingsDialog", "Copy HEC group"))
-        self.label_24.setText(_translate("SettingsDialog", "Activate Color"))
+        self.label_24.setText(_translate("SettingsDialog", "Activate color tag"))
         self.shortcut_transformation_gbox.setTitle(_translate("SettingsDialog", "Transformation"))
         self.label_13.setText(_translate("SettingsDialog", "Move"))
         self.label_14.setText(_translate("SettingsDialog", "Zoom"))

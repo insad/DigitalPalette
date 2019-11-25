@@ -3,9 +3,9 @@
 import os
 import sys
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog, QGridLayout
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage
+from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QRect
+from PyQt5.QtGui import QPainter, QPen, QColor, QPixmap, QImage
 from cguis.resource import view_rc
 from clibs.image3c import Image3C
 from clibs.transpt import get_outer_box

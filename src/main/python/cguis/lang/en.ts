@@ -4,92 +4,92 @@
 <context>
     <name>Channel</name>
     <message>
-        <location filename="../../wgets/channel.py" line="140"/>
+        <location filename="../../wgets/channel.py" line="141"/>
         <source>Category</source>
         <translation>Category</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="140"/>
+        <location filename="../../wgets/channel.py" line="141"/>
         <source>Channel</source>
         <translation>Channel</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Norm RGB</source>
         <translation>Normal RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Vtcl RGB</source>
         <translation>V Edge RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Horz RGB</source>
         <translation>H Edge RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Finl RGB</source>
         <translation>C Edge RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Norm HSV</source>
         <translation>Normal HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Vtcl HSV</source>
         <translation>V Edge HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Horz HSV</source>
         <translation>H Edge HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Finl HSV</source>
         <translation>C Edge HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Full RGB</source>
         <translation>Full RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel R</source>
         <translation>Only R</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel G</source>
         <translation>Only G</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel B</source>
         <translation>Only B</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Full HSV</source>
         <translation>Full HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel H</source>
         <translation>Only H</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel S</source>
         <translation>Only S</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel V</source>
         <translation>Only V</translation>
     </message>
@@ -300,7 +300,7 @@
     <message>
         <location filename="../design/main_window.py" line="201"/>
         <source>Transformation</source>
-        <translation>Transformation</translation>
+        <translation>Shape</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="188"/>
@@ -429,57 +429,57 @@
 <context>
     <name>Rule</name>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Analogous</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Monochromatic</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Triad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Tetrad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Pentad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Complementary</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Shades</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Custom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="248"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>Cutoff</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="248"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>Return</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="248"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>Repeat</source>
         <translation></translation>
     </message>
@@ -487,227 +487,227 @@
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Apply</source>
         <translation>Apply</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Reset</source>
         <translation>Reset</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>en</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ar</source>
         <translation>Arabic</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>be</source>
         <translation>Byelorussian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>bg</source>
         <translation>Bulgarian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ca</source>
         <translation>Catalan</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>cs</source>
         <translation>Czech</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>da</source>
         <translation>Danish</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>de</source>
         <translation>German</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>el</source>
         <translation>Greek</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>es</source>
         <translation>Spanish</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>et</source>
         <translation>Estonian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>fi</source>
         <translation>Finnish</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>fr</source>
         <translation>French</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>hr</source>
         <translation>Croatian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>hu</source>
         <translation>Hungarian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>is</source>
         <translation>Icelandic</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>it</source>
         <translation>Italian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>iw</source>
         <translation>Hebrew</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ja</source>
         <translation>Japanese</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ko</source>
         <translation>Korean</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>lt</source>
         <translation>Lithuanian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>lv</source>
         <translation>Latvian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>mk</source>
         <translation>Macedonian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>nl</source>
         <translation>Dutch</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>no</source>
         <translation>Norwegian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>pl</source>
         <translation>Polish</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>pt</source>
         <translation>Portuguese</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ro</source>
         <translation>Romanian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ru</source>
         <translation>Russian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sh</source>
         <translation>Serbo-Croatian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sk</source>
         <translation>Slovak</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sl</source>
         <translation>Slovenian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sq</source>
         <translation>Albanian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sr</source>
         <translation>Serbian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sv</source>
         <translation>Swedish</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>th</source>
         <translation>Thai</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>tr</source>
         <translation>Turkish</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>uk</source>
         <translation>Ukrainian</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>zh</source>
         <translation>Chinese</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>default</source>
         <translation>Default</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
@@ -952,12 +952,12 @@
     <message>
         <location filename="../design/settings_dialog.py" line="763"/>
         <source>Activate Color</source>
-        <translation></translation>
+        <translation type="obsolete">Activate Color</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="764"/>
         <source>Transformation</source>
-        <translation>Transformation</translation>
+        <translation>Shape</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="765"/>
@@ -977,6 +977,11 @@
     <message>
         <location filename="../design/settings_dialog.py" line="768"/>
         <source>Shortcut</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="763"/>
+        <source>Activate color tag</source>
         <translation></translation>
     </message>
 </context>

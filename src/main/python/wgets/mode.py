@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QCheckBox, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy
-from PyQt5.QtCore import Qt, QSize, pyqtSignal
+from PyQt5.QtCore import QSize, pyqtSignal
 
 
 class Mode(QWidget):

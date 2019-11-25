@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
-import time
-import json
-from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox, QShortcut
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
+from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QShortcut
+from PyQt5.QtCore import pyqtSignal, QSize
 from PyQt5.QtGui import QKeySequence
-from clibs.color import Color
 
 
 class Transformation(QWidget):

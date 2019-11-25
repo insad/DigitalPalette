@@ -4,92 +4,92 @@
 <context>
     <name>Channel</name>
     <message>
-        <location filename="../../wgets/channel.py" line="140"/>
+        <location filename="../../wgets/channel.py" line="141"/>
         <source>Category</source>
         <translation>类目</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="140"/>
+        <location filename="../../wgets/channel.py" line="141"/>
         <source>Channel</source>
         <translation>通道</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Norm RGB</source>
         <translation>RGB 普通</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Vtcl RGB</source>
         <translation>RGB 垂直边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Horz RGB</source>
         <translation>RGB 水平边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Finl RGB</source>
         <translation>RGB 综合边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Norm HSV</source>
         <translation>HSV 普通</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Vtcl HSV</source>
         <translation>HSV 垂直边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Horz HSV</source>
         <translation>HSV 水平边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="145"/>
+        <location filename="../../wgets/channel.py" line="146"/>
         <source>Finl HSV</source>
         <translation>HSV 综合边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Full RGB</source>
         <translation>全部 RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel R</source>
         <translation>仅 R</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel G</source>
         <translation>仅 G</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel B</source>
         <translation>仅 B</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Full HSV</source>
         <translation>全部 HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel H</source>
         <translation>仅 H</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel S</source>
         <translation>仅 S</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="156"/>
+        <location filename="../../wgets/channel.py" line="157"/>
         <source>Chnnel V</source>
         <translation>仅 V</translation>
     </message>
@@ -300,12 +300,12 @@
     <message>
         <location filename="../design/main_window.py" line="198"/>
         <source>Channel</source>
-        <translation>滤色</translation>
+        <translation>滤镜</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="201"/>
         <source>Transformation</source>
-        <translation>变换</translation>
+        <translation>形状</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="188"/>
@@ -439,57 +439,57 @@
 <context>
     <name>Rule</name>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Analogous</source>
         <translation>相似组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Monochromatic</source>
         <translation>单色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Triad</source>
         <translation>三色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Tetrad</source>
         <translation>四色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Pentad</source>
         <translation>五色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Complementary</source>
         <translation>补色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Shades</source>
         <translation>浓度组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="237"/>
+        <location filename="../../wgets/settings.py" line="243"/>
         <source>Custom</source>
         <translation>自定组</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="248"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>Cutoff</source>
         <translation>截断</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="248"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>Return</source>
         <translation>返回</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="248"/>
+        <location filename="../../wgets/settings.py" line="254"/>
         <source>Repeat</source>
         <translation>重复</translation>
     </message>
@@ -497,227 +497,227 @@
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>en</source>
         <translation>英文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ar</source>
         <translation>阿拉伯文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>be</source>
         <translation>白俄罗斯文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>bg</source>
         <translation>保加利亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ca</source>
         <translation>加泰罗尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>cs</source>
         <translation>捷克文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>da</source>
         <translation>丹麦文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>de</source>
         <translation>德文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>el</source>
         <translation>希腊文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>es</source>
         <translation>西班牙文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>et</source>
         <translation>爱沙尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>fi</source>
         <translation>芬兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>fr</source>
         <translation>法文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>hr</source>
         <translation>克罗地亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>hu</source>
         <translation>匈牙利文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>is</source>
         <translation>冰岛文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>it</source>
         <translation>意大利文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>iw</source>
         <translation>希伯来文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ja</source>
         <translation>日文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ko</source>
         <translation>朝鲜文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>lt</source>
         <translation>立陶宛文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>lv</source>
         <translation>拉托维亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>mk</source>
         <translation>马其顿文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>nl</source>
         <translation>荷兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>no</source>
         <translation>挪威文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>pl</source>
         <translation>波兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>pt</source>
         <translation>葡萄牙文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ro</source>
         <translation>罗马尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>ru</source>
         <translation>俄文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sh</source>
         <translation>塞波尼斯-克罗地亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sk</source>
         <translation>斯洛伐克文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sl</source>
         <translation>斯洛文尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sq</source>
         <translation>阿尔巴尼亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sr</source>
         <translation>塞尔维亚文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>sv</source>
         <translation>瑞典文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>th</source>
         <translation>泰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>tr</source>
         <translation>土耳其文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>uk</source>
         <translation>乌克兰文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>zh</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="254"/>
+        <location filename="../../wgets/settings.py" line="260"/>
         <source>default</source>
         <translation>默认</translation>
     </message>
     <message>
-        <location filename="../../wgets/settings.py" line="229"/>
+        <location filename="../../wgets/settings.py" line="235"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
@@ -947,12 +947,12 @@
     <message>
         <location filename="../design/settings_dialog.py" line="763"/>
         <source>Activate Color</source>
-        <translation>激活色彩</translation>
+        <translation type="obsolete">激活色彩</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="764"/>
         <source>Transformation</source>
-        <translation>变换</translation>
+        <translation>形状</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="765"/>
@@ -973,6 +973,11 @@
         <location filename="../design/settings_dialog.py" line="768"/>
         <source>Shortcut</source>
         <translation>快捷键</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="763"/>
+        <source>Activate color tag</source>
+        <translation>激活色彩标签</translation>
     </message>
 </context>
 </TS>

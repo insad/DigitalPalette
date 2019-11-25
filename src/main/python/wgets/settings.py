@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
+import os
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QPushButton
 from PyQt5.QtCore import pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
 from cguis.design.settings_dialog import Ui_SettingsDialog
 from cguis.resource import view_rc
-import os
 
 
 class Settings(QDialog, Ui_SettingsDialog):
@@ -47,17 +47,23 @@ class Settings(QDialog, Ui_SettingsDialog):
             self.overflow_comb.addItem("")
 
         # init buttons.
-        self._btn_1 = self.buttonBox.button(QDialogButtonBox.Ok)
+        self.buttonBox.clear()
+
+        self._btn_1 = QPushButton()
         self._btn_1.clicked.connect(self.application)
+        self.buttonBox.addButton(self._btn_1, QDialogButtonBox.AcceptRole)
 
-        self._btn_2 = self.buttonBox.button(QDialogButtonBox.Cancel)
+        self._btn_2 = QPushButton()
         self._btn_2.clicked.connect(self.close)
+        self.buttonBox.addButton(self._btn_2, QDialogButtonBox.RejectRole)
 
-        self._btn_3 = self.buttonBox.button(QDialogButtonBox.Apply)
+        self._btn_3 = QPushButton()
         self._btn_3.clicked.connect(self.update_values)
+        self.buttonBox.addButton(self._btn_3, QDialogButtonBox.ApplyRole)
 
-        self._btn_4 = self.buttonBox.button(QDialogButtonBox.Reset)
+        self._btn_4 = QPushButton()
         self._btn_4.clicked.connect(self.reset_values)
+        self.buttonBox.addButton(self._btn_4, QDialogButtonBox.ResetRole)
 
         self.update_text()
 

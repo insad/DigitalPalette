@@ -4,7 +4,7 @@ import os
 import time
 import json
 from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
+from PyQt5.QtCore import pyqtSignal, QCoreApplication, QSize
 from clibs.color import Color
 
 

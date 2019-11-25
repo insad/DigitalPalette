@@ -35,11 +35,6 @@ class Args(object):
             "repeat",
         )
 
-        # init settings.
-        self.usr_store = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette"))
-        self.resources = resources
-        self.init_settings()
-
         # load languages.
         all_langs = (
             "en", "ar", "be", "bg", "ca", "cs", "da", "de", "el", "es", 
@@ -61,7 +56,14 @@ class Args(object):
                 if glang in all_langs:
                     lang_paths.append((all_langs.index(glang), lang))
 
+        self.lang = "default"
         self.usr_langs = tuple(lang_paths)
+
+        # init settings.
+        self.usr_store = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette"))
+        self.resources = resources
+
+        self.init_settings()
 
         # load settings.
         if self.store_loc:
@@ -71,7 +73,7 @@ class Args(object):
             self.load_settings(os.sep.join((self.usr_store, "settings.json")))
 
         # software informations.
-        self.info_version = "v2.0.1-dev"
+        self.info_version = "v2.0.2-dev"
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
         self.info_date = "2019.11.24"
@@ -92,14 +94,31 @@ class Args(object):
         Init default settings.
         """
 
-        # need verify and mkdirs !!!
-        self.usr_color = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
-        self.usr_image = os.sep.join((os.path.expanduser('~'), "Pictures"))
+        # load default language.
+        self.modify_settings("lang", "en.qm")
 
+        # load local store tag.
         self.store_loc = False
+
+        if os.path.isfile(os.sep.join((self.resources, "settings.json"))):
+            try:
+                with open(os.sep.join((self.resources, "settings.json")), "r") as sf:
+                    uss = json.load(sf)
+
+                    if isinstance(uss, dict) and "store_loc" in uss:
+                        self.store_loc = bool(uss["store_loc"])
+
+            except:
+                pass
+
+        # need verify and mkdirs.
         if self.store_loc:
             self.usr_color = os.sep.join((self.resources, "MyColors"))
-            self.usr_image = os.sep.join((self.resources, "base", "samples"))
+            self.usr_image = os.sep.join((self.resources, "samples"))
+
+        else:
+            self.usr_color = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette", "MyColors"))
+            self.usr_image = os.sep.join((os.path.expanduser('~'), "Pictures"))
 
         if not os.path.isdir(self.usr_color):
             os.makedirs(self.usr_color)
@@ -109,7 +128,6 @@ class Args(object):
 
         self.hm_rule = "analogous"
         self.overflow = "return"
-        self.lang = "default"
         self.press_move = True
         self.show_hsv = True
         self.show_rgb = True
@@ -174,6 +192,9 @@ class Args(object):
             else:
                 with open(os.sep.join((self.usr_store, "settings.json")), "w") as sf:
                     json.dump(settings, sf, indent=4)
+
+                with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
+                    json.dump({"store_loc": False}, sf, indent=4)
 
     def modify_settings(self, item, value):
         items = {
