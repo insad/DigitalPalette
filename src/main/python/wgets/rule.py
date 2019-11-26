@@ -56,9 +56,9 @@ class Rule(QWidget):
             self._rule_btns.append(btn)
 
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        scroll_grid_layout.addItem(spacer, 8, 0, 1, 1)
+        gbox_grid_layout.addItem(spacer, 8, 0, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 8, 1, 1, 1)
+        gbox_grid_layout.addItem(spacer, 8, 1, 1, 1)
 
         self._synchronization_gbox = QGroupBox(scroll_contents)
         gbox_grid_layout = QGridLayout(self._synchronization_gbox)
@@ -76,9 +76,9 @@ class Rule(QWidget):
             self._synchronization_btns.append(btn)
 
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        scroll_grid_layout.addItem(spacer, 4, 0, 1, 1)
+        gbox_grid_layout.addItem(spacer, 4, 0, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 4, 1, 1, 1)
+        gbox_grid_layout.addItem(spacer, 4, 1, 1, 1)
 
         self.update_rule()
         self._synchronization_btns[self._args.sys_color_set.synchronization].setChecked(True)

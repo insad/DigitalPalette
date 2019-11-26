@@ -300,7 +300,7 @@
     <message>
         <location filename="../design/main_window.py" line="200"/>
         <source>Mode</source>
-        <translation>Display</translation>
+        <translation>Mode</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="198"/>
