@@ -4,125 +4,135 @@
 <context>
     <name>Channel</name>
     <message>
-        <location filename="../../wgets/channel.py" line="141"/>
+        <location filename="../../wgets/channel.py" line="137"/>
         <source>Category</source>
         <translation>Category</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="141"/>
+        <location filename="../../wgets/channel.py" line="137"/>
         <source>Channel</source>
         <translation>Channel</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Norm RGB</source>
         <translation>Normal RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Vtcl RGB</source>
         <translation>V Edge RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Horz RGB</source>
         <translation>H Edge RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Finl RGB</source>
         <translation>C Edge RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Norm HSV</source>
         <translation>Normal HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Vtcl HSV</source>
         <translation>V Edge HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Horz HSV</source>
         <translation>H Edge HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Finl HSV</source>
         <translation>C Edge HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Full RGB</source>
         <translation>Full RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel R</source>
         <translation>Only R</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel G</source>
         <translation>Only G</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel B</source>
         <translation>Only B</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Full HSV</source>
         <translation>Full HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel H</source>
         <translation>Only H</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel S</source>
         <translation>Only S</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel V</source>
         <translation>Only V</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="139"/>
+        <source>Harmony</source>
+        <translation>Harmony</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="139"/>
+        <source>Synchronization</source>
+        <translation>Synchro</translation>
     </message>
 </context>
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Author</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Update</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Website</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation></translation>
     </message>
@@ -482,6 +492,26 @@
         <location filename="../../wgets/settings.py" line="254"/>
         <source>Repeat</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>Unlimited</source>
+        <translation>Unlimited</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>H Locked</source>
+        <translation>Fix H</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>S Locked</source>
+        <translation>Fix S</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>Equidistant</source>
+        <translation>Equidistant</translation>
     </message>
 </context>
 <context>

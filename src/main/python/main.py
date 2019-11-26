@@ -13,7 +13,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.0.1-dev
+v2.0.3-dev
 """
 
 __AUTHOR__ = """
@@ -21,7 +21,7 @@ Liu Jia
 """
 
 __DATE__ = """
-2019.11.24
+2019.11.26
 """
 
 import os

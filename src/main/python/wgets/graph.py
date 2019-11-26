@@ -433,7 +433,7 @@ class Graph(QWidget):
         Open this image in other category.
         """
 
-        if not self.isVisible():
+        if not self._image3c.run_image:
             return
 
         if not self._image3c.check_temp_dir():
@@ -443,7 +443,7 @@ class Graph(QWidget):
         self._display = None
 
         if self._args.sys_category not in self._categories:
-            self._image3c.set_category(self._args.sys_category)
+            self._image3c.run_category = self._args.sys_category
             self._image3c.start()
 
         self.update()
@@ -482,10 +482,10 @@ class Graph(QWidget):
         """
 
         if self.overlabel_display.locations[self._args.sys_activated_idx]:
-            shape = self._image3c.get_data_shape()
+            shape = self._image3c.rgb_data.shape
 
             loc = self.overlabel_display.locations[self._args.sys_activated_idx]
-            rgb = self._image3c.get_data_value(int(loc[1] * (shape[0] - 1)), int(loc[0] * (shape[1] - 1)))
+            rgb = self._image3c.rgb_data[int(loc[1] * (shape[0] - 1))][int(loc[0] * (shape[1] - 1))]
 
             if not (rgb == self._args.sys_color_set[self._args.sys_activated_idx].rgb).all():
                 color = Color(rgb, tp="rgb", overflow=self._args.sys_color_set.get_overflow())
@@ -502,10 +502,10 @@ class Graph(QWidget):
 
         for idx in range(5):
             if self.overlabel_display.locations[idx]:
-                shape = self._image3c.get_data_shape()
+                shape = self._image3c.rgb_data.shape
 
                 loc = self.overlabel_display.locations[idx]
-                rgb = self._image3c.get_data_value(int(loc[1] * (shape[0] - 1)), int(loc[0] * (shape[1] - 1)))
+                rgb = self._image3c.rgb_data[int(loc[1] * (shape[0] - 1))][int(loc[0] * (shape[1] - 1))]
 
                 if not (rgb == self._args.sys_color_set[idx].rgb).all():
                     self.overlabel_display.locations[idx] = None

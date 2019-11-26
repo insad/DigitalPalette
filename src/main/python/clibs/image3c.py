@@ -42,39 +42,32 @@ class Image3C(QThread):
 
         # load args.
         self._temp_dir = QTemporaryDir()
-        self._rgb_data = None
-        self._hsv_data = None
+
+        self.run_image = None
+        self.run_category = None
+        self.rgb_data = None
+        self.hsv_data = None
+
         self._rgb_ext_data = None
         self._hsv_ext_data = None
         self._rgb_vtl_data = None
         self._rgb_hrz_data = None
         self._hsv_vtl_data = None
         self._hsv_hrz_data = None
-
-        self._run_image = None
-        self._run_category = None
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def initialize(self, image):
-        self._run_image = image
-        self._rgb_data = None
-        self._hsv_data = None
+        self.run_image = image
+        self.rgb_data = None
+        self.hsv_data = None
+
         self._rgb_ext_data = None
         self._hsv_ext_data = None
         self._rgb_vtl_data = None
         self._rgb_hrz_data = None
         self._hsv_vtl_data = None
         self._hsv_hrz_data = None
-
-    def set_category(self, category):
-        self._run_category = category
-
-    def get_data_shape(self):
-        return self._rgb_data.shape
-
-    def get_data_value(self, i, j):
-        return self._rgb_data[i][j]
 
     def check_temp_dir(self):
         return self._temp_dir.isValid()
@@ -83,7 +76,7 @@ class Image3C(QThread):
         self._temp_dir.remove()
 
     def run(self):
-        func = getattr(self, "run_{}".format(self._run_category))
+        func = getattr(self, "run_{}".format(self.run_category))
         func((0, 100))
 
     def run_rgb_extend(self):
@@ -92,7 +85,7 @@ class Image3C(QThread):
         """
 
         if not isinstance(self._rgb_ext_data, np.ndarray):
-            self._rgb_ext_data = np.insert(self._rgb_data, 0, self._rgb_data[1, :], axis=0)
+            self._rgb_ext_data = np.insert(self.rgb_data, 0, self.rgb_data[1, :], axis=0)
             self._rgb_ext_data = np.insert(self._rgb_ext_data, self._rgb_ext_data.shape[0], self._rgb_ext_data[self._rgb_ext_data.shape[0] - 2, :], axis=0)
             self._rgb_ext_data = np.insert(self._rgb_ext_data, 0, self._rgb_ext_data[:, 1], axis=1)
             self._rgb_ext_data = np.insert(self._rgb_ext_data, self._rgb_ext_data.shape[1], self._rgb_ext_data[:, self._rgb_ext_data.shape[1] - 2], axis=1)
@@ -103,7 +96,7 @@ class Image3C(QThread):
         """
 
         if not isinstance(self._hsv_ext_data, np.ndarray):
-            self._hsv_ext_data = np.insert(self._hsv_data, 0, self._hsv_data[1, :], axis=0)
+            self._hsv_ext_data = np.insert(self.hsv_data, 0, self.hsv_data[1, :], axis=0)
             self._hsv_ext_data = np.insert(self._hsv_ext_data, self._hsv_ext_data.shape[0], self._hsv_ext_data[self._hsv_ext_data.shape[0] - 2, :], axis=0)
             self._hsv_ext_data = np.insert(self._hsv_ext_data, 0, self._hsv_ext_data[:, 1], axis=1)
             self._hsv_ext_data = np.insert(self._hsv_ext_data, self._hsv_ext_data.shape[1], self._hsv_ext_data[:, self._hsv_ext_data.shape[1] - 2], axis=1)
@@ -118,15 +111,15 @@ class Image3C(QThread):
 
         self.ps_describe.emit(1)
         self.ps_proceses.emit(int(process_scope[0]))
-        img_data = Image.open(self._run_image).convert("RGB")
+        img_data = Image.open(self.run_image).convert("RGB")
 
         self.ps_proceses.emit(int(process_scope[0] + process_scope[1] * 0.25))
-        self._rgb_data = np.array(img_data, dtype=np.uint8)
+        self.rgb_data = np.array(img_data, dtype=np.uint8)
 
         # generating rgb data.
         self.ps_describe.emit(2)
         self.ps_proceses.emit(int(process_scope[0] + process_scope[1] * 0.60))
-        self.save_rgb_temp_data(self._rgb_data, 0)
+        self.save_rgb_temp_data(self.rgb_data, 0)
 
         self.ps_describe.emit(0)
         self.ps_proceses.emit(int(process_scope[0] + process_scope[1]))
@@ -140,7 +133,7 @@ class Image3C(QThread):
             process_scope (tuple or list): in format (start point, total length), e.g. (0, 100).
         """
 
-        if not isinstance(self._rgb_data, np.ndarray):
+        if not isinstance(self.rgb_data, np.ndarray):
             self.run_0((process_scope[0], process_scope[1] * 0.10))
             pro_scope = (process_scope[0] + process_scope[1] * 0.10, process_scope[1] * 0.90)
 
@@ -150,16 +143,16 @@ class Image3C(QThread):
         # generating hsv data.
         self.ps_describe.emit(3)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._hsv_data = np.zeros(self._rgb_data.shape, dtype=np.float32)
+        self.hsv_data = np.zeros(self.rgb_data.shape, dtype=np.float32)
 
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.25))
-        for i in range(self._hsv_data.shape[0]):
-            for j in range(self._hsv_data.shape[1]):
-                self._hsv_data[i][j] = Color.rgb2hsv(self._rgb_data[i][j])
+        for i in range(self.hsv_data.shape[0]):
+            for j in range(self.hsv_data.shape[1]):
+                self.hsv_data[i][j] = Color.rgb2hsv(self.rgb_data[i][j])
 
         self.ps_describe.emit(4)
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.60))
-        self.save_hsv_temp_data(self._hsv_data, 4)
+        self.save_hsv_temp_data(self.hsv_data, 4)
 
         self.ps_describe.emit(0)
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1]))
@@ -170,7 +163,7 @@ class Image3C(QThread):
         Run vertical rgb space edge data.
         """
 
-        if not isinstance(self._rgb_data, np.ndarray):
+        if not isinstance(self.rgb_data, np.ndarray):
             self.run_0((process_scope[0], process_scope[1] * 0.20))
             pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
 
@@ -182,12 +175,12 @@ class Image3C(QThread):
 
         self.ps_describe.emit(5)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._rgb_vtl_data = np.zeros((self._rgb_data.shape[0], self._rgb_data.shape[1], 3), dtype=np.uint8)
+        self._rgb_vtl_data = np.zeros((self.rgb_data.shape[0], self.rgb_data.shape[1], 3), dtype=np.uint8)
 
         # generating rgb vertical edge data.
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
-        for i in range(self._rgb_data.shape[0]):
-            for j in range(self._rgb_data.shape[1]):
+        for i in range(self.rgb_data.shape[0]):
+            for j in range(self.rgb_data.shape[1]):
                 r_result = self._rgb_ext_data[i][j + 2][0] + self._rgb_ext_data[i + 1][j + 2][0] * 2 + self._rgb_ext_data[i + 2][j + 2][0] - self._rgb_ext_data[i][j][0] - self._rgb_ext_data[i + 1][j][0] * 2 - self._rgb_ext_data[i + 2][j][0]
                 g_result = self._rgb_ext_data[i][j + 2][1] + self._rgb_ext_data[i + 1][j + 2][1] * 2 + self._rgb_ext_data[i + 2][j + 2][1] - self._rgb_ext_data[i][j][1] - self._rgb_ext_data[i + 1][j][1] * 2 - self._rgb_ext_data[i + 2][j][1]
                 b_result = self._rgb_ext_data[i][j + 2][2] + self._rgb_ext_data[i + 1][j + 2][2] * 2 + self._rgb_ext_data[i + 2][j + 2][2] - self._rgb_ext_data[i][j][2] - self._rgb_ext_data[i + 1][j][2] * 2 - self._rgb_ext_data[i + 2][j][2]
@@ -206,7 +199,7 @@ class Image3C(QThread):
         Run horizontal rgb space edge data.
         """
 
-        if not isinstance(self._rgb_data, np.ndarray):
+        if not isinstance(self.rgb_data, np.ndarray):
             self.run_0((process_scope[0], process_scope[1] * 0.20))
             pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
 
@@ -218,12 +211,12 @@ class Image3C(QThread):
 
         self.ps_describe.emit(7)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._rgb_hrz_data = np.zeros((self._rgb_data.shape[0], self._rgb_data.shape[1], 3), dtype=np.uint8)
+        self._rgb_hrz_data = np.zeros((self.rgb_data.shape[0], self.rgb_data.shape[1], 3), dtype=np.uint8)
 
         # generating rgb vertical edge data.
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
-        for i in range(self._rgb_data.shape[0]):
-            for j in range(self._rgb_data.shape[1]):
+        for i in range(self.rgb_data.shape[0]):
+            for j in range(self.rgb_data.shape[1]):
                 r_result = self._rgb_ext_data[i + 2][j][0] + self._rgb_ext_data[i + 2][j + 1][0] * 2 + self._rgb_ext_data[i + 2][j + 2][0] - self._rgb_ext_data[i][j][0] - self._rgb_ext_data[i][j + 1][0] * 2 - self._rgb_ext_data[i][j + 2][0]
                 g_result = self._rgb_ext_data[i + 2][j][1] + self._rgb_ext_data[i + 2][j + 1][1] * 2 + self._rgb_ext_data[i + 2][j + 2][1] - self._rgb_ext_data[i][j][1] - self._rgb_ext_data[i][j + 1][1] * 2 - self._rgb_ext_data[i][j + 2][1]
                 b_result = self._rgb_ext_data[i + 2][j][2] + self._rgb_ext_data[i + 2][j + 1][2] * 2 + self._rgb_ext_data[i + 2][j + 2][2] - self._rgb_ext_data[i][j][2] - self._rgb_ext_data[i][j + 1][2] * 2 - self._rgb_ext_data[i][j + 2][2]
@@ -276,7 +269,7 @@ class Image3C(QThread):
         Run vertical hsv space edge data.
         """
 
-        if not isinstance(self._hsv_data, np.ndarray):
+        if not isinstance(self.hsv_data, np.ndarray):
             self.run_4((process_scope[0], process_scope[1] * 0.20))
             pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
 
@@ -288,12 +281,12 @@ class Image3C(QThread):
 
         self.ps_describe.emit(11)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._hsv_vtl_data = np.zeros((self._hsv_data.shape[0], self._hsv_data.shape[1], 3), dtype=np.float32)
+        self._hsv_vtl_data = np.zeros((self.hsv_data.shape[0], self.hsv_data.shape[1], 3), dtype=np.float32)
 
         # generating hsv vertical edge data.
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
-        for i in range(self._hsv_data.shape[0]):
-            for j in range(self._hsv_data.shape[1]):
+        for i in range(self.hsv_data.shape[0]):
+            for j in range(self.hsv_data.shape[1]):
                 h_result_0 = abs(self._hsv_ext_data[i + 0][j + 2][0] - self._hsv_ext_data[i + 0][j][0])
                 h_result_1 = abs(self._hsv_ext_data[i + 1][j + 2][0] - self._hsv_ext_data[i + 1][j][0])
                 h_result_2 = abs(self._hsv_ext_data[i + 2][j + 2][0] - self._hsv_ext_data[i + 2][j][0])
@@ -318,7 +311,7 @@ class Image3C(QThread):
         Run horizontal hsv space edge data.
         """
 
-        if not isinstance(self._hsv_data, np.ndarray):
+        if not isinstance(self.hsv_data, np.ndarray):
             self.run_4((process_scope[0], process_scope[1] * 0.20))
             pro_scope = (process_scope[0] + process_scope[1] * 0.20, process_scope[1] * 0.80)
 
@@ -330,12 +323,12 @@ class Image3C(QThread):
 
         self.ps_describe.emit(13)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._hsv_hrz_data = np.zeros((self._hsv_data.shape[0], self._hsv_data.shape[1], 3), dtype=np.float32)
+        self._hsv_hrz_data = np.zeros((self.hsv_data.shape[0], self.hsv_data.shape[1], 3), dtype=np.float32)
 
         # generating hsv vertical edge data.
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
-        for i in range(self._hsv_data.shape[0]):
-            for j in range(self._hsv_data.shape[1]):
+        for i in range(self.hsv_data.shape[0]):
+            for j in range(self.hsv_data.shape[1]):
                 h_result_0 = abs(self._hsv_ext_data[i + 2][j + 0][0] - self._hsv_ext_data[i][j + 0][0])
                 h_result_1 = abs(self._hsv_ext_data[i + 2][j + 1][0] - self._hsv_ext_data[i][j + 1][0])
                 h_result_2 = abs(self._hsv_ext_data[i + 2][j + 2][0] - self._hsv_ext_data[i][j + 2][0])
@@ -440,6 +433,7 @@ class Image3C(QThread):
 
         if category in (0, 4) and channel == 0:
             img_path = os.sep.join((self._temp_dir.path(), "0_0.png"))
+
         else:
             img_path = os.sep.join((self._temp_dir.path(), "{}_{}.png".format(category, channel)))
 

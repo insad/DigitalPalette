@@ -4,125 +4,135 @@
 <context>
     <name>Channel</name>
     <message>
-        <location filename="../../wgets/channel.py" line="141"/>
+        <location filename="../../wgets/channel.py" line="137"/>
         <source>Category</source>
         <translation>类目</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="141"/>
+        <location filename="../../wgets/channel.py" line="137"/>
         <source>Channel</source>
         <translation>通道</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Norm RGB</source>
         <translation>RGB 普通</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Vtcl RGB</source>
         <translation>RGB 垂直边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Horz RGB</source>
         <translation>RGB 水平边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Finl RGB</source>
         <translation>RGB 综合边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Norm HSV</source>
         <translation>HSV 普通</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Vtcl HSV</source>
         <translation>HSV 垂直边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Horz HSV</source>
         <translation>HSV 水平边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="146"/>
+        <location filename="../../wgets/channel.py" line="142"/>
         <source>Finl HSV</source>
         <translation>HSV 综合边缘</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Full RGB</source>
         <translation>全部 RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel R</source>
         <translation>仅 R</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel G</source>
         <translation>仅 G</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel B</source>
         <translation>仅 B</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Full HSV</source>
         <translation>全部 HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel H</source>
         <translation>仅 H</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel S</source>
         <translation>仅 S</translation>
     </message>
     <message>
-        <location filename="../../wgets/channel.py" line="157"/>
+        <location filename="../../wgets/channel.py" line="153"/>
         <source>Chnnel V</source>
         <translation>仅 V</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="139"/>
+        <source>Harmony</source>
+        <translation>调和</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="139"/>
+        <source>Synchronization</source>
+        <translation>同步</translation>
     </message>
 </context>
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Author</source>
         <translation>作者</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>Website</source>
         <translation>网址</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="362"/>
+        <location filename="../../main.py" line="363"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation>DigitalPalette 是自由软件，本着可用的意愿分发，但不作任何担保。您可以在遵守由自由软件基金会发布的 GNU 通用公共许可协议的情况下重新分发并且（或者）修改软件。更多细节请参看 GNU 通用公共许可协议。</translation>
     </message>
@@ -492,6 +502,26 @@
         <location filename="../../wgets/settings.py" line="254"/>
         <source>Repeat</source>
         <translation>重复</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>Unlimited</source>
+        <translation>不限制</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>H Locked</source>
+        <translation>固定 H</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>S Locked</source>
+        <translation>固定 S</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/rule.py" line="155"/>
+        <source>Equidistant</source>
+        <translation>等间距</translation>
     </message>
 </context>
 <context>

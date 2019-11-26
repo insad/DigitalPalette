@@ -22,6 +22,9 @@ class ColorSet(object):
             overflow (str): method to manipulate overflowed s and v values, in "cutoff", "return" and "repeat".
         """
 
+        # synchronization methods: unlimited, H locked, S locked, equidistant
+        self.synchronization = 0
+
         self.set_hsv_ranges(h_range, s_range, v_range)
 
         assert 0.0 <= self._h_range[0] <= 360.0
@@ -165,22 +168,26 @@ class ColorSet(object):
             color (Color): replace the selected color with this color.
         """
 
-        methods = {
-            "analogous": self._analogous_modify,
-            "monochromatic": self._single_modify,
-            "triad": self._multiple_modify,
-            "tetrad": self._tetrad_modify,
-            "pentad": self._multiple_modify,
-            "complementary": self._multiple_modify,
-            "shades": self._single_modify,
-            "custom": self._custom_modify,
-        }
-
-        if harmony_rule in methods:
-            methods[harmony_rule](idx, color)
+        if self.synchronization:
+            self._sync_modify(idx, color)
 
         else:
-            raise ValueError("unexpect harmony rule name for modify: {}.".format(harmony_rule))
+            methods = {
+                "analogous": self._analogous_modify,
+                "monochromatic": self._single_modify,
+                "triad": self._multiple_modify,
+                "tetrad": self._tetrad_modify,
+                "pentad": self._multiple_modify,
+                "complementary": self._multiple_modify,
+                "shades": self._single_modify,
+                "custom": self._custom_modify,
+            }
+
+            if harmony_rule in methods:
+                methods[harmony_rule](idx, color)
+
+            else:
+                raise ValueError("unexpect harmony rule name for modify: {}.".format(harmony_rule))
 
     def export_dict(self):
         """
@@ -552,3 +559,31 @@ class ColorSet(object):
 
         else:
             raise ValueError("expect idx in range 0 ~ 4: {}.".format(idx))
+
+    def _sync_modify(self, idx, pr_color):
+        """
+        Modify color set in special synchronization rule.
+
+        Args:
+            idx (int): index in range 0 ~ 4 which indicates the color in color set for modify.
+            color (Color): replace the selected color with this color.
+        """
+
+        if self.synchronization == 1:
+            delta_h = 0
+            delta_s = pr_color.s - self._color_set[idx].s
+            delta_v = pr_color.v - self._color_set[idx].v
+
+        elif self.synchronization == 2:
+            delta_h = pr_color.h - self._color_set[idx].h
+            delta_s = delta_v = 0
+
+        elif self.synchronization == 3:
+            delta_h = pr_color.h - self._color_set[idx].h
+            delta_s = pr_color.s - self._color_set[idx].s
+            delta_v = pr_color.v - self._color_set[idx].v
+
+        else:
+            raise ValueError("unexpect synchronization code for special rule: {}.".format(self.synchronization))
+
+        self._rotate(delta_h, delta_s, delta_v)

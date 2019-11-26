@@ -73,10 +73,10 @@ class Args(object):
             self.load_settings(os.sep.join((self.usr_store, "settings.json")))
 
         # software informations.
-        self.info_version = "v2.0.2-dev"
+        self.info_version = "v2.0.3-dev"
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_date = "2019.11.24"
+        self.info_date = "2019.11.26"
         self.info_author = "Liu Jia"
 
         # special system settings.
@@ -133,8 +133,8 @@ class Args(object):
         self.show_rgb = True
 
         self.h_range = (0.0, 360.0)
-        self.s_range = (0.9, 1.0)
-        self.v_range = (0.9, 1.0)
+        self.s_range = (0.0, 1.0)
+        self.v_range = (0.0, 1.0)
 
         self.wheel_ratio = 0.8
         self.volum_ratio = 0.8
