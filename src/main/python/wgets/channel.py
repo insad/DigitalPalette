@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QRadioButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QGroupBox
-from PyQt5.QtCore import pyqtSignal, QCoreApplication, QSize
+from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 
 
 class Channel(QWidget):
@@ -30,6 +30,8 @@ class Channel(QWidget):
 
         scroll_area = QScrollArea(self)
         scroll_area.setFrameShape(QFrame.Box)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidgetResizable(True)
         channel_grid_layout.addWidget(scroll_area)
 
@@ -160,4 +162,3 @@ class Channel(QWidget):
             _translate("Channel", "Chnnel S"),
             _translate("Channel", "Chnnel V"),
         )
-

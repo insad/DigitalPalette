@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QShortcut
-from PyQt5.QtCore import pyqtSignal, QSize
+from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from PyQt5.QtGui import QKeySequence
 
 
@@ -30,6 +30,8 @@ class Transformation(QWidget):
 
         scroll_area = QScrollArea(self)
         scroll_area.setFrameShape(QFrame.Box)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidgetResizable(True)
         zoom_grid_layout.addWidget(scroll_area)
 

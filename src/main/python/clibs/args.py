@@ -133,8 +133,8 @@ class Args(object):
         self.show_rgb = True
 
         self.h_range = (0.0, 360.0)
-        self.s_range = (0.0, 1.0)
-        self.v_range = (0.0, 1.0)
+        self.s_range = (0.68, 1.0)
+        self.v_range = (0.68, 1.0)
 
         self.wheel_ratio = 0.8
         self.volum_ratio = 0.8

@@ -135,6 +135,12 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._app = QApplication.instance()
         self._install_translator()
 
+        # install stylesheet.
+        """
+        with open(os.sep.join((resources, "styles", "dark", "style.qss"))) as qf:
+            self._app.setStyleSheet(qf.read())
+        """
+
     def _setup_workarea(self):
         """
         Setup workarea (wheel or graph).

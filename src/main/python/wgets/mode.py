@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QWidget, QCheckBox, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy
-from PyQt5.QtCore import QSize, pyqtSignal
+from PyQt5.QtCore import Qt, QSize, pyqtSignal
 
 
 class Mode(QWidget):
@@ -27,6 +27,8 @@ class Mode(QWidget):
 
         scroll_area = QScrollArea(self)
         scroll_area.setFrameShape(QFrame.Box)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidgetResizable(True)
         mode_grid_layout.addWidget(scroll_area)
 

@@ -7,35 +7,33 @@ from cguis.design.scroll_cube import Ui_ScrollCube
 from clibs.color import Color
 
 
-class Cube(QWidget, Ui_ScrollCube):
+class Square(QWidget):
     """
-    Cube object based on QWidget. Init a color cube in table.
+    Square objet based on QWidget. Init a color square in cube.
     """
 
     ps_color_changed = pyqtSignal(bool)
     ps_index_changed = pyqtSignal(bool)
 
-    def __init__(self, args, id):
+    def __init__(self, args, idx):
         """
-        Init color cube.
+        Init color square.
         """
 
         super().__init__()
-        self.setupUi(self)
 
         # load args.
         self._args = args
-        self._id = id
+        self._idx = idx
 
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        wid = self.cube_color.geometry().width()
-        self.cube_color.setMinimumHeight(wid * 3 / 5)
-        hig = self.cube_color.geometry().height()
+        wid = self.geometry().width()
+        hig = self.geometry().height()
         rto = (1.0 - self._args.cubic_ratio) / 2
 
-        self._box = [self.cube_color.x() + wid * rto, self.cube_color.y() + hig * rto, wid * self._args.cubic_ratio, hig * self._args.cubic_ratio]
+        self._box = [wid * rto, hig * rto, wid * self._args.cubic_ratio, hig * self._args.cubic_ratio]
 
         painter = QPainter()
         painter.begin(self)
@@ -43,12 +41,12 @@ class Cube(QWidget, Ui_ScrollCube):
         painter.setRenderHint(QPainter.TextAntialiasing, True)
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
-        if self._id == self._args.sys_activated_idx:
+        if self._idx == self._args.sys_activated_idx:
             painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid * 1.5))
         else:
             painter.setPen(QPen(QColor(*self._args.negative_color), self._args.negative_wid * 1.5))
 
-        painter.setBrush(QColor(*self._args.sys_color_set[self._id].rgb))
+        painter.setBrush(QColor(*self._args.sys_color_set[self._idx].rgb))
         painter.drawRect(*self._box)
 
         painter.end()
@@ -61,7 +59,7 @@ class Cube(QWidget, Ui_ScrollCube):
             p_y = event.y()
 
             if self._box[0] < p_x < (self._box[0] + self._box[2]) and self._box[1] < p_y < (self._box[1] + self._box[3]):
-                self._args.sys_activated_idx = self._id
+                self._args.sys_activated_idx = self._idx
 
                 self.ps_index_changed.emit(True)
 
@@ -80,11 +78,11 @@ class Cube(QWidget, Ui_ScrollCube):
             p_y = event.y()
 
             if self._box[0] < p_x < (self._box[0] + self._box[2]) and self._box[1] < p_y < (self._box[1] + self._box[3]):
-                dialog = QColorDialog.getColor(QColor(*self._args.sys_color_set[self._id].rgb))
+                dialog = QColorDialog.getColor(QColor(*self._args.sys_color_set[self._idx].rgb))
 
                 if dialog.isValid():
                     color = Color((dialog.red(), dialog.green(), dialog.blue()), tp="rgb", overflow=self._args.sys_color_set.get_overflow())
-                    self._args.sys_color_set.modify(self._args.hm_rule, self._id, color)
+                    self._args.sys_color_set.modify(self._args.hm_rule, self._idx, color)
 
                     self.ps_color_changed.emit(True)
 
@@ -96,6 +94,37 @@ class Cube(QWidget, Ui_ScrollCube):
 
         else:
             event.ignore()
+
+
+class Cube(QWidget, Ui_ScrollCube):
+    """
+    Cube object based on QWidget. Init a color cube in table.
+    """
+
+    def __init__(self, args, idx):
+        """
+        Init color cube.
+        """
+
+        super().__init__()
+        self.setupUi(self)
+
+        # load args.
+        self._args = args
+        self._idx = idx
+
+        # init qt args.
+        cube_grid_layout = QGridLayout(self.cube_color)
+        cube_grid_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.square = Square(self._args, self._idx)
+        cube_grid_layout.addWidget(self.square)
+
+    # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
+
+    def paintEvent(self, event):
+        wid = self.cube_color.geometry().width()
+        self.cube_color.setMinimumHeight(wid * 3 / 5)
 
 
 class CubeTable(QWidget):
@@ -137,8 +166,8 @@ class CubeTable(QWidget):
 
         for idx in (2, 1, 0, 3, 4):
             scroll_horizontal_layout.addWidget(self._cubes[idx])
-            self._cubes[idx].ps_color_changed.connect(lambda x: self.update_color())
-            self._cubes[idx].ps_index_changed.connect(lambda x: self.update_index())
+            self._cubes[idx].square.ps_color_changed.connect(lambda x: self.update_color())
+            self._cubes[idx].square.ps_index_changed.connect(lambda x: self.update_index())
 
             for ctp in ("r", "g", "b"):
                 obj = getattr(self._cubes[idx], "hs_rgb_{}".format(ctp))
@@ -154,7 +183,8 @@ class CubeTable(QWidget):
 
             self._cubes[idx].le_hec.textChanged.connect(self.modify_color(idx, "direct", "hec"))
 
-        
+        self.modify_box_visibility()
+
         shortcut = QShortcut(QKeySequence("r"), self)
         shortcut.activated.connect(self.clipboard("rgb"))
 
