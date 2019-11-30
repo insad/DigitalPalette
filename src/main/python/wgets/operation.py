@@ -16,13 +16,14 @@ class Operation(QWidget):
     ps_create = pyqtSignal(bool)
     ps_locate = pyqtSignal(bool)
     ps_update = pyqtSignal(bool)
+    ps_attach = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
         Init operation.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args
@@ -64,12 +65,16 @@ class Operation(QWidget):
         scroll_grid_layout.addWidget(self.locate_btn, 3, 1, 1, 1)
         self.locate_btn.clicked.connect(self.exec_locate)
 
+        self.attach_btn = QPushButton(scroll_contents)
+        scroll_grid_layout.addWidget(self.attach_btn, 4, 1, 1, 1)
+        self.attach_btn.clicked.connect(self.exec_attach)
+
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        scroll_grid_layout.addItem(spacer, 4, 1, 1, 1)
+        scroll_grid_layout.addItem(spacer, 5, 1, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 4, 0, 1, 1)
+        scroll_grid_layout.addItem(spacer, 5, 0, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 4, 2, 1, 1)
+        scroll_grid_layout.addItem(spacer, 5, 2, 1, 1)
 
         self.update_text()
 
@@ -207,6 +212,13 @@ class Operation(QWidget):
 
         self.ps_locate.emit(True)
 
+    def exec_attach(self, value):
+        """
+        Exec attach operation.
+        """
+
+        self.ps_attach.emit(True)
+
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
     def update_text(self):
@@ -214,15 +226,17 @@ class Operation(QWidget):
         self.export_btn.setText(self._operation_descs[1])
         self.create_btn.setText(self._operation_descs[2])
         self.locate_btn.setText(self._operation_descs[3])
+        self.attach_btn.setText(self._operation_descs[4])
 
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
         self._operation_descs = (
-            _translate("Operation", "Import"),
-            _translate("Operation", "Export"),
-            _translate("Operation", "Create"),
-            _translate("Operation", "Locate"),
+            _translate("MainWindow", "Import"),
+            _translate("MainWindow", "Export"),
+            _translate("MainWindow", "Create"),
+            _translate("MainWindow", "Locate"),
+            _translate("MainWindow", "Attach"),
         )
 
         self._operation_errs = (

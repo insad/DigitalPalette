@@ -14,12 +14,12 @@ class Transformation(QWidget):
     ps_zoom = pyqtSignal(float)
     ps_home = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
         Init transformation.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args

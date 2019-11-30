@@ -11,12 +11,12 @@ class Rule(QWidget):
 
     ps_rule_changed = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
         Init rule.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args

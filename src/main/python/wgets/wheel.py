@@ -16,12 +16,12 @@ class Wheel(QWidget):
     ps_color_changed = pyqtSignal(bool)
     ps_index_changed = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
         Init color wheel.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args

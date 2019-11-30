@@ -129,6 +129,7 @@ test*
 bak*
 
 # share
+unitsets/
 release/
 share/
 styles/

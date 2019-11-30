@@ -35,6 +35,8 @@ class Args(object):
             "repeat",
         )
 
+        self.global_log = True
+
         # load languages.
         all_langs = (
             "en", "ar", "be", "bg", "ca", "cs", "da", "de", "el", "es", 
@@ -64,6 +66,10 @@ class Args(object):
         self.resources = resources
 
         self.init_settings()
+
+        # init setable but not initable settings.
+        self.stab_cslist = tuple()
+        self.stab_column = 3
 
         # load settings.
         if self.store_loc:
@@ -139,6 +145,7 @@ class Args(object):
         self.wheel_ratio = 0.8
         self.volum_ratio = 0.8
         self.cubic_ratio = 0.9
+        self.coset_ratio = 0.8
 
         self.s_tag_radius = 0.08
         self.v_tag_radius = 0.08
@@ -152,7 +159,7 @@ class Args(object):
         self.negative_wid = 2
         self.wheel_ed_wid = 5
 
-        self.positive_color = (0,   0,   0  )
+        self.positive_color = (80,  80,  80 )
         self.negative_color = (200, 200, 200)
         self.wheel_ed_color = (230, 230, 230)
 
@@ -170,10 +177,11 @@ class Args(object):
         items = (
             "usr_color", "usr_image", "store_loc", "hm_rule", "overflow", "lang", "press_move",
             "show_hsv", "show_rgb", "h_range", "s_range", "v_range",
-            "wheel_ratio", "volum_ratio", "cubic_ratio",
+            "wheel_ratio", "volum_ratio", "cubic_ratio", "coset_ratio",
             "s_tag_radius", "v_tag_radius", "zoom_step", "move_step", "circle_dist",
             "positive_wid", "negative_wid", "wheel_ed_wid",
             "positive_color", "negative_color", "wheel_ed_color",
+            "stab_column",
         )
 
         for item in items:
@@ -184,53 +192,64 @@ class Args(object):
             else:
                 settings[item] = value
 
+        stab_cslist = []
+
+        for cslst in self.stab_cslist:
+            colors = []
+
+            for i in range(5):
+                colors.append([float(x) for x in cslst[0][i]])
+
+            stab_cslist.append([colors, str(cslst[1]), str(cslst[2])])
+
+        settings["stab_cslist"] = stab_cslist
+
+        if self.store_loc:
+            with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
+                json.dump(settings, sf, indent=4)
+
         else:
-            if self.store_loc:
-                with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
-                    json.dump(settings, sf, indent=4)
+            with open(os.sep.join((self.usr_store, "settings.json")), "w") as sf:
+                json.dump(settings, sf, indent=4)
 
-            else:
-                with open(os.sep.join((self.usr_store, "settings.json")), "w") as sf:
-                    json.dump(settings, sf, indent=4)
-
-                with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
-                    json.dump({"store_loc": False}, sf, indent=4)
+            with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
+                json.dump({"store_loc": False}, sf, indent=4)
 
     def modify_settings(self, item, value):
         items = {
-            "usr_color": lambda vl: self.parse_path(vl),
-            "usr_image": lambda vl: self.parse_path(vl),
-            "store_loc": lambda vl: self.parse_value(vl, bool),
-            "hm_rule": lambda vl: self.parse_selection(vl, self.global_hm_rules, str),
-            "overflow": lambda vl: self.parse_selection(vl, self.global_overflows, str),
-            "lang": lambda vl: self.parse_selection(vl, [x[1] for x in self.usr_langs], str),
-            "press_move": lambda vl: self.parse_value(vl, bool),
-            "show_hsv": lambda vl: self.parse_value(vl, bool),
-            "show_rgb": lambda vl: self.parse_value(vl, bool),
-            "h_range": lambda vl: self.parse_range(vl, (0.0, 360.0), (float, int)),
-            "s_range": lambda vl: self.parse_range(vl, (0.0, 1.0), (float, int)),
-            "v_range": lambda vl: self.parse_range(vl, (0.0, 1.0), (float, int)),
-            "wheel_ratio": lambda vl: self.parse_num(vl, (0.0, 1.0), (float, int)),
-            "volum_ratio": lambda vl: self.parse_num(vl, (0.0, 1.0), (float, int)),
-            "cubic_ratio": lambda vl: self.parse_num(vl, (0.0, 1.0), (float, int)),
-            "s_tag_radius": lambda vl: self.parse_num(vl, (0.0, 0.2), (float, int)),
-            "v_tag_radius": lambda vl: self.parse_num(vl, (0.0, 0.2), (float, int)),
-            "zoom_step": lambda vl: self.parse_num(vl, (1.0, 10.0), (float, int)),
-            "move_step": lambda vl: self.parse_num(vl, (1, 100), (int, float)),
-            "circle_dist": lambda vl: self.parse_num(vl, (0, 50), (int, float)),
-            "positive_wid": lambda vl: self.parse_num(vl, (0, 20), (int, float)),
-            "negative_wid": lambda vl: self.parse_num(vl, (0, 20), (int, float)),
-            "wheel_ed_wid": lambda vl: self.parse_num(vl, (0, 20), (int, float)),
-            "positive_color": lambda vl: self.parse_color(vl),
-            "negative_color": lambda vl: self.parse_color(vl),
-            "wheel_ed_color": lambda vl: self.parse_color(vl),
+            "usr_color": lambda vl: self.pfmt_path(vl, self.usr_color),
+            "usr_image": lambda vl: self.pfmt_path(vl, self.usr_image),
+            "store_loc": lambda vl: self.pfmt_value(vl, bool, self.store_loc),
+            "hm_rule": lambda vl: self.pfmt_str_in_list(vl, self.global_hm_rules, self.hm_rule),
+            "overflow": lambda vl: self.pfmt_str_in_list(vl, self.global_overflows, self.overflow),
+            "lang": lambda vl: self.pfmt_str_in_list(vl, [x[1] for x in self.usr_langs], self.lang),
+            "press_move": lambda vl: self.pfmt_value(vl, bool, self.press_move),
+            "show_hsv": lambda vl: self.pfmt_value(vl, bool, self.show_hsv),
+            "show_rgb": lambda vl: self.pfmt_value(vl, bool, self.show_rgb),
+            "h_range": lambda vl: self.pfmt_num_pair_in_scope(vl, (0.0, 360.0), float, self.h_range),
+            "s_range": lambda vl: self.pfmt_num_pair_in_scope(vl, (0.0, 1.0), float, self.s_range),
+            "v_range": lambda vl: self.pfmt_num_pair_in_scope(vl, (0.0, 1.0), float, self.v_range),
+            "wheel_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.wheel_ratio),
+            "volum_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.volum_ratio),
+            "cubic_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.cubic_ratio),
+            "coset_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.coset_ratio),
+            "s_tag_radius": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 0.2), float, self.s_tag_radius),
+            "v_tag_radius": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 0.2), float, self.v_tag_radius),
+            "zoom_step": lambda vl: self.pfmt_num_in_scope(vl, (1.0, 10.0), float, self.zoom_step),
+            "move_step": lambda vl: self.pfmt_num_in_scope(vl, (1, 100), int, self.move_step),
+            "circle_dist": lambda vl: self.pfmt_num_in_scope(vl, (0, 50), int, self.circle_dist),
+            "positive_wid": lambda vl: self.pfmt_num_in_scope(vl, (0, 20), int, self.positive_wid),
+            "negative_wid": lambda vl: self.pfmt_num_in_scope(vl, (0, 20), int, self.negative_wid),
+            "wheel_ed_wid": lambda vl: self.pfmt_num_in_scope(vl, (0, 20), int, self.wheel_ed_wid),
+            "positive_color": lambda vl: self.pfmt_rgb_color(vl, self.positive_color),
+            "negative_color": lambda vl: self.pfmt_rgb_color(vl, self.negative_color),
+            "wheel_ed_color": lambda vl: self.pfmt_rgb_color(vl, self.wheel_ed_color),
+            "stab_column": lambda vl: self.pfmt_num_in_scope(vl, (0, 9), int, self.stab_column),
+            "stab_cslist": lambda vl: self.pfmt_stab_cslist(vl),
         }
 
         if item in items:
-            ans = items[item](value)
-
-            if ans != "parseerr":
-                setattr(self, item, ans)
+            setattr(self, item, items[item](value))
 
     def load_settings(self, settings_file):
         """
@@ -265,103 +284,153 @@ class Args(object):
 
     # ---------- ---------- ---------- Classmethods ---------- ---------- ---------- #
 
-    @classmethod
-    def parse_path(cls, value):
+    def pfmt_path(self, value, default):
         """
-        Parse value in designed range.
-        """
-
-        if isinstance(value, str) and os.path.isdir(value):
-            return value
-
-        return "parseerr"
-
-    @classmethod
-    def parse_range(cls, value, scope, target_dtype):
-        """
-        Parse value in designed range.
+        Parse directory path.
         """
 
-        if isinstance(value, (tuple, list)) and len(value) == 2 and isinstance(value[0], target_dtype) and isinstance(value[1], target_dtype):
-            if scope[0] <= value[0] <= scope[1] and scope[0] <= value[1] <= scope[1]:
-                if value[0] <= value[1]:
-                    if isinstance(target_dtype, (tuple, list)):
-                        return (target_dtype[0](value[0]), target_dtype[0](value[1]))
+        try:
+            ans = str(value)
 
-                    else:
-                        return (target_dtype(value[0]), target_dtype(value[1]))
+            if os.path.isdir(ans):
+                return ans
 
-        return "parseerr"
+        except Exception as err:
+            if self.global_log:
+                print(err)
 
-    @classmethod
-    def parse_selection(cls, value, selection_list, target_dtype):
+        return default
+
+    def pfmt_num_pair_in_scope(self, value, scope, dtype, default):
         """
-        Parse value in designed selection.
-        """
-
-        if isinstance(value, target_dtype) and value in selection_list:
-            if isinstance(target_dtype, (tuple, list)):
-                return target_dtype[0](value)
-
-            else:
-                return target_dtype(value)
-
-        return "parseerr"
-
-    @classmethod
-    def parse_num(cls, value, scope, target_dtype):
-        """
-        Parse value in designed scope.
+        Parse number pair in scope.
         """
 
-        if isinstance(value, target_dtype) and scope[0] <= value <= scope[1]:
-            if isinstance(target_dtype, (tuple, list)):
-                return target_dtype[0](value)
+        try:
+            ans = (dtype(value[0]), dtype(value[1]))
 
-            else:
-                return target_dtype(value)
+            if scope[0] <= ans[0] <= scope[1] and scope[0] <= ans[1] <= scope[1] and ans[0] <= ans[1]:
+                return ans
 
-        return "parseerr"
+        except Exception as err:
+            if self.global_log:
+                print(err)
 
-    @classmethod
-    def parse_value(cls, value, target_dtype):
+        return default
+
+    def pfmt_str_in_list(self, value, lst, default):
+        """
+        Parse string in list.
+        """
+
+        try:
+            ans = str(value)
+
+            if ans in lst:
+                return ans
+
+        except Exception as err:
+            if self.global_log:
+                print(err)
+
+        return default
+
+    def pfmt_num_in_scope(self, value, scope, dtype, default):
+        """
+        Parse number in scope.
+        """
+
+        try:
+            ans = dtype(value)
+
+            if scope[0] <= ans <= scope[1]:
+                return ans
+
+        except Exception as err:
+            if self.global_log:
+                print(err)
+
+        return default
+
+    def pfmt_value(self, value, dtype, default):
         """
         Parse value in designed dtype.
         """
 
-        if isinstance(value, target_dtype):
-            if isinstance(target_dtype, (tuple, list)):
-                return target_dtype[0](value)
+        try:
+            ans = dtype(value)
 
-            else:
-                return target_dtype(value)
+            return ans
 
-        return "parseerr"
+        except Exception as err:
+            if self.global_log:
+                print(err)
 
-    @classmethod
-    def parse_color(cls, value):
+        return default
+
+    def pfmt_rgb_color(self, value, default):
         """
         Parse value in designed color.
         """
 
-        if isinstance(value, (tuple, list)) and len(value) == 3 and isinstance(value[0], int) and isinstance(value[1], int) and isinstance(value[2], int):
-            if 0 <= value[0] <= 255 and 0 <= value[2] <= 255 and 0 <= value[2] <= 255:
-                return tuple(value)
+        try:
+            ans = (int(value[0]), int(value[1]), int(value[2]))
 
-        return "parseerr"
+            if 0 <= ans[0] <= 255 and 0 <= ans[2] <= 255 and 0 <= ans[2] <= 255:
+                return ans
 
-    @classmethod
-    def check_version(cls, version):
+        except Exception as err:
+            if self.global_log:
+                print(err)
+
+        return default
+
+    def pfmt_stab_cslist(self, value):
+        """
+        Parse value in designed color.
+        """
+
+        stab_cslist = []
+
+        try:
+            for cslst in value:
+                colors = []
+
+                for color in cslst[0]:
+                    ans = (float(color[0]), float(color[1]), float(color[2]))
+
+                    if 0.0 <= ans[0] <= 360.0 and 0.0 <= ans[2] <= 1.0 and 0.0 <= ans[2] <= 1.0:
+                        colors.append(ans)
+
+                    else:
+                        break
+
+                hm_rule = str(cslst[1])
+
+                if hm_rule not in self.global_hm_rules:
+                    hm_rule = ""
+
+                if len(colors) == 5 and hm_rule:
+                    stab_cslist.append((tuple(colors), hm_rule, str(cslst[2])))
+
+        except Exception as err:
+            if self.global_log:
+                print(err)
+
+        return stab_cslist
+
+    def check_version(self, version):
         """
         Check if version is compatible.
         """
 
-        ans = False
+        try:
+            for vre in (r"^v2\.[0].*", r"^v1\.[0].*", ):
+                if re.match(vre, version):
+                    return True
 
-        for vre in (r"^v2\.[0].*", r"^v1\.[0].*", ):
-            if re.match(vre, version):
-                a = re.match(vre, version)
-                ans = True
-                break
+        except Exception as err:
+            if self.global_log:
+                print(err)
 
-        return ans
+        return False

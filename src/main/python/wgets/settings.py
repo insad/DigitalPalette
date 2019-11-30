@@ -10,19 +10,19 @@ from cguis.resource import view_rc
 
 class Settings(QDialog, Ui_SettingsDialog):
     """
-    Settings object based on QWidget. Init a settings in settings.
+    Settings object based on QDialog. Init a settings in settings.
     """
 
     ps_rule_changed = pyqtSignal(bool)
     ps_lang_changed = pyqtSignal(bool)
     ps_settings_changed = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
-        Init rule.
+        Init settings.
         """
 
-        super().__init__()
+        super().__init__(wget)
         self.setupUi(self)
 
         # load args.

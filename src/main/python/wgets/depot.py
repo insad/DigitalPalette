@@ -1,21 +1,111 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QLabel, QShortcut
+import re
+from PyQt5.QtWidgets import QWidget, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QLabel, QShortcut, QDialog, QDialogButtonBox, QPushButton
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QPoint
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage, QCursor, QKeySequence
-from clibs.color import Color
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage, QCursor, QKeySequence, QIcon
+from cguis.design.info_dialog import Ui_InfoDialog
+from cguis.resource import view_rc
+from clibs.color import FakeColor, Color
 
 
-class EmptyCell(QWidget):
+class Info(QDialog, Ui_InfoDialog):
     """
-    EmptyCell objet based on QWidget. Init an empty unit cell in depot.
+    Info object based on QDialog. Init color set information.
+    """
+    
+    def __init__(self, wget, args):
+        """
+        Init information.
+        """
+
+        super().__init__(wget)
+        self.setupUi(self)
+
+        # load args.
+        self._args = args
+
+        # load translations.
+        self._func_tr_()
+
+        # init qt args.
+        app_icon = QIcon()
+        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
+        self.setWindowIcon(app_icon)
+
+        self._clone = None
+        self._unit_cell = UnitCell(self.colors, self._args, [None, None, None, None, None], "", "")
+
+        color_grid_layout = QGridLayout(self.colors)
+        color_grid_layout.setContentsMargins(1, 1, 1, 1)
+        color_grid_layout.addWidget(self._unit_cell)
+
+        # init buttons.
+        self.buttonBox.clear()
+
+        self._btn_1 = QPushButton()
+        self._btn_1.clicked.connect(self.application)
+        self.buttonBox.addButton(self._btn_1, QDialogButtonBox.AcceptRole)
+
+        self._btn_2 = QPushButton()
+        self._btn_2.clicked.connect(self.close)
+        self.buttonBox.addButton(self._btn_2, QDialogButtonBox.RejectRole)
+
+        self.update_text()
+
+    # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
+
+    def clone_cell(self, unit_cell):
+        self._clone = unit_cell
+
+        self._unit_cell.color_set = unit_cell.color_set
+        self._unit_cell.hm_rule = unit_cell.hm_rule
+        context = unit_cell.desc.split("#")
+
+        name = self._dialog_desc[3]
+        desc = ""
+
+        for line in context:
+            rline = line.lstrip().rstrip()
+
+            if rline[:6] == "Name: ":
+                name = re.split(r"\n\r\t\v\\\'\"\a\f", rline[6:])[0]
+                name = name.lstrip().rstrip()
+
+            elif rline[:6] == "Desc: ":
+                desc = rline[6:]
+
+        self.name_ledit.setText(name)
+        self.desc_tedit.setText(desc)
+
+    def application(self):
+        self._clone.desc = "#Name: {} #Desc: {}".format(self.name_ledit.text(), self.desc_tedit.toPlainText())
+        self._clone = None
+
+    # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
+
+    def update_text(self):
+        self.setWindowTitle(self._dialog_desc[0])
+        self._btn_1.setText(self._dialog_desc[1])
+        self._btn_2.setText(self._dialog_desc[2])
+
+    def _func_tr_(self):
+        _translate = QCoreApplication.translate
+
+        self._dialog_desc = (
+            _translate("Info", "Information"),
+            _translate("Info", "OK"),
+            _translate("Info", "Cancel"),
+            _translate("Info", "DigitalPalette Color Set"),
+        )
+
+
+class UnitCell(QWidget):
+    """
+    UnitCell objet based on QWidget. Init an unit cell in depot.
     """
 
-    ps_selected = pyqtSignal(int)
-    ps_dclicked = pyqtSignal(int)
-    ps_informed = pyqtSignal(int)
-
-    def __init__(self, wget, args, idx):
+    def __init__(self, wget, args, hsv_set, hm_rule, desc):
         """
         Init empty unit cell.
         """
@@ -25,10 +115,19 @@ class EmptyCell(QWidget):
         # load args.
         self._args = args
 
-        self.idx = idx
-        self.colors = (None, None, None, None, None)
         self.activated = False
-        self.outer_box = (0, 0, 0, 0)
+        self.color_set = []
+
+        for hsv in hsv_set:
+            if hsv == None:
+                self.color_set.append(None)
+
+            else:
+                self.color_set.append(FakeColor(Color.hsv2rgb(hsv), hsv, Color.hsv2hec(hsv)))
+
+        self.color_set = tuple(self.color_set)
+        self.hm_rule = str(hm_rule)
+        self.desc = str(desc)
 
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
@@ -38,21 +137,24 @@ class EmptyCell(QWidget):
 
         cs_wid = int(min(wid, hig) * self._args.coset_ratio / 2)
 
-        cs_boxes = [
+        cs_boxes = (
             (wid / 2 - cs_wid, hig / 2 - cs_wid, cs_wid, cs_wid),
             (wid / 2, hig / 2 - cs_wid, cs_wid, cs_wid),
             (wid / 2 - cs_wid, hig / 2, cs_wid, cs_wid),
             (wid / 2, hig / 2, cs_wid, cs_wid),
             (wid / 2 - cs_wid / 2, hig / 2 - cs_wid / 2, cs_wid, cs_wid),
-        ]
-
-        self.outer_box = (wid / 2 - cs_wid, hig / 2 - cs_wid, cs_wid * 2, cs_wid * 2)
+        )
 
         painter = QPainter()
         painter.begin(self)
         painter.setRenderHint(QPainter.Antialiasing, True)
         painter.setRenderHint(QPainter.TextAntialiasing, True)
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+
+        if self.activated:
+            painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid * 2))
+            painter.setBrush(QColor(Qt.white))
+            painter.drawRect(0, 0, wid, hig)
 
         for idx in range(5):
             if self.activated:
@@ -61,72 +163,15 @@ class EmptyCell(QWidget):
             else:
                 painter.setPen(QPen(QColor(*self._args.negative_color), self._args.negative_wid))
 
-            if self.colors[4 - idx] != None:
-                rgb = Color.hsv2rgb(self.colors[4 - idx])
-                painter.setBrush(QColor(*rgb))
-
-            else:
+            if self.color_set[4 - idx] == None:
                 painter.setBrush(QBrush(Qt.NoBrush))
 
-            painter.drawRoundedRect(*cs_boxes[idx], cs_wid / 12, cs_wid / 12)
+            else:
+                painter.setBrush(QColor(*self.color_set[4 - idx].rgb))
+
+            painter.drawRoundedRect(*cs_boxes[idx], cs_wid / 9, cs_wid / 9)
 
         painter.end()
-
-    # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
-
-    def mousePressEvent(self, event):
-        point = (event.x(), event.y())
-
-        if self.outer_box[0] < point[0] < self.outer_box[0] + self.outer_box[2] and self.outer_box[1] < point[1] < self.outer_box[1] + self.outer_box[3]:
-            if event.button() == Qt.LeftButton:
-                self.ps_selected.emit(self.idx)
-
-                event.accept()
-                self.update()
-
-            elif event.button() == Qt.RightButton:
-                self.ps_informed.emit(self.idx)
-
-                event.accept()
-                self.update()
-
-            else:
-                event.ignore()
-
-        else:
-            event.ignore()
-
-    def mouseDoubleClickEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            point = (event.x(), event.y())
-
-            if self.outer_box[0] < point[0] < self.outer_box[0] + self.outer_box[2] and self.outer_box[1] < point[1] < self.outer_box[1] + self.outer_box[3]:
-                self.ps_dclicked.emit(self.idx)
-
-                event.accept()
-                self.update()
-
-            else:
-                event.ignore()
-
-        else:
-            event.ignore()
-
-
-class UnitCell(EmptyCell):
-    """
-    UnitCell objet based on EmptyCell. Init a color set unit cell in palette.
-    """
-
-    def __init__(self, wget, args, idx):
-        """
-        Init unit cell.
-        """
-
-        super().__init__(wget, args, idx)
-
-        # load args.
-        self.colors, self.hm_rule, self.desc = self._args.stab_cslist[self.idx]
 
 
 class Depot(QWidget):
@@ -146,7 +191,9 @@ class Depot(QWidget):
         # load args.
         self._args = args
 
+        self._left_click = False
         self._current_idx = None
+        self._fetched_cell = None
  
         # load translations.
         self._func_tr_()
@@ -169,19 +216,20 @@ class Depot(QWidget):
         self._scroll_grid_layout.setContentsMargins(0, 0, 0, 0)
         self._scroll_area.setWidget(self._scroll_contents)
 
-        self._unitcells = []
+        self._unit_cells = []
 
-        for idx in range(len(self._args.stab_cslist)):
-            unitcell = UnitCell(self._scroll_contents, self._args, idx)
-            unitcell.ps_selected.connect(self.activate_idx)
-            unitcell.ps_dclicked.connect(self.import_idx)
-            self._scroll_grid_layout.addWidget(unitcell)
-            self._unitcells.append(unitcell)
+        for cset in self._args.stab_cslist:
+            unit_cell = UnitCell(self._scroll_contents, self._args, cset[0], cset[1], cset[2])
+            self._unit_cells.append(unit_cell)
 
-        emptycell = EmptyCell(self._scroll_contents, self._args, len(self._args.stab_cslist))
-        emptycell.ps_selected.connect(self.activate_idx)
-        emptycell.ps_dclicked.connect(lambda x: self.attach_set())
-        self._unitcells.append(emptycell)
+            self._scroll_grid_layout.addWidget(unit_cell)
+
+        empty_cell = UnitCell(self._scroll_contents, self._args, [None, None, None, None, None], "", "")
+        self._unit_cells.append(empty_cell)
+
+        self._scroll_grid_layout.addWidget(empty_cell)
+
+        self._info = Info(self, self._args)
 
         shortcut = QShortcut(QKeySequence("Del"), self)
         shortcut.activated.connect(self.delete_set)
@@ -196,67 +244,150 @@ class Depot(QWidget):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        pl_wid = self.geometry().width() / self._args.stab_column
-        pl_wid = pl_wid if pl_wid < self.geometry().height() * 0.95 else self.geometry().height() * 0.95
-        tot_rows = len(self._unitcells) // self._args.stab_column if len(self._unitcells) % self._args.stab_column == 0 else len(self._unitcells) // self._args.stab_column + 1
+        self._pl_wid = int(self.geometry().width() / self._args.stab_column)
+        self._tot_rows = len(self._unit_cells) // self._args.stab_column if len(self._unit_cells) % self._args.stab_column == 0 else len(self._unit_cells) // self._args.stab_column + 1
 
-        self._scroll_contents.setMinimumSize(pl_wid * self._args.stab_column, pl_wid * tot_rows)
-        self._scroll_contents.setMaximumSize(pl_wid * self._args.stab_column, pl_wid * tot_rows)
+        height = self._pl_wid * self._tot_rows
+        height = height if height > self.geometry().height() else self.geometry().height()
 
-        for i in range(tot_rows):
+        self._scroll_contents.setMinimumSize(self._pl_wid * self._args.stab_column, height)
+        self._scroll_contents.setMaximumSize(self._pl_wid * self._args.stab_column, height)
+
+        for i in range(self._tot_rows):
             for j in range(self._args.stab_column):
                 idx = self._args.stab_column * i + j
 
-                if idx < len(self._unitcells):
-                    self._unitcells[idx].setGeometry(pl_wid * j, pl_wid * i, pl_wid, pl_wid)
+                if idx < len(self._unit_cells) and self._unit_cells[idx] != None:
+                    self._unit_cells[idx].setGeometry(self._pl_wid * j, self._pl_wid * i, self._pl_wid, self._pl_wid)
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mousePressEvent(self, event):
-        self.activate_idx(None)
+        point = (event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y())
 
-        event.ignore()
+        col = point[0] // self._pl_wid
+        row = point[1] // self._pl_wid
+
+        if col <= self._args.stab_column:
+            idx = self._args.stab_column * row + col
+
+            if idx < len(self._unit_cells):
+                self.activate_idx(idx)
+
+                if event.button() == Qt.LeftButton:
+                    self._left_click = True
+
+                    self._fetched_cell = self._unit_cells[self._current_idx]
+                    self._unit_cells[self._current_idx] = None
+
+                    self._fetched_cell.raise_()
+
+                elif event.button() == Qt.RightButton:
+                    if idx < len(self._unit_cells) - 1:
+                        self._info.clone_cell(self._unit_cells[idx])
+                        self._info.show()
+
+            else:
+                self.activate_idx(None)
+
+        else:
+            self.activate_idx(None)
+
+        event.accept()
+
+    def mouseMoveEvent(self, event):
+        if self._left_click:
+            point = (event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y())
+
+            col = point[0] // self._pl_wid
+            row = point[1] // self._pl_wid
+
+            if col <= self._args.stab_column:
+                idx = self._args.stab_column * row + col
+
+                if idx < len(self._unit_cells) - 1:
+                    self._unit_cells.pop(self._current_idx)
+                    self._current_idx = idx
+
+                    self._unit_cells.insert(idx, None)
+
+            self._fetched_cell.setGeometry(point[0] - self._pl_wid / 2, point[1] - self._pl_wid / 2, self._pl_wid, self._pl_wid)
+
+            self.update()
+            event.accept()
+
+        else:
+            event.ignore()
+
+    def mouseReleaseEvent(self, event):
+        if self._left_click:
+            self._unit_cells[self._current_idx] = self._fetched_cell
+            self._fetched_cell = None
+
+            self._left_click = False
+
+            self.update()
+            event.accept()
+
+        else:
+            event.ignore()
+
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            point = (event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y())
+
+            col = point[0] // self._pl_wid
+            row = point[1] // self._pl_wid
+
+            if col <= self._args.stab_column:
+                idx = self._args.stab_column * row + col
+
+                if idx < len(self._unit_cells):
+                    self.activate_idx(idx)
+
+                    if idx == len(self._unit_cells) - 1:
+                        self.attach_set()
+                    
+                    else:
+                        self.import_set()
+
+                else:
+                    self.activate_idx(None)
+
+            else:
+                self.activate_idx(None)
+
+            event.accept()
+
+        else:
+            event.ignore()
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def activate_idx(self, idx):
         """
-        Activate num idx unitcell and deactivate other unitcells.
+        Activate current idx unit cell.
         """
 
         if self._current_idx != None:
-            self._unitcells[self._current_idx].activated = False
-            self._unitcells[self._current_idx].update()
+            self._unit_cells[self._current_idx].activated = False
+            self._unit_cells[self._current_idx].update()
 
         self._current_idx = idx
 
         if self._current_idx != None:
             self._current_idx = self._current_idx if self._current_idx > 0 else 0
-            self._current_idx = self._current_idx if self._current_idx < len(self._unitcells) else len(self._unitcells) - 1
+            self._current_idx = self._current_idx if self._current_idx < len(self._unit_cells) else len(self._unit_cells) - 1
 
-            self._unitcells[self._current_idx].activated = True
-            self._unitcells[self._current_idx].update()
+        if self._current_idx != None and self._unit_cells[self._current_idx] != None:
+            self._unit_cells[self._current_idx].activated = True
+            self._unit_cells[self._current_idx].update()
 
-            upp_pos = self._scroll_contents.geometry().y() + self._unitcells[self._current_idx].geometry().y()
-            low_pos = self._scroll_contents.geometry().y() + self._unitcells[self._current_idx].geometry().y() + self._unitcells[self._current_idx].geometry().height()
+            upp_pos = self._scroll_contents.geometry().y() + self._unit_cells[self._current_idx].geometry().y()
+            low_pos = self._scroll_contents.geometry().y() + self._unit_cells[self._current_idx].geometry().y() + self._unit_cells[self._current_idx].geometry().height()
 
             if upp_pos < 0 or low_pos > self._scroll_area.geometry().height():
-                self._scroll_bar.setValue(self._unitcells[self._current_idx].geometry().y())
-
-            """
-            if low_pos > self._scroll_area.geometry().height():
-                self._scroll_bar.setValue(self._unitcells[self._current_idx].geometry().y() + self._unitcells[self._current_idx].geometry().height() - self._scroll_area.geometry().height())
-            """
-
-    def import_idx(self, idx):
-        """
-        Import colors in num idx unitcell into color wheel.
-        """
-
-        self._args.sys_color_set.import_color_set(self._unitcells[idx].colors, tp="hsv")
-        self._args.hm_rule = self._unitcells[idx].hm_rule
-
-        self.ps_update.emit(True)
+                self._scroll_bar.setValue(self._unit_cells[self._current_idx].geometry().y())
 
     def move(self, shift_x, shift_y):
         """
@@ -322,11 +453,11 @@ class Depot(QWidget):
         if self._current_idx == None:
             return
 
-        if self._current_idx == len(self._args.stab_cslist):
+        elif self._current_idx == len(self._unit_cells) - 1:
             self.attach_set()
 
-        else:
-            self.import_idx(self._current_idx)
+        elif self._current_idx < len(self._unit_cells) - 1:
+            self.import_set()
 
     def delete_set(self):
         """
@@ -336,17 +467,13 @@ class Depot(QWidget):
         if not self.isVisible():
             return
 
-        if self._current_idx == None or self._current_idx >= len(self._args.stab_cslist):
+        if self._current_idx == None or self._current_idx > len(self._unit_cells) - 2:
             return
 
-        self._unitcells[self._current_idx].close()
-        self._unitcells.pop(self._current_idx)
-        self._args.stab_cslist.pop(self._current_idx)
+        self._unit_cells[self._current_idx].close()
+        self._unit_cells.pop(self._current_idx)
 
-        for i in range(len(self._unitcells) - self._current_idx):
-            self._unitcells[self._current_idx + i].idx = self._current_idx + i
-
-        self._unitcells[self._current_idx].activated = True
+        self._unit_cells[self._current_idx].activated = True
         self.update()
 
     def attach_set(self):
@@ -357,23 +484,57 @@ class Depot(QWidget):
         if not self.isVisible():
             return
 
-        colors = (self._args.sys_color_set[0].hsv, self._args.sys_color_set[1].hsv, self._args.sys_color_set[2].hsv, self._args.sys_color_set[3].hsv, self._args.sys_color_set[4].hsv)
-        self._args.stab_cslist.append((colors, self._args.hm_rule, "None"))
+        hsv_set = (self._args.sys_color_set[0].hsv, self._args.sys_color_set[1].hsv, self._args.sys_color_set[2].hsv, self._args.sys_color_set[3].hsv, self._args.sys_color_set[4].hsv)
+        
+        unit_cell = UnitCell(self._scroll_contents, self._args, hsv_set, self._args.hm_rule, "")
+        self._scroll_grid_layout.addWidget(unit_cell)
 
-        unitcell = UnitCell(self._scroll_contents, self._args, len(self._unitcells) - 1)
-        unitcell.activated = True
-        unitcell.ps_selected.connect(self.activate_idx)
-        unitcell.ps_dclicked.connect(self.import_idx)
+        empty_cell = self._unit_cells[len(self._unit_cells) - 1]
+        empty_cell.activated = False
 
-        emptycell = self._unitcells[len(self._unitcells) - 1]
-        emptycell.idx = len(self._unitcells)
-        emptycell.activated = False
+        self._unit_cells[len(self._unit_cells) - 1] = unit_cell
+        self._unit_cells.append(empty_cell)
 
-        self._scroll_grid_layout.addWidget(unitcell)
-        self._unitcells[len(self._unitcells) - 1] = unitcell
-        self._unitcells.append(emptycell)
+        self.activate_idx(len(self._unit_cells) - 2)
 
         self.update()
+
+    def import_set(self):
+        """
+        Import current color set into color wheel.
+        """
+
+        if not self.isVisible():
+            return
+
+        if self._current_idx == None or self._current_idx > len(self._unit_cells) - 2:
+            return
+
+        self._args.sys_color_set.import_color_set(self._unit_cells[self._current_idx].color_set)
+        self._args.hm_rule = self._unit_cells[self._current_idx].hm_rule
+
+        self.ps_update.emit(True)
+
+    def close_all(self):
+        """
+        Save current color sets to args.
+        """
+
+        self._args.stab_cslist = []
+
+        for unit_cell in self._unit_cells[:-1]:
+            if unit_cell != None:
+                colors = (
+                    unit_cell.color_set[0].hsv,
+                    unit_cell.color_set[1].hsv,
+                    unit_cell.color_set[2].hsv,
+                    unit_cell.color_set[3].hsv,
+                    unit_cell.color_set[4].hsv,
+                )
+
+                self._args.stab_cslist.append((colors, unit_cell.hm_rule, unit_cell.desc))
+
+        self._args.stab_cslist = tuple(self._args.stab_cslist)
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 

@@ -47,7 +47,7 @@ class ColorSet(object):
             Color((0, 0, 0), tp="rgb", overflow=overflow),
             ]
 
-        self._custom_create()
+        self.initialize()
 
     # ---------- ---------- ---------- Setting and Getting Funcs ---------- ---------- ---------- #
 
@@ -133,6 +133,18 @@ class ColorSet(object):
 
         self._color_set = list(color_set)
 
+    def initialize(self):
+        """
+        Create color set randomly.
+        """
+
+        for i in range(5):
+            h = self._h_range[0] + (self._h_range[1] - self._h_range[0]) * random.random()
+            s = self._s_range[0] + (self._s_range[1] - self._s_range[0]) * random.random()
+            v = self._v_range[0] + (self._v_range[1] - self._v_range[0]) * random.random()
+
+            self._color_set[i].hsv = (h, s, v)
+
     def create(self, harmony_rule):
         """
         Create color set under a selected harmony rule.
@@ -140,6 +152,9 @@ class ColorSet(object):
         Args:
             harmony_rule (str): rule, in "analogous", "monochromatic", "triad", "tetrad", "pentad", "complementary", "shades" and "custom".
         """
+
+        if harmony_rule == "custom":
+            return
 
         methods = {
             "analogous": self._analogous_create,
@@ -149,7 +164,6 @@ class ColorSet(object):
             "pentad": self._pentad_create,
             "complementary": self._complementary_create,
             "shades": self._shades_create,
-            "custom": self._custom_create,
         }
 
         if harmony_rule in methods:
@@ -251,7 +265,8 @@ class ColorSet(object):
             color_set (tuple or list): color set list.
         """
 
-        self._color_set = list(color_set)
+        for idx in range(5):
+            self._color_set[idx] = Color(color_set[idx], tp="color", overflow=self.get_overflow())
 
     # ---------- ---------- ---------- Personal Funcs ---------- ---------- ---------- #
 
@@ -532,18 +547,6 @@ class ColorSet(object):
         self._color_set[2].v = 0.40
         self._color_set[3].v = 0.65
         self._color_set[4].v = 0.90
-
-    def _custom_create(self):
-        """
-        Create color set in custom rule.
-        """
-
-        for i in range(5):
-            h = self._h_range[0] + (self._h_range[1] - self._h_range[0]) * random.random()
-            s = self._s_range[0] + (self._s_range[1] - self._s_range[0]) * random.random()
-            v = self._v_range[0] + (self._v_range[1] - self._v_range[0]) * random.random()
-
-            self._color_set[i].hsv = (h, s, v)
 
     def _custom_modify(self, idx, pr_color):
         """

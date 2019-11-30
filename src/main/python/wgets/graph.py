@@ -96,7 +96,7 @@ class OverLabel(QLabel):
 
         else:
             event.ignore()
-    
+
     def mouseMoveEvent(self, event):
         if self._pressed:
             point = np.array((event.x(), event.y()))
@@ -129,12 +129,12 @@ class Graph(QWidget):
 
     ps_color_changed = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
         Init Graph pannel.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args
@@ -516,7 +516,7 @@ class Graph(QWidget):
         self.overlabel_display.update()
         self.update()
 
-    def close(self):
+    def close_all(self):
         self._image3c.remove_temp_dir()
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #

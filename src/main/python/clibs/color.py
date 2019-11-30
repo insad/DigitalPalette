@@ -4,6 +4,26 @@ import unittest
 import numpy as np
 
 
+class FakeColor(object):
+    """
+    FakeColor object. Storing rgb, hsv and hex code (hec) color without functional methods.
+    """
+
+    def __init__(self, rgb, hsv, hec):
+        """
+        Init FakeColor ojbect.
+
+        Args:
+            rgb (tuple or list): rgb color.
+            rgb (tuple or list): hsv color.
+            hec (str): hex code (hec).
+        """
+
+        self.rgb = tuple(rgb)
+        self.hsv = tuple(hsv)
+        self.hec = str(hec)
+
+
 class Color(object):
     """
     Color object. Storing rgb, hsv and hex code (hec) color.
@@ -42,8 +62,9 @@ class Color(object):
             raise ValueError("expect tp in str type: {}.".format(tp))
 
         if tp.lower() == "color":
-            if isinstance(item, Color):
-                self._rgb, self._hsv, self._hec = item.rgb, item.hsv, item.hec
+            if isinstance(item, (Color, FakeColor)):
+                self._rgb, self._hsv, self._hec = self.fmt_rgb(item.rgb), self.fmt_hsv(item.hsv), self.fmt_hec(item.hec)
+
             else:
                 raise ValueError("expect item in Color type: {}.".format(item))
 

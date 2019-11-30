@@ -15,12 +15,12 @@ class Square(QWidget):
     ps_color_changed = pyqtSignal(bool)
     ps_index_changed = pyqtSignal(bool)
 
-    def __init__(self, args, idx):
+    def __init__(self, wget, args, idx):
         """
         Init color square.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args
@@ -101,12 +101,12 @@ class Cube(QWidget, Ui_ScrollCube):
     Cube object based on QWidget. Init a color cube in table.
     """
 
-    def __init__(self, args, idx):
+    def __init__(self, wget, args, idx):
         """
         Init color cube.
         """
 
-        super().__init__()
+        super().__init__(wget)
         self.setupUi(self)
 
         # load args.
@@ -117,7 +117,7 @@ class Cube(QWidget, Ui_ScrollCube):
         cube_grid_layout = QGridLayout(self.cube_color)
         cube_grid_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.square = Square(self._args, self._idx)
+        self.square = Square(self.cube_color, self._args, self._idx)
         cube_grid_layout.addWidget(self.square)
 
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
@@ -134,12 +134,12 @@ class CubeTable(QWidget):
 
     ps_color_changed = pyqtSignal(bool)
 
-    def __init__(self, args):
+    def __init__(self, wget, args):
         """
         Init color cube table.
         """
 
-        super().__init__()
+        super().__init__(wget)
 
         # load args.
         self._args = args
@@ -161,7 +161,14 @@ class CubeTable(QWidget):
         scroll_horizontal_layout.setContentsMargins(0, 0, 0, 0)
         scroll_area.setWidget(scroll_contents)
 
-        self._cubes = [Cube(args, 0), Cube(args, 1), Cube(args, 2), Cube(args, 3), Cube(args, 4)]
+        self._cubes = (
+            Cube(scroll_contents, args, 0),
+            Cube(scroll_contents, args, 1),
+            Cube(scroll_contents, args, 2),
+            Cube(scroll_contents, args, 3),
+            Cube(scroll_contents, args, 4),
+        )
+
         self.update_color()
 
         for idx in (2, 1, 0, 3, 4):
@@ -293,7 +300,7 @@ class CubeTable(QWidget):
         Create stored color set by create button.
         """
 
-        self._args.sys_color_set.create("custom")
+        self._args.sys_color_set.initialize()
         self._args.sys_color_set.create(self._args.hm_rule)
         self.update_color()
 
