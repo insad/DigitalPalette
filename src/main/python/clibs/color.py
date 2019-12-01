@@ -23,6 +23,18 @@ class FakeColor(object):
         self.hsv = tuple(hsv)
         self.hec = str(hec)
 
+    # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
+
+    def export(self):
+        """
+        Export color in dict type (for json file).
+
+        Returns:
+          color dict {"rgb": rgb_color_list, "hsv": hsv_color_list, "hex code": hex code (hec)}.
+        """
+
+        return {"rgb": list(self.rgb), "hsv": list(self.hsv), "hex code": self.hec}
+
 
 class Color(object):
     """

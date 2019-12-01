@@ -16,6 +16,7 @@ class Settings(QDialog, Ui_SettingsDialog):
     ps_rule_changed = pyqtSignal(bool)
     ps_lang_changed = pyqtSignal(bool)
     ps_settings_changed = pyqtSignal(bool)
+    ps_clean_up = pyqtSignal(bool)
 
     def __init__(self, wget, args):
         """
@@ -45,6 +46,9 @@ class Settings(QDialog, Ui_SettingsDialog):
 
         for overfl in self._args.global_overflows:
             self.overflow_comb.addItem("")
+
+        # init clean up button.
+        self.clean_up_btn.clicked.connect(lambda x: self.ps_clean_up.emit(True))
 
         # init buttons.
         self.buttonBox.clear()
@@ -98,6 +102,9 @@ class Settings(QDialog, Ui_SettingsDialog):
         self.wheel_ratio_dp.setValue(self._args.wheel_ratio)
         self.volum_ratio_dp.setValue(self._args.volum_ratio)
         self.cubic_ratio_dp.setValue(self._args.cubic_ratio)
+        self.coset_ratio_dp.setValue(self._args.coset_ratio)
+
+        self.stab_column_dp.setValue(self._args.stab_column)
 
         self.s_tag_radius_dp.setValue(self._args.s_tag_radius)
         self.v_tag_radius_dp.setValue(self._args.v_tag_radius)
@@ -156,6 +163,9 @@ class Settings(QDialog, Ui_SettingsDialog):
         self._args.modify_settings("wheel_ratio", self.wheel_ratio_dp.value())
         self._args.modify_settings("volum_ratio", self.volum_ratio_dp.value())
         self._args.modify_settings("cubic_ratio", self.cubic_ratio_dp.value())
+        self._args.modify_settings("coset_ratio", self.coset_ratio_dp.value())
+
+        self._args.modify_settings("stab_column", self.stab_column_dp.value())
 
         self._args.modify_settings("s_tag_radius", self.s_tag_radius_dp.value())
         self._args.modify_settings("v_tag_radius", self.v_tag_radius_dp.value())

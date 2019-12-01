@@ -68,7 +68,7 @@ class Args(object):
         self.init_settings()
 
         # init setable but not initable settings.
-        self.stab_cslist = tuple()
+        self.stab_ucells = tuple()
         self.stab_column = 3
 
         # load settings.
@@ -101,7 +101,7 @@ class Args(object):
         """
 
         # load default language.
-        self.modify_settings("lang", "en.qm")
+        self.modify_settings("lang", "default")
 
         # load local store tag.
         self.store_loc = False
@@ -192,17 +192,17 @@ class Args(object):
             else:
                 settings[item] = value
 
-        stab_cslist = []
+        stab_ucells = []
 
-        for cslst in self.stab_cslist:
+        for cslst in self.stab_ucells:
             colors = []
 
             for i in range(5):
                 colors.append([float(x) for x in cslst[0][i]])
 
-            stab_cslist.append([colors, str(cslst[1]), str(cslst[2])])
+            stab_ucells.append([colors, str(cslst[1]), str(cslst[2])])
 
-        settings["stab_cslist"] = stab_cslist
+        settings["stab_ucells"] = stab_ucells
 
         if self.store_loc:
             with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
@@ -245,7 +245,7 @@ class Args(object):
             "negative_color": lambda vl: self.pfmt_rgb_color(vl, self.negative_color),
             "wheel_ed_color": lambda vl: self.pfmt_rgb_color(vl, self.wheel_ed_color),
             "stab_column": lambda vl: self.pfmt_num_in_scope(vl, (0, 9), int, self.stab_column),
-            "stab_cslist": lambda vl: self.pfmt_stab_cslist(vl),
+            "stab_ucells": lambda vl: self.pfmt_stab_ucells(vl),
         }
 
         if item in items:
@@ -385,12 +385,12 @@ class Args(object):
 
         return default
 
-    def pfmt_stab_cslist(self, value):
+    def pfmt_stab_ucells(self, value):
         """
         Parse value in designed color.
         """
 
-        stab_cslist = []
+        stab_ucells = []
 
         try:
             for cslst in value:
@@ -411,13 +411,13 @@ class Args(object):
                     hm_rule = ""
 
                 if len(colors) == 5 and hm_rule:
-                    stab_cslist.append((tuple(colors), hm_rule, str(cslst[2])))
+                    stab_ucells.append((tuple(colors), hm_rule, str(cslst[2])))
 
         except Exception as err:
             if self.global_log:
                 print(err)
 
-        return stab_cslist
+        return stab_ucells
 
     def check_version(self, version):
         """

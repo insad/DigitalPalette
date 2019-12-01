@@ -192,13 +192,13 @@ class CubeTable(QWidget):
 
         self.modify_box_visibility()
 
-        shortcut = QShortcut(QKeySequence("r"), self)
+        shortcut = QShortcut(QKeySequence("R"), self)
         shortcut.activated.connect(self.clipboard("rgb"))
 
-        shortcut = QShortcut(QKeySequence("h"), self)
+        shortcut = QShortcut(QKeySequence("H"), self)
         shortcut.activated.connect(self.clipboard("hsv"))
 
-        shortcut = QShortcut(QKeySequence("c"), self)
+        shortcut = QShortcut(QKeySequence("C"), self)
         shortcut.activated.connect(self.clipboard("hec"))
 
         shortcut = QShortcut(QKeySequence("1"), self)

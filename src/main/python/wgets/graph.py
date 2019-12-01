@@ -516,7 +516,11 @@ class Graph(QWidget):
         self.overlabel_display.update()
         self.update()
 
-    def close_all(self):
+    def closeEvent(self, event):
+        """
+        Actions before close Graph.
+        """
+
         self._image3c.remove_temp_dir()
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #

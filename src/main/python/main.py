@@ -82,6 +82,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.tabifyDockWidget(self.transformation_dock_widget, self.mode_dock_widget)
         self.tabifyDockWidget(self.channel_dock_widget, self.rule_dock_widget)
 
+        self.actionOpen.triggered.connect(self._wget_operation.open_btn.click)
+        self.actionSave.triggered.connect(self._wget_operation.save_btn.click)
         self.actionImport.triggered.connect(self._wget_operation.import_btn.click)
         self.actionExport.triggered.connect(self._wget_operation.export_btn.click)
         self.actionQuit.triggered.connect(self.close)
@@ -102,20 +104,35 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_update_site)))
         self.actionAbout.triggered.connect(lambda x: self._show_about())
 
+        shortcut = QShortcut(QKeySequence("Alt+O"), self)
+        shortcut.activated.connect(self._wget_operation.open_btn.click)
+        shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
+        shortcut.activated.connect(self._wget_operation.open_btn.click)
+
+        shortcut = QShortcut(QKeySequence("Alt+S"), self)
+        shortcut.activated.connect(self._wget_operation.save_btn.click)
+        shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        shortcut.activated.connect(self._wget_operation.save_btn.click)
+
         shortcut = QShortcut(QKeySequence("Alt+I"), self)
         shortcut.activated.connect(self._wget_operation.import_btn.click)
-        shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
+        shortcut = QShortcut(QKeySequence("Ctrl+I"), self)
         shortcut.activated.connect(self._wget_operation.import_btn.click)
 
         shortcut = QShortcut(QKeySequence("Alt+E"), self)
         shortcut.activated.connect(self._wget_operation.export_btn.click)
-        shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        shortcut = QShortcut(QKeySequence("Ctrl+E"), self)
         shortcut.activated.connect(self._wget_operation.export_btn.click)
 
         shortcut = QShortcut(QKeySequence("Alt+Q"), self)
         shortcut.activated.connect(self.close)
         shortcut = QShortcut(QKeySequence("Esc"), self)
         shortcut.activated.connect(self.close)
+
+        shortcut = QShortcut(QKeySequence("Alt+T"), self)
+        shortcut.activated.connect(self._wget_settings.showup)
+        shortcut = QShortcut(QKeySequence("`"), self)
+        shortcut.activated.connect(self._wget_settings.showup)
 
         shortcut = QShortcut(QKeySequence("Alt+C"), self)
         shortcut.activated.connect(self._wget_operation.create_btn.click)
@@ -131,11 +148,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         shortcut.activated.connect(self._wget_operation.attach_btn.click)
         shortcut = QShortcut(QKeySequence("Ctrl+D"), self)
         shortcut.activated.connect(self._wget_operation.attach_btn.click)
-
-        shortcut = QShortcut(QKeySequence("Alt+S"), self)
-        shortcut.activated.connect(self._wget_settings.showup)
-        shortcut = QShortcut(QKeySequence("`"), self)
-        shortcut.activated.connect(self._wget_settings.showup)
 
         # install translator.
         self._tr = QTranslator()
@@ -234,6 +246,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_depot.ps_update.connect(lambda x: self._wget_cube_table.update_color())
         self._wget_depot.ps_update.connect(lambda x: self._wget_rule.update_rule())
 
+        self._wget_operation.ps_opened.connect(lambda x: self._wget_depot.initialize())
+
     def _setup_channel(self):
         """
         Setup channel.
@@ -276,6 +290,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_settings.ps_rule_changed.connect(lambda x: self._wget_cube_table.modify_rule())
         self._wget_settings.ps_lang_changed.connect(lambda x: self._install_translator())
         self._wget_settings.ps_settings_changed.connect(lambda x: self._inner_update())
+        self._wget_settings.ps_clean_up.connect(lambda x: self._wget_depot.clean_up())
 
     def _inner_create(self):
         """
@@ -325,6 +340,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._args.sys_color_set.set_hsv_ranges(self._args.h_range, self._args.s_range, self._args.v_range)
         self._wget_wheel.update()
         self._wget_graph.update_all()
+        self._wget_depot.update_all()
         self._wget_cube_table.update_all()
         self._wget_cube_table.modify_box_visibility()
         self._wget_rule.update_rule()
@@ -354,18 +370,20 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self._tr.load(lang)
             self._app.installTranslator(self._tr)
 
-        self._wget_channel._func_tr_()
+        self._func_tr_()
         self._wget_graph._func_tr_()
-        self._wget_operation._func_tr_()
+        self._wget_depot._func_tr_()
         self._wget_rule._func_tr_()
+        self._wget_channel._func_tr_()
+        self._wget_operation._func_tr_()
         self._wget_settings.retranslateUi(self._wget_settings)
         self._wget_settings._func_tr_()
         self.retranslateUi(self)
-        self._func_tr_()
 
+        self._wget_graph.update_text()
+        self._wget_depot.update_text()
         self._wget_rule.update_text()
         self._wget_channel.update_text()
-        self._wget_graph.update_text()
         self._wget_operation.update_text()
         self._wget_settings.update_text()
 
@@ -392,8 +410,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         Actions before close DigitalPalette.
         """
 
-        self._wget_graph.close_all()
-        self._wget_depot.close_all()
+        self._wget_graph.close()
+        self._wget_depot.close()
         self._args.save_settings()
 
         event.accept()

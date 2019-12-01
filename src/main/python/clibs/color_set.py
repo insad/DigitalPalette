@@ -203,60 +203,6 @@ class ColorSet(object):
             else:
                 raise ValueError("unexpect harmony rule name for modify: {}.".format(harmony_rule))
 
-    def export_dict(self):
-        """
-        Export color set in dict type (for json file).
-
-        Returns:
-            color set dict {2: color_2, 1: color_1, 0: color_0, 3： color_3, 4: color_4}.
-        """
-
-        color_dict = {}
-        for i in (2, 1, 0, 3, 4):
-            color_dict["color_{}".format(i)] = self._color_set[i].export()
-
-        return color_dict
-
-    def export_swatch(self):
-        """
-        Export color set in swatch type (for GIMP file).
-
-        Returns:
-            Binary strings.
-        """
-
-        swatch_chars_v1 = "00010005"
-        swatch_chars_v2 = "00020005"
-
-        for i in (2, 1, 0, 3, 4):
-            h, s, v = self._color_set[i].hsv
-            pr_chars = "0001{:0>4x}{:0>4x}{:0>4x}0000".format(int(h * 182.04167), int(s * 65535), int(v * 65535))
-            swatch_chars_v1 += pr_chars
-
-            swatch_chars_v2 += pr_chars
-            swatch_chars_v2 += "0000{:0>4x}".format(11) + "{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}{:0>4x}".format(ord("D"), ord("i"), ord("g"), ord("i"), ord("P"), ord("a"), ord("l"), ord("e"), ord("_")) + "{:0>4x}0000".format(ord(str(i)))
-
-        swatch_chars = swatch_chars_v1 + swatch_chars_v2
-
-        return binascii.a2b_hex(swatch_chars)
-
-    def export_text(self):
-        """
-        Export color set in plain text for directly read.
-
-        Returns:
-            Plain text.
-        """
-
-        color_text = "{:<12}{:<10}{:<10}{:<10}{:<12}{:<12}{:<12}{:<8}\n".format("# Index", "R", "G", "B", "H", "S", "V", "Hex code")
-        for i in (2, 1, 0, 3, 4):
-            r, g, b = self._color_set[i].rgb
-            h, s, v = self._color_set[i].hsv
-            hex_code = "#" + self._color_set[i].hec
-            color_text += "  {:<10}{:<10}{:<10}{:<10}{:<12.2f}{:<12.2f}{:<12.2f}{:<8}\n".format(i, r, g, b, h, s, v, hex_code)
-
-        return color_text
-
     def import_color_set(self, color_set):
         """
         Import color set from list.

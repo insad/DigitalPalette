@@ -102,6 +102,9 @@ class Transformation(QWidget):
         shortcut = QShortcut(QKeySequence("="), self)
         shortcut.activated.connect(btn.click)
 
+        shortcut = QShortcut(QKeySequence("]"), self)
+        shortcut.activated.connect(btn.click)
+
         btn = QPushButton(scroll_contents)
         btn.setMinimumSize(30, 30)
         btn.setMaximumSize(30, 30)
@@ -110,6 +113,9 @@ class Transformation(QWidget):
         btn.clicked.connect(lambda x: self.ps_zoom.emit(1 / self._args.zoom_step))
 
         shortcut = QShortcut(QKeySequence("-"), self)
+        shortcut.activated.connect(btn.click)
+
+        shortcut = QShortcut(QKeySequence("["), self)
         shortcut.activated.connect(btn.click)
 
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
