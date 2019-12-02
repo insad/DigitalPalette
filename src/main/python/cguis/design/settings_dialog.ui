@@ -100,13 +100,13 @@
            <widget class="QLabel" name="wheel_ratio_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -147,13 +147,13 @@
            <widget class="QLabel" name="volum_ratio_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -194,13 +194,13 @@
            <widget class="QLabel" name="s_tag_radius_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -241,13 +241,13 @@
            <widget class="QLabel" name="v_tag_radius_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -288,13 +288,13 @@
            <widget class="QLabel" name="wheel_ed_wid_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -320,13 +320,13 @@
            <widget class="QLabel" name="positive_wid_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -346,13 +346,13 @@
            <widget class="QLabel" name="negative_wid_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -372,13 +372,13 @@
            <widget class="QLabel" name="wheel_ed_color_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -448,13 +448,13 @@
            <widget class="QLabel" name="positive_color_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -533,13 +533,13 @@
            <widget class="QLabel" name="negative_color_label">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>250</width>
               <height>20</height>
              </size>
             </property>
@@ -670,6 +670,18 @@
           </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="circle_dist_sp">
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="maximum">
              <number>50</number>
             </property>
@@ -1404,7 +1416,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>100</number>
+             <number>12</number>
             </property>
             <property name="value">
              <number>1</number>
@@ -2100,7 +2112,7 @@
        <item>
         <widget class="QGroupBox" name="shortcut_result_gbox">
          <property name="title">
-          <string>Result</string>
+          <string>Result and Depot</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
           <item row="0" column="0">

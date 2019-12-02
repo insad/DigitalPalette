@@ -17,3 +17,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 * 2019.11.24 (v2.0.1-dev): Repair export formats. Repair title. Add installer scripts. Add shortcuts.
 * 2019.11.25 (v2.0.2-dev): Repair translations. Repair settings local store. Repair default lang.
 * 2019.11.26 (v2.0.3-dev): Add synchronization methods in rule. Repair rule group boxes. Optimize cube square display.
+* 2019.12.01 (v2.1.0-dev): Add depot for storing color sets.

@@ -210,6 +210,7 @@ class Depot(QWidget):
         self._args = args
 
         self._left_click = False
+        self._start_hig = None
         self._current_idx = None
         self._fetched_cell = None
  
@@ -254,7 +255,7 @@ class Depot(QWidget):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        self._pl_wid = int((self.geometry().width() - 2.5) / self._args.stab_column)
+        self._pl_wid = int((self.geometry().width() - 2) / self._args.stab_column)
         self._tot_rows = len(self._args.stab_ucells) // self._args.stab_column if len(self._args.stab_ucells) % self._args.stab_column == 0 else len(self._args.stab_ucells) // self._args.stab_column + 1
 
         height = self._pl_wid * self._tot_rows
@@ -281,7 +282,10 @@ class Depot(QWidget):
         if col <= self._args.stab_column:
             idx = self._args.stab_column * row + col
 
-            if idx < len(self._args.stab_ucells):
+            if event.button() == Qt.MidButton:
+                self._start_hig = self._scroll_bar.value() + event.y()
+
+            elif idx < len(self._args.stab_ucells):
                 self.activate_idx(idx)
 
                 if event.button() == Qt.LeftButton and idx < len(self._args.stab_ucells) - 1:
@@ -325,10 +329,18 @@ class Depot(QWidget):
             self.update()
             event.accept()
 
+        elif self._start_hig != None:
+            self._scroll_bar.setValue(self._start_hig - event.y())
+
+            self.update()
+            event.accept()
+
         else:
             event.ignore()
 
     def mouseReleaseEvent(self, event):
+        self._start_hig = None
+
         if self._left_click:
             self._args.stab_ucells[self._current_idx] = self._fetched_cell
             self._fetched_cell = None
@@ -475,8 +487,11 @@ class Depot(QWidget):
                 upp_pos = self._scroll_contents.geometry().y() + self._args.stab_ucells[self._current_idx].geometry().y()
                 low_pos = self._scroll_contents.geometry().y() + self._args.stab_ucells[self._current_idx].geometry().y() + self._args.stab_ucells[self._current_idx].geometry().height()
 
-                if upp_pos < 0 or low_pos > self._scroll_area.geometry().height():
+                if upp_pos <= 0:
                     self._scroll_bar.setValue(self._args.stab_ucells[self._current_idx].geometry().y())
+
+                elif low_pos >= self._scroll_area.geometry().height():
+                    self._scroll_bar.setValue(self._args.stab_ucells[self._current_idx].geometry().y() + self._pl_wid - self._scroll_area.geometry().height())
 
     def move(self, shift_x, shift_y):
         """
@@ -509,17 +524,17 @@ class Depot(QWidget):
         if not self.isVisible():
             return
 
+        stab_column = self._args.stab_column
+
         if ratio > 1:
-            self._args.stab_column -= 1
+            stab_column -= 1
 
         elif ratio < 1:
-            self._args.stab_column += 1
+            stab_column += 1
 
-        self._args.stab_column = self._args.stab_column if self._args.stab_column > 1 else 1
-        self._args.stab_column = self._args.stab_column if self._args.stab_column < 9 else 9
+        self._args.modify_settings("stab_column", stab_column)
 
         self.update()
-        self.activate_idx(self._current_idx)
 
     def home(self):
         """
@@ -585,7 +600,6 @@ class Depot(QWidget):
         self._args.stab_ucells.append(empty_cell)
 
         self.activate_idx(len(self._args.stab_ucells) - 2, update=False)
-
         self.update()
 
     def import_set(self):

@@ -13,7 +13,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.0.3-dev
+v2.1.0-dev
 """
 
 __AUTHOR__ = """
@@ -21,7 +21,7 @@ Liu Jia
 """
 
 __DATE__ = """
-2019.11.26
+2019.12.01
 """
 
 import os
@@ -380,7 +380,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_settings._func_tr_()
         self.retranslateUi(self)
 
-        self._wget_graph.update_text()
         self._wget_depot.update_text()
         self._wget_rule.update_text()
         self._wget_channel.update_text()

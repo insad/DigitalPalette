@@ -114,9 +114,8 @@ class Operation(QWidget):
             try:
                 color_dict = json.load(f)
 
-            except:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[1])
-                file_cmp = False
+            except Exception as err:
+                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
                 return
 
             if not isinstance(color_dict, dict):
@@ -136,16 +135,20 @@ class Operation(QWidget):
             if color_dict["type"] == "depot":
                 color_dict = color_dict["palettes"]
 
+            elif color_dict["type"] == "set":
+                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[15])
+                return
+
             else:
                 QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[11])
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[12])
+            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[12] + "\n{}\n{}".format(self._operation_errs[17], "type; palettes"))
             return
 
         color_list = []
-        finished_err = False
+        finished_errs = []
 
         try:
             for color in color_dict:
@@ -159,17 +162,17 @@ class Operation(QWidget):
                         color_list.append((tuple(hsv_set), color["rule"], str(color["desc"])))
 
                     else:
-                        finished_err = True
+                        finished_errs.append("unknown rule: {}.".format(color["rule"]))
 
-                except:
-                    finished_err = True
+                except Exception as err:
+                    finished_errs.append(str(err))
 
-        except:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[13])
+        except Exception as err:
+            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[13] + "\n{}\n{}".format(self._operation_errs[17], err))
             return
 
-        if finished_err:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[14])
+        if finished_errs:
+            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[14] + "\n{}\n{}".format(self._operation_errs[17], "; ".join(finished_errs)))
 
         for unit_cell in self._args.stab_ucells:
             try:
@@ -245,9 +248,8 @@ class Operation(QWidget):
             try:
                 color_dict = json.load(f)
 
-            except:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[1])
-                file_cmp = False
+            except Exception as err:
+                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
                 return
 
             if not isinstance(color_dict, dict):
@@ -267,12 +269,16 @@ class Operation(QWidget):
             if color_dict["type"] == "set":
                 color_dict = color_dict["palettes"][0]
 
+            elif color_dict["type"] == "depot":
+                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[16])
+                return
+
             else:
                 QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[11])
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[12])
+            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[12] + "\n{}\n{}".format(self._operation_errs[17], "type; palettes"))
             return
 
         color_set = []
@@ -284,16 +290,16 @@ class Operation(QWidget):
                         hsv = color_dict["color_{}".format(i)]["hsv"]
                         color_set.append(Color(hsv, tp="hsv", overflow=self._args.sys_color_set.get_overflow()))
 
-                    except:
-                        QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[5])
+                    except Exception as err:
+                        QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[5] + "\n{}\n{}".format(self._operation_errs[17], err))
                         return
 
                 else:
-                    QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[6])
+                    QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[6] + "\n{}\n{}".format(self._operation_errs[17], "hsv"))
                     return
 
             else:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[7])
+                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[7] + "\n{}\n{}".format(self._operation_errs[17], "color_{}".format(i)))
                 return
 
         if "rule" in color_dict:
@@ -302,11 +308,11 @@ class Operation(QWidget):
                 self._args.sys_color_set.import_color_set(color_set)
 
             else:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[8])
+                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[8] + "\n{}\n{}".format(self._operation_errs[17], color_dict["rule"]))
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[9])
+            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[9] + "\n{}\n{}".format(self._operation_errs[17], "rule"))
             return
 
         self.ps_update.emit(True)
@@ -408,5 +414,8 @@ class Operation(QWidget):
             _translate("Operation", "Import color type error. Type does not match."),
             _translate("Operation", "Import color type error. Type does not exist."),
             _translate("Operation", "Import color depot error."),
-            _translate("Operation", "Import some color set in depot error."),
+            _translate("Operation", "Import some color sets into depot error. These color sets are discarded."),
+            _translate("Operation", "Import color type error. This is a color set file, please use 'Import'."),
+            _translate("Operation", "Import color type error. This is a color depot file, please use 'Open'."),
+            _translate("Operation", "Detail:"),
         )

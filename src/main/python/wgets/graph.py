@@ -525,9 +525,6 @@ class Graph(QWidget):
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
-    def update_text(self):
-        self._tip_label.setText(self._graph_descs[0])
-
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 

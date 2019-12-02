@@ -79,10 +79,10 @@ class Args(object):
             self.load_settings(os.sep.join((self.usr_store, "settings.json")))
 
         # software informations.
-        self.info_version = "v2.0.3-dev"
+        self.info_version = "v2.1.0-dev"
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_date = "2019.11.26"
+        self.info_date = "2019.12.01"
         self.info_author = "Liu Jia"
 
         # special system settings.
@@ -244,7 +244,7 @@ class Args(object):
             "positive_color": lambda vl: self.pfmt_rgb_color(vl, self.positive_color),
             "negative_color": lambda vl: self.pfmt_rgb_color(vl, self.negative_color),
             "wheel_ed_color": lambda vl: self.pfmt_rgb_color(vl, self.wheel_ed_color),
-            "stab_column": lambda vl: self.pfmt_num_in_scope(vl, (0, 9), int, self.stab_column),
+            "stab_column": lambda vl: self.pfmt_num_in_scope(vl, (1, 12), int, self.stab_column),
             "stab_ucells": lambda vl: self.pfmt_stab_ucells(vl),
         }
 
@@ -425,7 +425,7 @@ class Args(object):
         """
 
         try:
-            for vre in (r"^v2\.[0].*", r"^v1\.[0].*", ):
+            for vre in (r"^v2\.[1].*",):
                 if re.match(vre, version):
                     return True
 

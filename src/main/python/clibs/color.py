@@ -33,7 +33,7 @@ class FakeColor(object):
           color dict {"rgb": rgb_color_list, "hsv": hsv_color_list, "hex code": hex code (hec)}.
         """
 
-        return {"rgb": list(self.rgb), "hsv": list(self.hsv), "hex code": self.hec}
+        return {"rgb": [int(x) for x in self.rgb], "hsv": [float(x) for x in self.hsv], "hex code": self.hec}
 
 
 class Color(object):
