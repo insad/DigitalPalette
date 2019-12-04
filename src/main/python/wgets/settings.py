@@ -2,7 +2,7 @@
 
 import os
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QPushButton
-from PyQt5.QtCore import pyqtSignal, QCoreApplication
+from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
 from cguis.design.settings_dialog import Ui_SettingsDialog
 from cguis.resource import view_rc
@@ -23,7 +23,7 @@ class Settings(QDialog, Ui_SettingsDialog):
         Init settings.
         """
 
-        super().__init__(wget)
+        super().__init__(wget, Qt.WindowCloseButtonHint)
         self.setupUi(self)
 
         # load args.
@@ -34,7 +34,7 @@ class Settings(QDialog, Ui_SettingsDialog):
 
         # init qt args.
         app_icon = QIcon()
-        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
+        app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
 
         # init comb boxes.

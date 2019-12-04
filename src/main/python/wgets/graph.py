@@ -156,7 +156,7 @@ class Graph(QWidget):
         self._loading_bar.setMaximum(100)
         self._loading_bar.setValue(0)
 
-        self._ico = QImage(":/images/images/icon_grey.png")
+        self._ico = QImage(":/images/images/icon_grey_1024.png")
         self._ico_label = QLabel(self)
 
         self._image3c = Image3C()
@@ -417,7 +417,7 @@ class Graph(QWidget):
         """
 
         if self._image3c.isRunning():
-            QMessageBox.warning(self, self._graph_errs[0], self._graph_errs[1])
+            self.warning(self._graph_errs[1])
             return
 
         self._categories = []
@@ -437,7 +437,7 @@ class Graph(QWidget):
             return
 
         if not self._image3c.check_temp_dir():
-            QMessageBox.warning(self, self._graph_errs[0], self._graph_errs[2])
+            self.warning(self._graph_errs[2])
             return
 
         self._display = None
@@ -516,6 +516,14 @@ class Graph(QWidget):
         self.overlabel_display.update()
         self.update()
 
+    def warning(self, text):
+        box = QMessageBox(self)
+        box.setWindowTitle(self._graph_errs[0])
+        box.setText(text)
+        box.setIcon(QMessageBox.Warning)
+        box.addButton(self._graph_errs[3], QMessageBox.AcceptRole)
+        box.exec_()
+
     def closeEvent(self, event):
         """
         Actions before close Graph.
@@ -537,7 +545,7 @@ class Graph(QWidget):
             _translate("Graph", "Error"),
             _translate("Graph", "Could not open image. Already has an image in process."),
             _translate("Graph", "Could not create temporary dir. Dir is not created."),
-            _translate("Graph", "Could process image. Category is not match."),
+            _translate("Graph", "OK"),
         )
 
         self._image_descs = (

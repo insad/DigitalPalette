@@ -70,7 +70,7 @@ class Image3C(QThread):
         self._hsv_hrz_data = None
 
     def check_temp_dir(self):
-        return self._temp_dir.isValid()
+        return self._temp_dir.isValid() and os.path.isdir(self._temp_dir.path())
 
     def remove_temp_dir(self):
         self._temp_dir.remove()
@@ -281,7 +281,7 @@ class Image3C(QThread):
 
         self.ps_describe.emit(11)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._hsv_vtl_data = np.zeros((self.hsv_data.shape[0], self.hsv_data.shape[1], 3), dtype=np.float32)
+        self._hsv_vtl_data = np.zeros((self.hsv_data.shape[0], self.hsv_data.shape[1], 3), dtype=np.uint8)
 
         # generating hsv vertical edge data.
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))
@@ -323,7 +323,7 @@ class Image3C(QThread):
 
         self.ps_describe.emit(13)
         self.ps_proceses.emit(int(pro_scope[0]))
-        self._hsv_hrz_data = np.zeros((self.hsv_data.shape[0], self.hsv_data.shape[1], 3), dtype=np.float32)
+        self._hsv_hrz_data = np.zeros((self.hsv_data.shape[0], self.hsv_data.shape[1], 3), dtype=np.uint8)
 
         # generating hsv vertical edge data.
         self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.40))

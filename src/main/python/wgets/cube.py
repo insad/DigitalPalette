@@ -146,6 +146,8 @@ class CubeTable(QWidget):
         self._updated_colors = False
 
         # init qt args.
+        self.setMinimumSize(640, 10)
+
         cube_grid_layout = QGridLayout(self)
         cube_grid_layout.setContentsMargins(1, 1, 1, 1)
 
@@ -192,14 +194,23 @@ class CubeTable(QWidget):
 
         self.modify_box_visibility()
 
+        shortcut = QShortcut(QKeySequence("Shift+R"), self)
+        shortcut.activated.connect(self.clipboard_all("rgb"))
+
+        shortcut = QShortcut(QKeySequence("Shift+H"), self)
+        shortcut.activated.connect(self.clipboard_all("hsv"))
+
+        shortcut = QShortcut(QKeySequence("Shift+X"), self)
+        shortcut.activated.connect(self.clipboard_all("hec"))
+
         shortcut = QShortcut(QKeySequence("R"), self)
-        shortcut.activated.connect(self.clipboard("rgb"))
+        shortcut.activated.connect(self.clipboard_act("rgb"))
 
         shortcut = QShortcut(QKeySequence("H"), self)
-        shortcut.activated.connect(self.clipboard("hsv"))
+        shortcut.activated.connect(self.clipboard_act("hsv"))
 
-        shortcut = QShortcut(QKeySequence("C"), self)
-        shortcut.activated.connect(self.clipboard("hec"))
+        shortcut = QShortcut(QKeySequence("X"), self)
+        shortcut.activated.connect(self.clipboard_act("hec"))
 
         shortcut = QShortcut(QKeySequence("1"), self)
         shortcut.activated.connect(self.active_by_num(2))
@@ -323,9 +334,9 @@ class CubeTable(QWidget):
 
         self.update()
 
-    def clipboard(self, ctp):
+    def clipboard_all(self, ctp):
         """
-        Set the hec (hex code) values as the clipboard data by shortcut r, h and c.
+        Set the rgb, hsv or hec (hex code) of all result colors as the clipboard data by shortcut Shift + r, h or c.
         """
 
         def _func_():
@@ -333,12 +344,34 @@ class CubeTable(QWidget):
 
             for i in (2, 1, 0, 3, 4):
                 color = self._args.sys_color_set[i].getti(ctp)
+
                 if ctp == "hec":
                     color = "'#{}'".format(color)
+
                 data += str(color)
                 data += ", "
 
             data = data[:-2] + "]"
+
+            mimedata = QMimeData()
+            mimedata.setText(data)
+
+            clipboard = QApplication.clipboard()
+            clipboard.setMimeData(mimedata)
+
+        return _func_
+
+    def clipboard_act(self, ctp):
+        """
+        Set the rgb, hsv or hec (hex code) of activated tag color as the clipboard data by shortcut r, h or c.
+        """
+
+        def _func_():
+            color = self._args.sys_color_set[self._args.sys_activated_idx].getti(ctp)
+            if ctp == "hec":
+                color = "'#{}'".format(color)
+
+            data = str(color)
 
             mimedata = QMimeData()
             mimedata.setText(data)

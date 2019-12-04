@@ -138,7 +138,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Set harmony rule for color set.</string>
+    <string>Set harmony rule and synchronization method for color set.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -293,31 +293,67 @@
    </property>
   </action>
   <action name="actionRule">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Rule</string>
    </property>
   </action>
   <action name="actionChannel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Channel</string>
    </property>
   </action>
   <action name="actionOperation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Operation</string>
    </property>
   </action>
   <action name="actionMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Mode</string>
    </property>
   </action>
   <action name="actionTransformation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Transformation</string>
    </property>
   </action>
   <action name="actionResult">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Result</string>
    </property>

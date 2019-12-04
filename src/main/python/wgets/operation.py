@@ -91,14 +91,14 @@ class Operation(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(180, 90)
+        return QSize(180, 160)
 
     def exec_open(self, value):
         """
         Exec open operation.
         """
 
-        cb_filter = "Json File (*.json)"
+        cb_filter = "{} (*.json)".format(self._file_descs[0])
         cb_file = QFileDialog.getOpenFileName(None, self._operation_descs[0], self._args.usr_color, filter=cb_filter)
 
         if cb_file[0]:
@@ -110,25 +110,25 @@ class Operation(QWidget):
 
         color_dict = {}
 
-        with open(cb_file[0], "r", encoding='UTF-8') as f:
+        with open(cb_file[0], "r", encoding='utf-8') as f:
             try:
                 color_dict = json.load(f)
 
             except Exception as err:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
+                self.warning(self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
                 return
 
             if not isinstance(color_dict, dict):
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[2])
+                self.warning(self._operation_errs[2])
                 return
 
         if "version" in color_dict:
             if not self._args.check_version(color_dict["version"]):
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[3])
+                self.warning(self._operation_errs[3])
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[4])
+            self.warning(self._operation_errs[4])
             return
 
         if "type" in color_dict and "palettes" in color_dict:
@@ -136,15 +136,15 @@ class Operation(QWidget):
                 color_dict = color_dict["palettes"]
 
             elif color_dict["type"] == "set":
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[15])
+                self.warning(self._operation_errs[15])
                 return
 
             else:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[11])
+                self.warning(self._operation_errs[11])
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[12] + "\n{}\n{}".format(self._operation_errs[17], "type; palettes"))
+            self.warning(self._operation_errs[12] + "\n{}\n{}".format(self._operation_errs[17], "type; palettes"))
             return
 
         color_list = []
@@ -168,18 +168,15 @@ class Operation(QWidget):
                     finished_errs.append(str(err))
 
         except Exception as err:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[13] + "\n{}\n{}".format(self._operation_errs[17], err))
+            self.warning(self._operation_errs[13] + "\n{}\n{}".format(self._operation_errs[17], err))
             return
 
         if finished_errs:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[14] + "\n{}\n{}".format(self._operation_errs[17], "; ".join(finished_errs)))
+            self.warning(self._operation_errs[14] + "\n{}\n{}".format(self._operation_errs[17], "; ".join(finished_errs)))
 
         for unit_cell in self._args.stab_ucells:
-            try:
+            if hasattr(unit_cell, "close"):
                 unit_cell.close()
-
-            except:
-                pass
 
         self._args.stab_ucells = tuple(color_list)
         self.ps_opened.emit(True)
@@ -191,7 +188,7 @@ class Operation(QWidget):
 
         name = "{}".format(time.strftime("DigiPale_Depot_%Y_%m_%d.json", time.localtime()))
 
-        cb_filter = "DigitalPalette Json File (*.json);; Plain Text (*.txt);; Adobe Swatch File (*.aco)"
+        cb_filter = "{} (*.json);; {} (*.txt);; {} (*.aco)".format(self._file_descs[0], self._file_descs[1], self._file_descs[2])
         cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[1], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
@@ -201,17 +198,19 @@ class Operation(QWidget):
             # closed without open a file.
             return
 
+        # load color set from unit cells, which is different from export.
         color_list = []
 
         for unit_cell in self._args.stab_ucells[:-1]:
             if unit_cell != None:
                 color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.desc))
 
+        # process start.
         if cb_file[0].split(".")[-1].lower() == "json":
             color_dict = {"version": self._args.info_version, "type": "depot"}
             color_dict["palettes"] = export_list(color_list)
 
-            with open(cb_file[0], "w", encoding='UTF-8') as f:
+            with open(cb_file[0], "w", encoding='utf-8') as f:
                 json.dump(color_dict, f, indent=4)
 
         elif cb_file[0].split(".")[-1].lower() == "txt":
@@ -225,14 +224,14 @@ class Operation(QWidget):
                 f.write(export_swatch(color_list))
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[10])
+            self.warning(self._operation_errs[10])
 
     def exec_import(self, value):
         """
         Exec import operation.
         """
 
-        cb_filter = "Json File (*.json)"
+        cb_filter = "{} (*.json)".format(self._file_descs[0])
         cb_file = QFileDialog.getOpenFileName(None, self._operation_descs[0], self._args.usr_color, filter=cb_filter)
 
         if cb_file[0]:
@@ -244,25 +243,25 @@ class Operation(QWidget):
 
         color_dict = {}
 
-        with open(cb_file[0], "r", encoding='UTF-8') as f:
+        with open(cb_file[0], "r", encoding='utf-8') as f:
             try:
                 color_dict = json.load(f)
 
             except Exception as err:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
+                self.warning(self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
                 return
 
             if not isinstance(color_dict, dict):
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[2])
+                self.warning(self._operation_errs[2])
                 return
 
         if "version" in color_dict:
             if not self._args.check_version(color_dict["version"]):
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[3])
+                self.warning(self._operation_errs[3])
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[4])
+            self.warning(self._operation_errs[4])
             return
 
         if "type" in color_dict and "palettes" in color_dict:
@@ -270,15 +269,15 @@ class Operation(QWidget):
                 color_dict = color_dict["palettes"][0]
 
             elif color_dict["type"] == "depot":
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[16])
+                self.warning(self._operation_errs[16])
                 return
 
             else:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[11])
+                self.warning(self._operation_errs[11])
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[12] + "\n{}\n{}".format(self._operation_errs[17], "type; palettes"))
+            self.warning(self._operation_errs[12] + "\n{}\n{}".format(self._operation_errs[17], "type; palettes"))
             return
 
         color_set = []
@@ -291,15 +290,15 @@ class Operation(QWidget):
                         color_set.append(Color(hsv, tp="hsv", overflow=self._args.sys_color_set.get_overflow()))
 
                     except Exception as err:
-                        QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[5] + "\n{}\n{}".format(self._operation_errs[17], err))
+                        self.warning(self._operation_errs[5] + "\n{}\n{}".format(self._operation_errs[17], err))
                         return
 
                 else:
-                    QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[6] + "\n{}\n{}".format(self._operation_errs[17], "hsv"))
+                    self.warning(self._operation_errs[6] + "\n{}\n{}".format(self._operation_errs[17], "hsv"))
                     return
 
             else:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[7] + "\n{}\n{}".format(self._operation_errs[17], "color_{}".format(i)))
+                self.warning(self._operation_errs[7] + "\n{}\n{}".format(self._operation_errs[17], "color_{}".format(i)))
                 return
 
         if "rule" in color_dict:
@@ -308,11 +307,11 @@ class Operation(QWidget):
                 self._args.sys_color_set.import_color_set(color_set)
 
             else:
-                QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[8] + "\n{}\n{}".format(self._operation_errs[17], color_dict["rule"]))
+                self.warning(self._operation_errs[8] + "\n{}\n{}".format(self._operation_errs[17], color_dict["rule"]))
                 return
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[9] + "\n{}\n{}".format(self._operation_errs[17], "rule"))
+            self.warning(self._operation_errs[9] + "\n{}\n{}".format(self._operation_errs[17], "rule"))
             return
 
         self.ps_update.emit(True)
@@ -324,7 +323,7 @@ class Operation(QWidget):
 
         name = "{}".format(time.strftime("DigiPale_Set_%Y_%m_%d.json", time.localtime()))
 
-        cb_filter = "DigitalPalette Json File (*.json);; Plain Text (*.txt);; Adobe Swatch File (*.aco)"
+        cb_filter = "{} (*.json);; {} (*.txt);; {} (*.aco)".format(self._file_descs[0], self._file_descs[1], self._file_descs[2])
         cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[1], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
@@ -334,25 +333,41 @@ class Operation(QWidget):
             # closed without open a file.
             return
 
+        # load color set from sys or depot, which is different from save.
+        color_set = None
+        hm_rule = None
+        desc = ""
+
+        if isinstance(value, bool):
+            color_set = self._args.sys_color_set
+            hm_rule = self._args.hm_rule
+            desc = "#Name: DigiPale Color Set"
+
+        else:
+            color_set = self._args.stab_ucells[value].color_set
+            hm_rule = self._args.stab_ucells[value].hm_rule
+            desc = self._args.stab_ucells[value].desc
+
+        # process start.
         if cb_file[0].split(".")[-1].lower() == "json":
             color_dict = {"version": self._args.info_version, "type": "set"}
-            color_dict["palettes"] = export_list([(self._args.sys_color_set, self._args.hm_rule, "#Name: DigiPale Color Set"),])
+            color_dict["palettes"] = export_list([(color_set, hm_rule, desc),])
 
-            with open(cb_file[0], "w", encoding='UTF-8') as f:
+            with open(cb_file[0], "w", encoding='utf-8') as f:
                 json.dump(color_dict, f, indent=4)
 
         elif cb_file[0].split(".")[-1].lower() == "txt":
             with open(cb_file[0], "w") as f:
                 f.write("# DigitalPalette Color Export\n")
                 f.write("# Version: {}\n\n".format(self._args.info_version))
-                f.write(export_text([(self._args.sys_color_set, self._args.hm_rule, "#Name: DigiPale Color Set"),]))
+                f.write(export_text([(color_set, hm_rule, desc),]))
 
         elif cb_file[0].split(".")[-1].lower() == "aco":
             with open(cb_file[0], "wb") as f:
-                f.write(export_swatch([(self._args.sys_color_set, self._args.hm_rule, "#Name: DigiPale Color Set"),]))
+                f.write(export_swatch([(color_set, hm_rule, desc),]))
 
         else:
-            QMessageBox.warning(self, self._operation_errs[0], self._operation_errs[10])
+            self.warning(self._operation_errs[10])
 
     def exec_create(self, value):
         """
@@ -374,6 +389,14 @@ class Operation(QWidget):
         """
 
         self.ps_attach.emit(True)
+
+    def warning(self, text):
+        box = QMessageBox(self)
+        box.setWindowTitle(self._operation_errs[0])
+        box.setText(text)
+        box.setIcon(QMessageBox.Warning)
+        box.addButton(self._operation_errs[18], QMessageBox.AcceptRole)
+        box.exec_()
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
@@ -399,6 +422,12 @@ class Operation(QWidget):
             _translate("MainWindow", "Save"),
         )
 
+        self._file_descs = (
+            _translate("MainWindow", "DigiPale Json File"),
+            _translate("MainWindow", "Plain Text File"),
+            _translate("MainWindow", "Adobe Swatch File"),
+        )
+
         self._operation_errs = (
             _translate("Operation", "Error"),
             _translate("Operation", "Import color file error. Color file is broken."),
@@ -418,4 +447,5 @@ class Operation(QWidget):
             _translate("Operation", "Import color type error. This is a color set file, please use 'Import'."),
             _translate("Operation", "Import color type error. This is a color depot file, please use 'Open'."),
             _translate("Operation", "Detail:"),
+            _translate("Operation", "OK"),
         )

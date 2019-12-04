@@ -13,7 +13,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.1.0-dev
+v2.1.1-dev
 """
 
 __AUTHOR__ = """
@@ -21,7 +21,7 @@ Liu Jia
 """
 
 __DATE__ = """
-2019.12.01
+2019.12.04
 """
 
 import os
@@ -66,9 +66,11 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         # init qt args.
         app_icon = QIcon()
-        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
+        app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
         self.setWindowTitle("DigitalPalette {}".format(self._args.info_version))
+
+        self.setMinimumSize(640, 480)
 
         self._setup_workarea()
         self._setup_result()
@@ -103,6 +105,21 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_main_site)))
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_update_site)))
         self.actionAbout.triggered.connect(lambda x: self._show_about())
+
+        shortcut = QShortcut(QKeySequence("Alt+H"), self)
+        shortcut.activated.connect(self.actionHomepage.trigger)
+        shortcut = QShortcut(QKeySequence("F1"), self)
+        shortcut.activated.connect(self.actionHomepage.trigger)
+
+        shortcut = QShortcut(QKeySequence("Alt+U"), self)
+        shortcut.activated.connect(self.actionUpdate.trigger)
+        shortcut = QShortcut(QKeySequence("F2"), self)
+        shortcut.activated.connect(self.actionUpdate.trigger)
+
+        shortcut = QShortcut(QKeySequence("Alt+B"), self)
+        shortcut.activated.connect(self.actionAbout.trigger)
+        shortcut = QShortcut(QKeySequence("F3"), self)
+        shortcut.activated.connect(self.actionAbout.trigger)
 
         shortcut = QShortcut(QKeySequence("Alt+O"), self)
         shortcut.activated.connect(self._wget_operation.open_btn.click)
@@ -159,6 +176,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         with open(os.sep.join((resources, "styles", "dark", "style.qss"))) as qf:
             self._app.setStyleSheet(qf.read())
         """
+
+        # ready status.
+        self.setStatusTip(self._status_descs[0])
 
     def _setup_workarea(self):
         """
@@ -242,11 +262,11 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self._wget_operation.ps_update.connect(lambda x: self._wget_cube_table.update_color())
         self._wget_operation.ps_update.connect(lambda x: self._wget_rule.update_rule())
+        self._wget_operation.ps_opened.connect(lambda x: self._wget_depot.initialize())
 
         self._wget_depot.ps_update.connect(lambda x: self._wget_cube_table.update_color())
         self._wget_depot.ps_update.connect(lambda x: self._wget_rule.update_rule())
-
-        self._wget_operation.ps_opened.connect(lambda x: self._wget_depot.initialize())
+        self._wget_depot.ps_export.connect(self._wget_operation.exec_export)
 
     def _setup_channel(self):
         """
@@ -363,6 +383,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         return _func_
 
     def _install_translator(self):
+        """
+        Translate DigitalPalette interface.
+        """
+
         self._app.removeTranslator(self._tr)
 
         if self._args.lang != "default":
@@ -402,7 +426,12 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         info += "---------- ---------- ----------\n"
         info += self._info_descs[5]
 
-        box = QMessageBox.information(self, self._info_descs[0], info)
+        box = QMessageBox(self)
+        box.setWindowTitle(self._info_descs[0])
+        box.setText(info)
+        box.setIconPixmap(QPixmap(":/images/images/icon_full_128.png"))
+        box.addButton(self._info_descs[6], QMessageBox.AcceptRole)
+        box.exec_()
 
     def closeEvent(self, event):
         """
@@ -427,6 +456,11 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             _translate("DigitalPalette", "Update"),
             _translate("DigitalPalette", "Website"),
             _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),
+            _translate("DigitalPalette", "OK"),
+        )
+
+        self._status_descs = (
+            _translate("DigitalPalette", "Ready."),
         )
 
 

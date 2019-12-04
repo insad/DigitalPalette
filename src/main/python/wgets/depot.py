@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-from PyQt5.QtWidgets import QWidget, QGridLayout, QScrollArea, QFrame, QShortcut, QMenu, QAction, QDialog, QDialogButtonBox, QPushButton
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication
+import numpy as np
+from PyQt5.QtWidgets import QWidget, QGridLayout, QScrollArea, QFrame, QShortcut, QMenu, QAction, QDialog, QDialogButtonBox, QPushButton, QApplication
+from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QMimeData
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QCursor, QKeySequence, QPixmap, QImage, QIcon
 from cguis.design.info_dialog import Ui_InfoDialog
 from cguis.resource import view_rc
@@ -19,7 +20,7 @@ class Info(QDialog, Ui_InfoDialog):
         Init information.
         """
 
-        super().__init__(wget)
+        super().__init__(wget, Qt.WindowCloseButtonHint)
         self.setupUi(self)
 
         # load args.
@@ -30,7 +31,7 @@ class Info(QDialog, Ui_InfoDialog):
 
         # init qt args.
         app_icon = QIcon()
-        app_icon.addPixmap(QPixmap(":/images/images/icon_256.png"), QIcon.Normal, QIcon.Off)
+        app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
 
         self._clone = None
@@ -66,14 +67,14 @@ class Info(QDialog, Ui_InfoDialog):
         desc = ""
 
         for line in context:
-            rline = line.lstrip().rstrip()
+            rline = line.lstrip()
 
             if rline[:6] == "Name: ":
-                name = re.split(r"\n\r\t\v\\\'\"\a\f", rline[6:])[0]
+                name = re.split(r"[\n\r\t\v\a\f]", rline[6:])[0]
                 name = name.lstrip().rstrip()
 
             elif rline[:6] == "Desc: ":
-                desc = re.split(r"\v\\\'\"\a\f", rline[6:])[0]
+                desc = re.split(r"[\v\a\f]", rline[6:])[0]
                 desc = desc.lstrip().rstrip()
 
         self.name_ledit.setText(name)
@@ -138,10 +139,10 @@ class UnitCell(QWidget):
 
         for hsv in hsv_set:
             if hsv == None:
-                self.color_set.append(hsv)
+                self.color_set.append(None)
 
             else:
-                self.color_set.append(FakeColor(tuple(Color.hsv2rgb(hsv).tolist()), hsv, Color.hsv2hec(hsv)))
+                self.color_set.append(FakeColor(Color.hsv2rgb(hsv), hsv, Color.hsv2hec(hsv)))
 
         self.color_set = tuple(self.color_set)
         self.hm_rule = str(hm_rule)
@@ -198,6 +199,7 @@ class Depot(QWidget):
     """
 
     ps_update = pyqtSignal(bool)
+    ps_export = pyqtSignal(int)
 
     def __init__(self, wget, args):
         """
@@ -211,6 +213,7 @@ class Depot(QWidget):
 
         self._left_click = False
         self._start_hig = None
+        self._start_pt = None
         self._current_idx = None
         self._fetched_cell = None
  
@@ -252,6 +255,15 @@ class Depot(QWidget):
         shortcut = QShortcut(QKeySequence("I"), self)
         shortcut.activated.connect(self.insert_set)
 
+        shortcut = QShortcut(QKeySequence("Ctrl+R"), self)
+        shortcut.activated.connect(self.clipboard_cur("rgb"))
+
+        shortcut = QShortcut(QKeySequence("Ctrl+H"), self)
+        shortcut.activated.connect(self.clipboard_cur("hsv"))
+
+        shortcut = QShortcut(QKeySequence("Ctrl+X"), self)
+        shortcut.activated.connect(self.clipboard_cur("hec"))
+
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
@@ -274,7 +286,7 @@ class Depot(QWidget):
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mousePressEvent(self, event):
-        point = (event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y())
+        point = np.array((event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y()))
 
         col = point[0] // self._pl_wid
         row = point[1] // self._pl_wid
@@ -290,6 +302,7 @@ class Depot(QWidget):
 
                 if event.button() == Qt.LeftButton and idx < len(self._args.stab_ucells) - 1:
                     self._left_click = True
+                    self._start_pt = point
 
                     self._fetched_cell = self._args.stab_ucells[self._current_idx]
                     self._args.stab_ucells[self._current_idx] = None
@@ -310,24 +323,30 @@ class Depot(QWidget):
 
     def mouseMoveEvent(self, event):
         if self._left_click:
-            point = (event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y())
+            point = np.array((event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y()))
 
-            col = point[0] // self._pl_wid
-            row = point[1] // self._pl_wid
+            if isinstance(self._start_pt, np.ndarray) and np.linalg.norm(self._start_pt - point) < self._pl_wid / 5:
+                event.ignore()
 
-            if col <= self._args.stab_column:
-                idx = self._args.stab_column * row + col
+            else:
+                self._start_pt = None
 
-                if idx < len(self._args.stab_ucells) - 1:
-                    self._args.stab_ucells.pop(self._current_idx)
-                    self._current_idx = idx
+                col = point[0] // self._pl_wid
+                row = point[1] // self._pl_wid
 
-                    self._args.stab_ucells.insert(idx, None)
+                if col <= self._args.stab_column:
+                    idx = self._args.stab_column * row + col
 
-            self._fetched_cell.setGeometry(point[0] - self._pl_wid / 2, point[1] - self._pl_wid / 2, self._pl_wid, self._pl_wid)
+                    if idx < len(self._args.stab_ucells) - 1:
+                        self._args.stab_ucells.pop(self._current_idx)
+                        self._current_idx = idx
 
-            self.update()
-            event.accept()
+                        self._args.stab_ucells.insert(idx, None)
+
+                self._fetched_cell.setGeometry(point[0] - self._pl_wid / 2, point[1] - self._pl_wid / 2, self._pl_wid, self._pl_wid)
+
+                self.update()
+                event.accept()
 
         elif self._start_hig != None:
             self._scroll_bar.setValue(self._start_hig - event.y())
@@ -346,6 +365,7 @@ class Depot(QWidget):
             self._fetched_cell = None
 
             self._left_click = False
+            self._start_pt = None
 
             self.update()
             event.accept()
@@ -422,6 +442,7 @@ class Depot(QWidget):
         self._menu.addAction(self._action_import)
 
         self._action_export = QAction(self)
+        self._action_export.triggered.connect(self.export_set)
         self._menu.addAction(self._action_export)
 
         self._action_delete = QAction(self)
@@ -574,33 +595,12 @@ class Depot(QWidget):
         if self._current_idx == None or self._current_idx > len(self._args.stab_ucells) - 2:
             return
 
-        self._args.stab_ucells[self._current_idx].close()
-        self._args.stab_ucells.pop(self._current_idx)
+        if isinstance(self._args.stab_ucells[self._current_idx], UnitCell):
+            self._args.stab_ucells[self._current_idx].close()
+            self._args.stab_ucells.pop(self._current_idx)
 
-        self._args.stab_ucells[self._current_idx].activated = True
-        self.update()
-
-    def attach_set(self):
-        """
-        Attach current color set into depot.
-        """
-
-        if not self.isVisible():
-            return
-
-        hsv_set = (self._args.sys_color_set[0].hsv, self._args.sys_color_set[1].hsv, self._args.sys_color_set[2].hsv, self._args.sys_color_set[3].hsv, self._args.sys_color_set[4].hsv)
-        
-        unit_cell = UnitCell(self._scroll_contents, self._args, hsv_set, self._args.hm_rule, "")
-        self._scroll_grid_layout.addWidget(unit_cell)
-
-        empty_cell = self._args.stab_ucells[len(self._args.stab_ucells) - 1]
-        empty_cell.activated = False
-
-        self._args.stab_ucells[len(self._args.stab_ucells) - 1] = unit_cell
-        self._args.stab_ucells.append(empty_cell)
-
-        self.activate_idx(len(self._args.stab_ucells) - 2, update=False)
-        self.update()
+            self._args.stab_ucells[self._current_idx].activated = True
+            self.update()
 
     def import_set(self):
         """
@@ -613,10 +613,47 @@ class Depot(QWidget):
         if self._current_idx == None or self._current_idx > len(self._args.stab_ucells) - 2:
             return
 
-        self._args.sys_color_set.import_color_set(self._args.stab_ucells[self._current_idx].color_set)
-        self._args.hm_rule = self._args.stab_ucells[self._current_idx].hm_rule
+        if isinstance(self._args.stab_ucells[self._current_idx], UnitCell):
+            self._args.sys_color_set.import_color_set(self._args.stab_ucells[self._current_idx].color_set)
+            self._args.hm_rule = self._args.stab_ucells[self._current_idx].hm_rule
 
-        self.ps_update.emit(True)
+            self.ps_update.emit(True)
+
+    def export_set(self):
+        """
+        Export current color set from depot.
+        """
+
+        if not self.isVisible():
+            return
+
+        if self._current_idx == None or self._current_idx > len(self._args.stab_ucells) - 2:
+            return
+
+        if isinstance(self._args.stab_ucells[self._current_idx], UnitCell):
+            self.ps_export.emit(self._current_idx)
+
+    def attach_set(self):
+        """
+        Attach current color set into depot.
+        """
+
+        if not self.isVisible():
+            return
+
+        hsv_set = (self._args.sys_color_set[0].hsv, self._args.sys_color_set[1].hsv, self._args.sys_color_set[2].hsv, self._args.sys_color_set[3].hsv, self._args.sys_color_set[4].hsv)
+
+        unit_cell = UnitCell(self._scroll_contents, self._args, hsv_set, self._args.hm_rule, "")
+        self._scroll_grid_layout.addWidget(unit_cell)
+
+        empty_cell = self._args.stab_ucells[len(self._args.stab_ucells) - 1]
+        empty_cell.activated = False
+
+        self._args.stab_ucells[len(self._args.stab_ucells) - 1] = unit_cell
+        self._args.stab_ucells.append(empty_cell)
+
+        self.activate_idx(len(self._args.stab_ucells) - 2, update=False)
+        self.update()
 
     def clean_up(self):
         """
@@ -632,6 +669,47 @@ class Depot(QWidget):
         self._current_idx = None
 
         self.update()
+
+    def clipboard_cur(self, ctp):
+        """
+        Set the rgb, hsv or hec (hex code) of current color set as the clipboard data by shortcut Ctrl + r, h or c.
+        """
+
+        def _func_():
+            data = "["
+
+            if self._current_idx == None or self._args.stab_ucells[self._current_idx] == None or self._current_idx >= len(self._args.stab_ucells) - 1:
+                for i in (2, 1, 0, 3, 4):
+                    color = self._args.sys_color_set[i].getti(ctp)
+
+                    if ctp == "hec":
+                        color = "'#{}'".format(color)
+
+                    data += str(color)
+                    data += ", "
+
+            else:
+                for i in (2, 1, 0, 3, 4):
+                    color = getattr(self._args.stab_ucells[self._current_idx].color_set[i], ctp)
+
+                    if ctp == "hec":
+                        color = "'#{}'".format(color)
+
+                    else:
+                        color = tuple(color)
+
+                    data += str(color)
+                    data += ", "
+
+            data = data[:-2] + "]"
+
+            mimedata = QMimeData()
+            mimedata.setText(data)
+
+            clipboard = QApplication.clipboard()
+            clipboard.setMimeData(mimedata)
+
+        return _func_
 
     def update_all(self):
         """

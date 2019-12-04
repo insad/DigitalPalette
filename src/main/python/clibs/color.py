@@ -19,9 +19,9 @@ class FakeColor(object):
             hec (str): hex code (hec).
         """
 
-        self.rgb = tuple(rgb)
-        self.hsv = tuple(hsv)
-        self.hec = str(hec)
+        self.rgb = Color.fmt_rgb(rgb)
+        self.hsv = Color.fmt_hsv(hsv)
+        self.hec = Color.fmt_hec(hec)
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
@@ -33,7 +33,7 @@ class FakeColor(object):
           color dict {"rgb": rgb_color_list, "hsv": hsv_color_list, "hex code": hex code (hec)}.
         """
 
-        return {"rgb": [int(x) for x in self.rgb], "hsv": [float(x) for x in self.hsv], "hex code": self.hec}
+        return {"rgb": self.rgb.tolist(), "hsv": self.hsv.tolist(), "hex code": self.hec}
 
 
 class Color(object):
