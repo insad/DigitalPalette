@@ -5,7 +5,7 @@ import sys
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QRect
-from PyQt5.QtGui import QPainter, QPen, QColor, QPixmap, QImage
+from PyQt5.QtGui import QPainter, QPen, QColor, QPixmap, QImage, QCursor
 from cguis.resource import view_rc
 from clibs.image3c import Image3C
 from clibs.transpt import get_outer_box
@@ -311,6 +311,7 @@ class Graph(QWidget):
             event.ignore()
 
         if event.button() == Qt.MidButton:
+            self.setCursor(QCursor(Qt.ClosedHandCursor))
             self._start_pt = (event.x(), event.y())
 
             event.accept()
@@ -333,6 +334,7 @@ class Graph(QWidget):
             event.ignore()
 
     def mouseReleaseEvent(self, event):
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self._start_pt = None
 
         event.ignore()
@@ -522,6 +524,7 @@ class Graph(QWidget):
         box.setText(text)
         box.setIcon(QMessageBox.Warning)
         box.addButton(self._graph_errs[3], QMessageBox.AcceptRole)
+
         box.exec_()
 
     def closeEvent(self, event):

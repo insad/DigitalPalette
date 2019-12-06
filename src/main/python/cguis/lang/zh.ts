@@ -107,27 +107,27 @@
 <context>
     <name>Depot</name>
     <message>
-        <location filename="../../wgets/depot.py" line="761"/>
+        <location filename="../../wgets/depot.py" line="763"/>
         <source>Import</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="761"/>
+        <location filename="../../wgets/depot.py" line="763"/>
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="761"/>
+        <location filename="../../wgets/depot.py" line="763"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="761"/>
+        <location filename="../../wgets/depot.py" line="763"/>
         <source>Detail</source>
         <translation>详情</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="761"/>
+        <location filename="../../wgets/depot.py" line="763"/>
         <source>Attach</source>
         <translation>添加</translation>
     </message>
@@ -135,50 +135,95 @@
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="470"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="465"/>
         <source>Version</source>
-        <translation>版本</translation>
+        <translation type="obsolete">版本</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="465"/>
         <source>Author</source>
-        <translation>作者</translation>
+        <translation type="obsolete">作者</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="465"/>
         <source>Update</source>
-        <translation>更新</translation>
+        <translation type="obsolete">更新</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="459"/>
         <source>Website</source>
-        <translation>网址</translation>
+        <translation type="obsolete">网址</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="470"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation>DigitalPalette 是自由软件，本着可用的意愿分发，但不作任何担保。您可以在遵守由自由软件基金会发布的 GNU 通用公共许可协议的情况下重新分发并且（或者）修改软件。更多细节请参看 GNU 通用公共许可协议。</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="452"/>
+        <location filename="../../main.py" line="470"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="462"/>
+        <location filename="../../main.py" line="481"/>
         <source>Ready.</source>
         <translation>准备就绪。</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="465"/>
+        <source>Copyright © 2019. All Rights Reserved.</source>
+        <translation type="obsolete">版权 © 2019。版权所有。</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Visit Website</source>
+        <translation>访问网站</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Version: </source>
+        <translation type="obsolete">版本：</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Author: </source>
+        <translation type="obsolete">作者：</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Update: </source>
+        <translation type="obsolete">更新：</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Version: {}</source>
+        <translation>版本：{}</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Author: {}</source>
+        <translation>作者：{}</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>Update: {}</source>
+        <translation>更新：{}</translation>
+    </message>
+    <message>
+        <location filename="../../main.py" line="470"/>
+        <source>All Rights Reserved.</source>
+        <translation>版权 © 2019。版权所有。</translation>
     </message>
 </context>
 <context>
     <name>Graph</name>
     <message>
-        <location filename="../../wgets/graph.py" line="539"/>
+        <location filename="../../wgets/graph.py" line="542"/>
         <source>Double click here to open an image.</source>
         <translation>双击此处打开一张图片。</translation>
     </message>
@@ -188,17 +233,17 @@
         <translation type="obsolete">打开</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="544"/>
+        <location filename="../../wgets/graph.py" line="547"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="544"/>
+        <location filename="../../wgets/graph.py" line="547"/>
         <source>Could not open image. Already has an image in process.</source>
         <translation>无法打开图片。有一张图片的处理还未结束。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="544"/>
+        <location filename="../../wgets/graph.py" line="547"/>
         <source>Could not create temporary dir. Dir is not created.</source>
         <translation>无法创建临时文件夹。文件夹未被创建。</translation>
     </message>
@@ -208,97 +253,97 @@
         <translation type="obsolete">无法处理图片。类目不匹配。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Finishing.</source>
         <translation>正在完成。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading RGB data.</source>
         <translation>正在加载 RGB 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving RGB data.</source>
         <translation>正在保存 RGB 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading HSV data.</source>
         <translation>正在加载 HSV 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving HSV data.</source>
         <translation>正在保存 HSV 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading RGB vertical edge data.</source>
         <translation>正在加载 RGB 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving RGB vertical edge data.</source>
         <translation>正在保存 RGB 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading RGB horizontal edge data.</source>
         <translation>正在加载 RGB 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving RGB horizontal edge data.</source>
         <translation>正在保存 RGB 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading RGB final edge data.</source>
         <translation>正在加载 RGB 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving RGB final edge data.</source>
         <translation>正在保存 RGB 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading HSV vertical edge data.</source>
         <translation>正在加载 HSV 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving HSV vertical edge data.</source>
         <translation>正在保存 HSV 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading HSV horizontal edge data.</source>
         <translation>正在加载 HSV 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving HSV horizontal edge data.</source>
         <translation>正在保存 HSV 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Loading HSV final edge data.</source>
         <translation>正在加载 HSV 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="551"/>
+        <location filename="../../wgets/graph.py" line="554"/>
         <source>Saving HSV final edge data.</source>
         <translation>正在保存 HSV 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="539"/>
+        <location filename="../../wgets/graph.py" line="542"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../wgets/graph.py" line="544"/>
+        <location filename="../../wgets/graph.py" line="547"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
@@ -374,7 +419,7 @@
     <message>
         <location filename="../design/main_window.py" line="202"/>
         <source>View</source>
-        <translation>视图</translation>
+        <translation type="obsolete">视图</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="203"/>
@@ -484,7 +529,7 @@
     <message>
         <location filename="../design/main_window.py" line="208"/>
         <source>Manipulate files and work area.</source>
-        <translation>操作文件和工作区。</translation>
+        <translation>操作文件和工作区域。</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="210"/>
@@ -522,19 +567,24 @@
         <translation type="obsolete">DigitalPalette Json 文档</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="425"/>
+        <location filename="../../wgets/operation.py" line="426"/>
         <source>Plain Text File</source>
         <translation>纯文本文档</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="425"/>
+        <location filename="../../wgets/operation.py" line="426"/>
         <source>Adobe Swatch File</source>
         <translation>Adobe 交换文档</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="425"/>
+        <location filename="../../wgets/operation.py" line="426"/>
         <source>DigiPale Json File</source>
         <translation>DigiPale Json 文档</translation>
+    </message>
+    <message>
+        <location filename="../design/main_window.py" line="202"/>
+        <source>Window</source>
+        <translation>窗口</translation>
     </message>
 </context>
 <context>
@@ -560,12 +610,12 @@
         <translation type="obsolete">定点</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color file error. Color file is broken.</source>
         <translation>导入色彩文件出错。色彩文件已损坏。</translation>
     </message>
@@ -575,62 +625,62 @@
         <translation type="obsolete">导入色彩格式出错。数据不是字典类型。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color version error. Version does not match.</source>
         <translation>导入色彩的版本出错。版本不匹配。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color version error. Version does not exist.</source>
         <translation>导入色彩的版本出错。版本不存在。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color set error. Color set is broken.</source>
         <translation>导入色彩组出错。色彩组已损坏。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color set error. HSV tags do not exist.</source>
         <translation>导入色彩组出错。HSV 标签不存在。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color set error. Color tags do not exist.</source>
         <translation>导入色彩组出错。色彩标签不存在。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import harmony rule error. Rule does not match.</source>
         <translation>导入调和规则出错。规则不匹配。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import harmony rule error. Rule does not exist.</source>
         <translation>导入调和规则出错。规则不存在。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Export Color file error. Extension does not match.</source>
         <translation>导出色彩文件出错。扩展名不匹配。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color format error. Data is not in dict type.</source>
         <translation>导入色彩的格式出错。数据不是字典类型。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color type error. Type does not match.</source>
         <translation>导入色彩类型出错。类型不匹配。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color type error. Type does not exist.</source>
         <translation>导入色彩类型出错。类型不存在。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color depot error.</source>
         <translation>导入色彩仓库出错。</translation>
     </message>
@@ -645,7 +695,7 @@
         <translation type="obsolete">导入仓库中某些色彩组出错。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import some color sets into depot error. These color sets are discarded.</source>
         <translation>导入某些色彩组至仓库出错。这些色彩组已被舍弃。</translation>
     </message>
@@ -660,22 +710,22 @@
         <translation type="obsolete">导入色彩类型出错。这是一个色彩仓库类型的文件，请使用‘打开’。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Detail:</source>
         <translation>详情：</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color type error. This is a color set file, please use &apos;Import&apos;.</source>
         <translation>导入色彩类型出错。这是一个色彩组文件，请使用‘导入’。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>Import color type error. This is a color depot file, please use &apos;Open&apos;.</source>
         <translation>导入色彩类型出错。这是一个色彩仓库文件，请使用‘打开’。</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="431"/>
+        <location filename="../../wgets/operation.py" line="432"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
@@ -1056,7 +1106,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1024"/>
         <source>Graph View</source>
-        <translation>图像视图</translation>
+        <translation type="obsolete">图像视图</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1008"/>
@@ -1131,7 +1181,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1039"/>
         <source>Work Space</source>
-        <translation>工作区</translation>
+        <translation type="obsolete">工作区</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1031"/>
@@ -1156,7 +1206,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1038"/>
         <source>System</source>
-        <translation>系统</translation>
+        <translation>软件</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1045"/>
@@ -1191,7 +1241,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1052"/>
         <source>Result</source>
-        <translation>结果</translation>
+        <translation type="obsolete">结果</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="930"/>
@@ -1216,12 +1266,12 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1066"/>
         <source>Transformation</source>
-        <translation>移动</translation>
+        <translation>移动方式</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1067"/>
         <source>Move</source>
-        <translation>移动</translation>
+        <translation>平移</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1068"/>
@@ -1236,7 +1286,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1070"/>
         <source>Shortcut</source>
-        <translation>快捷键</translation>
+        <translation type="obsolete">快捷键</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="763"/>
@@ -1246,7 +1296,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1027"/>
         <source>Depot View</source>
-        <translation>仓库视图</translation>
+        <translation type="obsolete">仓库视图</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1010"/>
@@ -1261,7 +1311,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1060"/>
         <source>Depot</source>
-        <translation>仓库</translation>
+        <translation type="obsolete">仓库</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="1037"/>
@@ -1306,7 +1356,7 @@
     <message>
         <location filename="../design/settings_dialog.py" line="1036"/>
         <source>clean up all color sets</source>
-        <translation>清除所有色彩组</translation>
+        <translation>清除所有储存的色彩组</translation>
     </message>
     <message>
         <location filename="../design/settings_dialog.py" line="929"/>
@@ -1382,6 +1432,36 @@
         <location filename="../design/settings_dialog.py" line="1065"/>
         <source>Insert into depot</source>
         <translation>在仓库中插入</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="1024"/>
+        <source>Graph Window</source>
+        <translation>图像窗口</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="1027"/>
+        <source>Depot Window</source>
+        <translation>仓库窗口</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="1039"/>
+        <source>Work Area</source>
+        <translation>工作区域</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="1060"/>
+        <source>Depot Area</source>
+        <translation>仓库区域</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="1052"/>
+        <source>Result Area</source>
+        <translation>结果区域</translation>
+    </message>
+    <message>
+        <location filename="../design/settings_dialog.py" line="1070"/>
+        <source>Shortcuts</source>
+        <translation>快捷键</translation>
     </message>
 </context>
 </TS>

@@ -8,6 +8,10 @@ as published by the Free Software Foundation. See the GNU General Public
 License for more details.
 """
 
+__COPYRIGHT__ = """
+Copyright © 2019. All Rights Reserved.
+"""
+
 __WEBSITE__ = """
 https://liujiacode.github.io/DigitalPalette
 """
@@ -17,17 +21,17 @@ v2.1.1-dev
 """
 
 __AUTHOR__ = """
-Liu Jia
+Jia Liu
 """
 
 __DATE__ = """
-2019.12.04
+Dec. 4th, 2019
 """
 
 import os
 import sys
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox, QShortcut
+from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox, QShortcut, QPushButton
 from PyQt5.QtCore import QCoreApplication, QUrl, QTranslator
 from PyQt5.QtGui import QIcon, QPixmap, QDesktopServices, QKeySequence
 from cguis.design.main_window import Ui_MainWindow
@@ -68,8 +72,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         app_icon = QIcon()
         app_icon.addPixmap(QPixmap(":/images/images/icon_128.png"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(app_icon)
-        self.setWindowTitle("DigitalPalette {}".format(self._args.info_version))
-
         self.setMinimumSize(640, 480)
 
         self._setup_workarea()
@@ -105,6 +107,13 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_main_site)))
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_update_site)))
         self.actionAbout.triggered.connect(lambda x: self._show_about())
+
+        self.rule_dock_widget.visibilityChanged.connect(lambda x: self.actionRule.setChecked(self.rule_dock_widget.isVisible()))
+        self.channel_dock_widget.visibilityChanged.connect(lambda x: self.actionChannel.setChecked(self.channel_dock_widget.isVisible()))
+        self.operation_dock_widget.visibilityChanged.connect(lambda x: self.actionOperation.setChecked(self.operation_dock_widget.isVisible()))
+        self.mode_dock_widget.visibilityChanged.connect(lambda x: self.actionMode.setChecked(self.mode_dock_widget.isVisible()))
+        self.transformation_dock_widget.visibilityChanged.connect(lambda x: self.actionTransformation.setChecked(self.transformation_dock_widget.isVisible()))
+        self.result_dock_widget.visibilityChanged.connect(lambda x: self.actionResult.setChecked(self.result_dock_widget.isVisible()))
 
         shortcut = QShortcut(QKeySequence("Alt+H"), self)
         shortcut.activated.connect(self.actionHomepage.trigger)
@@ -176,9 +185,6 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         with open(os.sep.join((resources, "styles", "dark", "style.qss"))) as qf:
             self._app.setStyleSheet(qf.read())
         """
-
-        # ready status.
-        self.setStatusTip(self._status_descs[0])
 
     def _setup_workarea(self):
         """
@@ -410,6 +416,16 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_operation.update_text()
         self._wget_settings.update_text()
 
+        # set window title.
+        if self._args.lang[:2].lower() == "zh":
+            self.setWindowTitle("DigitalPalette {}".format(self._args.info_version_zh))
+
+        else:
+            self.setWindowTitle("DigitalPalette {}".format(self._args.info_version_en))
+
+        # set ready status.
+        self.setStatusTip(self._status_descs[0])
+
         self.update()
 
     def _show_about(self):
@@ -419,10 +435,19 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         info = "DigitalPalette\n"
         info += "---------- ---------- ----------\n"
-        info += "{}: {}\n".format(self._info_descs[1], self._args.info_version)
-        info += "{}: {}\n".format(self._info_descs[2], self._args.info_author)
-        info += "{}: {}\n".format(self._info_descs[3], self._args.info_date)
-        info += "{}: {}\n".format(self._info_descs[4], self._args.info_main_site)
+
+        if self._args.lang[:2].lower() == "zh":
+            info += self._info_descs[1].format(self._args.info_version_zh) + "\n"
+            info += self._info_descs[2].format(self._args.info_author_zh) + "\n"
+            info += self._info_descs[3].format(self._args.info_date_zh) + "\n"
+
+        else:
+            info += self._info_descs[1].format(self._args.info_version_en) + "\n"
+            info += self._info_descs[2].format(self._args.info_author_en) + "\n"
+            info += self._info_descs[3].format(self._args.info_date_en) + "\n"
+
+        info += "---------- ---------- ----------\n"
+        info += "{}\n".format(self._info_descs[4])
         info += "---------- ---------- ----------\n"
         info += self._info_descs[5]
 
@@ -430,7 +455,17 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         box.setWindowTitle(self._info_descs[0])
         box.setText(info)
         box.setIconPixmap(QPixmap(":/images/images/icon_full_128.png"))
-        box.addButton(self._info_descs[6], QMessageBox.AcceptRole)
+
+        ok_btn = QPushButton()
+        ok_btn.setText(self._info_descs[6])
+        box.addButton(ok_btn, QMessageBox.RejectRole)
+        box.setDefaultButton(ok_btn)
+
+        visit_btn = QPushButton()
+        visit_btn.clicked.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_main_site)))
+        visit_btn.setText(self._info_descs[7])
+        box.addButton(visit_btn, QMessageBox.AcceptRole)
+
         box.exec_()
 
     def closeEvent(self, event):
@@ -451,12 +486,13 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self._info_descs = (
             _translate("DigitalPalette", "About"),
-            _translate("DigitalPalette", "Version"),
-            _translate("DigitalPalette", "Author"),
-            _translate("DigitalPalette", "Update"),
-            _translate("DigitalPalette", "Website"),
+            _translate("DigitalPalette", "Version: {}"),
+            _translate("DigitalPalette", "Author: {}"),
+            _translate("DigitalPalette", "Update: {}"),
+            _translate("DigitalPalette", "All Rights Reserved."),
             _translate("DigitalPalette", "DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details."),
             _translate("DigitalPalette", "OK"),
+            _translate("DigitalPalette", "Visit Website"),
         )
 
         self._status_descs = (

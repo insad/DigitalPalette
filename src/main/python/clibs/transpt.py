@@ -22,6 +22,7 @@ def rotate_point(point, theta):
     ])
 
     pt = Rz.dot(np.array(point))
+
     return pt
 
 def rotate_point_center(center, point, theta):
@@ -41,6 +42,7 @@ def rotate_point_center(center, point, theta):
     rotated_point = rotate_point(delta_point, theta)
 
     pt = rotated_point + np.array(center)
+
     return pt
 
 def get_theta(point):
@@ -86,6 +88,7 @@ def get_theta_center(center, point):
     delta_point = np.array(point) - np.array(center)
 
     hue = get_theta(delta_point)
+
     return hue
 
 def get_outer_box(center, radius):
@@ -101,4 +104,5 @@ def get_outer_box(center, radius):
     """
 
     box = np.array((center[0] - radius, center[1] - radius, 2 * radius, 2 * radius))
+
     return box

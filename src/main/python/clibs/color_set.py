@@ -124,6 +124,7 @@ class ColorSet(object):
             Color(self._color_set[3], tp="color", overflow=self.get_overflow()),
             Color(self._color_set[4], tp="color", overflow=self.get_overflow()),
         )
+
         return color_set
 
     def recover(self, color_set):
@@ -131,7 +132,13 @@ class ColorSet(object):
         Recover the color set by a tuple.
         """
 
-        self._color_set = list(color_set)
+        self._color_set = [
+            Color(color_set[0], tp="color", overflow=self.get_overflow()),
+            Color(color_set[1], tp="color", overflow=self.get_overflow()),
+            Color(color_set[2], tp="color", overflow=self.get_overflow()),
+            Color(color_set[3], tp="color", overflow=self.get_overflow()),
+            Color(color_set[4], tp="color", overflow=self.get_overflow()),
+        ]
 
     def initialize(self):
         """

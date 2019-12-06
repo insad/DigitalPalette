@@ -79,11 +79,14 @@ class Args(object):
             self.load_settings(os.sep.join((self.usr_store, "settings.json")))
 
         # software informations.
-        self.info_version = "v2.1.1-dev"
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_date = "2019.12.04"
-        self.info_author = "Liu Jia"
+        self.info_version_zh = "v2.1.1-开发版"
+        self.info_version_en = "v2.1.1-dev"
+        self.info_author_zh = "刘佳"
+        self.info_author_en = "Jia Liu"
+        self.info_date_zh = "2019年12月4日"
+        self.info_date_en = "Dec. 4th, 2019"
 
         # special system settings.
         self.sys_activated_idx = 0
@@ -169,7 +172,7 @@ class Args(object):
         """
 
         settings = {
-            "version": self.info_version,
+            "version": self.info_version_en,
             "site": self.info_main_site,
             "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         }

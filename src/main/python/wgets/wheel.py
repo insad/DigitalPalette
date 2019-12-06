@@ -85,6 +85,7 @@ class Wheel(QWidget):
             color_box = get_outer_box(color_center, self._tag_radius)
             if idx == self._args.sys_activated_idx:
                 painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+
             else:
                 painter.setPen(QPen(QColor(*self._args.negative_color), self._args.negative_wid))
 

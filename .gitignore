@@ -131,8 +131,8 @@ bak*
 # share
 unitsets/
 release/
-share/
 styles/
+share/
+info/
 MyColors/
 settings.json
-file_version_info.txt

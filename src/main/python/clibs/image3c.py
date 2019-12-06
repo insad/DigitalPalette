@@ -439,6 +439,7 @@ class Image3C(QThread):
 
         if os.path.isfile(img_path):
             img = QImage(img_path)
+
             return img
 
         else:

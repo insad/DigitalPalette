@@ -679,9 +679,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="interface_graph_view_gbox">
+            <widget class="QGroupBox" name="interface_graph_window_gbox">
              <property name="title">
-              <string>Graph View</string>
+              <string>Graph Window</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="0" column="0">
@@ -739,9 +739,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="interface_depot_view_gbox">
+            <widget class="QGroupBox" name="interface_depot_window_gbox">
              <property name="title">
-              <string>Depot View</string>
+              <string>Depot Window</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
               <item row="0" column="0">
@@ -1278,9 +1278,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="rule_graph_view_gbox">
+            <widget class="QGroupBox" name="rule_graph_window_gbox">
              <property name="title">
-              <string>Graph View</string>
+              <string>Graph Window</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
               <item row="0" column="0">
@@ -1391,9 +1391,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="rule_depot_view_gbox">
+            <widget class="QGroupBox" name="rule_depot_window_gbox">
              <property name="title">
-              <string>Depot View</string>
+              <string>Depot Window</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="2">
@@ -1498,7 +1498,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QGroupBox" name="system_work_space_gbox">
+            <widget class="QGroupBox" name="system_work_area_gbox">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -1506,7 +1506,7 @@
               </size>
              </property>
              <property name="title">
-              <string>Work Space</string>
+              <string>Work Area</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
               <item row="0" column="0">
@@ -1643,7 +1643,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="system_work_space_gbox_2">
+            <widget class="QGroupBox" name="system_depot_area_gbox">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -1651,7 +1651,7 @@
               </size>
              </property>
              <property name="title">
-              <string>Depot</string>
+              <string>Depot Area</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="0" column="2">
@@ -1702,9 +1702,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="setti_shortcut">
+     <widget class="QWidget" name="setti_shortcuts">
       <attribute name="title">
-       <string>Shortcut</string>
+       <string>Shortcuts</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_9">
        <property name="leftMargin">
@@ -1723,24 +1723,24 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QScrollArea" name="shortcut_scroll_area">
+        <widget class="QScrollArea" name="shortcuts_scroll_area">
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <widget class="QWidget" name="shortcut_scroll_contents">
+         <widget class="QWidget" name="shortcuts_scroll_contents">
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-198</y>
+            <y>0</y>
             <width>509</width>
             <height>751</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QGroupBox" name="shortcut_work_space_gbox">
+            <widget class="QGroupBox" name="shortcuts_work_area_gbox">
              <property name="title">
-              <string>Work Space</string>
+              <string>Work Area</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
               <item row="3" column="2">
@@ -2275,9 +2275,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="shortcut_result_gbox">
+            <widget class="QGroupBox" name="shortcuts_result_area_gbox">
              <property name="title">
-              <string>Result</string>
+              <string>Result Area</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_16">
               <item row="0" column="0">
@@ -2592,9 +2592,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="shortcut_result_gbox_2">
+            <widget class="QGroupBox" name="shortcuts_depot_area_gbox">
              <property name="title">
-              <string>Depot</string>
+              <string>Depot Area</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_17">
               <item row="0" column="0">
@@ -2821,7 +2821,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="shortcut_transformation_gbox">
+            <widget class="QGroupBox" name="shortcuts_transformation_gbox">
              <property name="title">
               <string>Transformation</string>
              </property>

@@ -17,3 +17,6 @@
 :: venv\Scripts\pylupdate5.exe src\main\python\main.py src\main\python\wgets\channel.py src\main\python\wgets\graph.py src\main\python\wgets\operation.py src\main\python\wgets\rule.py src\main\python\wgets\settings.py src\main\python\wgets\depot.py src\main\python\cguis\design\main_window.py src\main\python\cguis\design\settings_dialog.py src\main\python\cguis\design\info_dialog.py -ts src\main\python\cguis\lang\en.ts
 :: venv\Scripts\pylupdate5.exe src\main\python\main.py src\main\python\wgets\channel.py src\main\python\wgets\graph.py src\main\python\wgets\operation.py src\main\python\wgets\rule.py src\main\python\wgets\settings.py src\main\python\wgets\depot.py src\main\python\cguis\design\main_window.py src\main\python\cguis\design\settings_dialog.py src\main\python\cguis\design\info_dialog.py -ts src\main\python\cguis\lang\zh.ts
 ::
+:: move /Y src\main\python\cguis\lang\en.qm src\main\resources\base\langs\en.qm
+:: move /Y src\main\python\cguis\lang\zh.qm src\main\resources\base\langs\zh.qm
+::

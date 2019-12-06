@@ -226,6 +226,7 @@ class Color(object):
 
         if isinstance(other, Color):
             return self._hec == other.hec
+
         else:
             raise ValueError("expect other in Color type: {}.".format(other))
 
@@ -242,6 +243,7 @@ class Color(object):
 
         if isinstance(other, Color):
             return self._hec != other.hec
+
         else:
             raise ValueError("expect other in Color type: {}.".format(other))
     '''
@@ -621,6 +623,7 @@ class Color(object):
 
         rgb = cls.hsv2rgb(hsv)
         hec = cls.rgb2hec(rgb)
+
         return hec
 
     @classmethod
@@ -637,10 +640,15 @@ class Color(object):
 
         rgb = cls.hec2rgb(hec)
         hsv = cls.rgb2hsv(rgb)
+
         return hsv
 
 
 class TestColor(unittest.TestCase):
+    """
+    Test Color object.
+    """
+
     def test_translate(self):
         pr_color = Color((0, 0, 0), tp="rgb")
 
@@ -689,6 +697,7 @@ class TestColor(unittest.TestCase):
 
                     ar_color = Color(ar_rgb, tp="rgb")
                     self.assertEqual(color, ar_color)
+
 
 if __name__ == "__main__":
     unittest.main()

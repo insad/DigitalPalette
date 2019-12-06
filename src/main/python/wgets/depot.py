@@ -295,6 +295,7 @@ class Depot(QWidget):
             idx = self._args.stab_column * row + col
 
             if event.button() == Qt.MidButton:
+                self.setCursor(QCursor(Qt.ClosedHandCursor))
                 self._start_hig = self._scroll_bar.value() + event.y()
 
             elif idx < len(self._args.stab_ucells):
@@ -358,6 +359,7 @@ class Depot(QWidget):
             event.ignore()
 
     def mouseReleaseEvent(self, event):
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self._start_hig = None
 
         if self._left_click:

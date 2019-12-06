@@ -396,6 +396,7 @@ class Operation(QWidget):
         box.setText(text)
         box.setIcon(QMessageBox.Warning)
         box.addButton(self._operation_errs[18], QMessageBox.AcceptRole)
+
         box.exec_()
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #

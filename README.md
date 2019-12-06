@@ -4,10 +4,10 @@
 DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
 
 # Version
-2.0.3 (develop)
+2.1.1 (develop)
 
 # Author
-Liu Jia
+Jia Liu
 
 # License
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
@@ -18,4 +18,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 * 2019.11.25 (v2.0.2-dev): Repair translations. Repair settings local store. Repair default lang.
 * 2019.11.26 (v2.0.3-dev): Add synchronization methods in rule. Repair rule group boxes. Optimize cube square display.
 * 2019.12.01 (v2.1.0-dev): Add depot for storing color sets.
-* 2019.12.04 (v2.1.1-dev): Modify export methods for result and depot.
+* 2019.12.04 (v2.1.1-dev): Modify export methods for result and depot. Repair tag moving behaviors.

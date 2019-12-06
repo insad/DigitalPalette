@@ -244,6 +244,7 @@ class CubeTable(QWidget):
             if ctp == "hec":
                 try:
                     value = Color.fmt_hec(value)
+
                 except:
                     return
 
@@ -252,6 +253,7 @@ class CubeTable(QWidget):
             color = Color(self._args.sys_color_set[idx], tp="color", overflow=self._args.sys_color_set.get_overflow())
             if kword == "direct":
                 color.setti(value, ctp)
+
             else:
                 color.setti(value / 1E3, ctp)
 
