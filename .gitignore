@@ -129,5 +129,10 @@ test*
 bak*
 
 # share
+unitsets/
 release/
+styles/
 share/
+info/
+MyColors/
+settings.json
