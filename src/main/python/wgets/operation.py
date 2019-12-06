@@ -207,7 +207,7 @@ class Operation(QWidget):
 
         # process start.
         if cb_file[0].split(".")[-1].lower() == "json":
-            color_dict = {"version": self._args.info_version, "type": "depot"}
+            color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "depot"}
             color_dict["palettes"] = export_list(color_list)
 
             with open(cb_file[0], "w", encoding='utf-8') as f:
@@ -215,8 +215,8 @@ class Operation(QWidget):
 
         elif cb_file[0].split(".")[-1].lower() == "txt":
             with open(cb_file[0], "w") as f:
-                f.write("# DigitalPalette Color Export\n")
-                f.write("# Version: {}\n\n".format(self._args.info_version))
+                f.write("# DigitalPalette Color Depot Export\n")
+                f.write("# Version: {}\n\n".format(self._args.info_version_en))
                 f.write(export_text(color_list))
 
         elif cb_file[0].split(".")[-1].lower() == "aco":
@@ -350,7 +350,7 @@ class Operation(QWidget):
 
         # process start.
         if cb_file[0].split(".")[-1].lower() == "json":
-            color_dict = {"version": self._args.info_version, "type": "set"}
+            color_dict = {"version": self._args.info_version_en,"site": self._args.info_main_site, "type": "set"}
             color_dict["palettes"] = export_list([(color_set, hm_rule, desc),])
 
             with open(cb_file[0], "w", encoding='utf-8') as f:
@@ -358,8 +358,8 @@ class Operation(QWidget):
 
         elif cb_file[0].split(".")[-1].lower() == "txt":
             with open(cb_file[0], "w") as f:
-                f.write("# DigitalPalette Color Export\n")
-                f.write("# Version: {}\n\n".format(self._args.info_version))
+                f.write("# DigitalPalette Color Set Export\n")
+                f.write("# Version: {}\n\n".format(self._args.info_version_en))
                 f.write(export_text([(color_set, hm_rule, desc),]))
 
         elif cb_file[0].split(".")[-1].lower() == "aco":
