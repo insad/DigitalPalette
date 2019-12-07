@@ -1,126 +1,154 @@
 # DigitalPalette
-![Sample app icon](../src/main/icons/full/icon_full_256.png)
+![DigitalPalette](../src/main/icons/full/icon_full_256.png)
 
-DigitalPalette is a free software for generating harmonious colors from color wheel and local images.
+DigitalPalette is a free software for generating a set of harmonious colors from color wheel or existed images and applying it into your creative works.
 
 # Version
-1.0.35 (preview)
+2.1.2 (develop)
 
 # Installation
 ## Download
-[Windows (32 bit) Installer (Recommend)](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPaletteSetup_1_0_35_en_Windows_32.exe)  
-[Windows (64 bit) Installer](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPaletteSetup_1_0_35_en_Windows_64.exe)  
-[Windows (32 bit) Packet](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPalette_1_0_35_en_Windows_32.7z)  
-[Windows (64 bit) Packet](https://github.com/liujiacode/DigitalPalette/releases/download/v1.0.35-pre/DigitalPalette_1_0_35_en_Windows_64.7z)  
+[Windows (32 bit) Installer (Recommend)]()  
+[Windows (64 bit) Installer]()  
+[Windows (32 bit) Packet]()  
+[Windows (64 bit) Packet]()  
 
 ## Install
-1. Double click the installer and click "Next".  
+1. Double click the installer and click "**Next**".  
 ![Interface](English/installation/0.png)
 
-2. Read the [License](../LICENSE). Check "I accept the terms of the License Aggrement" if you agree with it, then click "Next".  
+2. Read the [License](../LICENSE). Check "**I accept the terms of the License Aggrement**" if you agree with it, then click "**Next**".  
 ![License](English/installation/1.png)
 
-3. Choose a directory and click "Install" to start the installation.  
+3. Choose a directory and click "**Install**" to start the installation.  
 ![Directory](English/installation/2.png)
 
-4. Click "Finish" to finish the installation and run DigitalPalette.  
+4. Click "**Finish**" to finish the installation and run DigitalPalette.  
 ![Finish](English/installation/3.png)
 
 # Usage
 ## Change the language
-Currently we only provide English and Chinese translations. You could generate translation files of any other languages by PyQt5 tools and put it into the language directory. Then you could change the language in two steps:  
-1. Click "Edit" in the menu bar and select "Settings" to open the settings dialog.  
-2. Click the combo box lateral to the "Language" label in "Interface" tab. Select the target language and click "OK" to change the interfacial language.  
-![Language](English/usage/0.png)
+Currently we only provide English and Chinese interface translations. You could change the interface language through:  
+1. Click "**Edit**" in the **menu bar** and select "**Settings**" to open the settings dialog.
+2. Click the combo box lateral to "**Language**" label in "**Software**" tab. Select the target language and click "**OK**" to change the interface language.
 
-## Interfacial Layout
-The interfacial layout of DigitalPalette is displayed as bellow, where:  
-* Title is surrounded by the red square, which indicates the name (DigitalPalette) and current version of this software.
-* Menu bar is surrounded by the blue square, which includes the **import** ("File -> Import") and **export** actions ("File -> Export") of file, **Quit** action ("File -> Quit"), **create** ("Edit -> Create") and **extract** ("Edit -> Extract") actions of color set from color wheel and images as well as setup action of the preference **settings** ("Edit -> Settings") of this software, etc..
-* Option box is surrounded by the orange square, which includes a set of harmony rules.
-* Tool box is surrounded by the purple square, which include the common operations and color modes.
-* Work area is surrounded by the green square.
-* Result area is surrounded by the yellow square, which includes the color set informations such as the **hex** code, **RGB** values and **HSV** values of colors, etc..  
-![Layout](English/usage/1.png)
+## Interface Layout
+The Interface layout of DigitalPalette includes:  
+1. **Title bar**, which include the name of software (DigitalPalette and current version (v2.1.1-dev).
+2. **Menu bar**, which include "**File**", "**Edit**", "**View**", "**Window**" and "**Help**" selections.
+3. **Work area**, which provide actions such as **creating** a set of colors from color wheel, **locating** a set of colors from color image and **attaching** a set of colors into color depot.
+4. **Rule window**, which set harmony rule and synchronization method for color set.
+5. **Filter window**, which set category and channel for opened image.
+6. **Operation window**, which manipulate files and work area.
+7. **Mode window**, which set display mode for color set result.
+8. **Move window**, which move and zoom image and depot content.
+9. **Result window**, which display and modify color set result.
 
-## Create colors from color wheel
-The **color wheel** in the work area of DigitalPalette equips five circular **color tags**. These color tags are corresponding to the color squares in the result area. (The color of middle square determines the main hue of color set.) The color tag with black edge (labelled as "**activated color tag**") is corresponding to the currently selected color. You could change the colors by drag the color tags in wheel, or by double click the color squares, or through input the hex code and adjust the RGB and HSV value slides below the color squares. Meanwhile, other tags (labelled as "**inactivated color tag**") will move along with the activated color tag. The generating and moving methods of color tags are determined by the harmony rules, which will be demonstrate below.
+## Creating a set of colors from color wheel
+Color wheel is the default view of **work area**. You could click "**View**" in the **menu bar** and select "**Wheel**" to switch into color wheel view if your current **work area** view isn't color wheel. The color wheel view is shown as below.  
+There are five color tags in ring shape above the color wheel in work area, which corresponding to the five color squares in **result window** (where the central color square determins the major color). You could change the corresponding color by dragging the tag, or adjust the sliders of RGB or HSV in **result window** to control its color accurately. Meanwhile, the position and color of other tags on color wheel would also changed according to the selected harmony rule. The harmony rule could be settled in **rule window**.  
+![Wheel](English/usage/08.png)
 
-## Harmony Rules
-1. **Analogous** (default)
-Create a set of colors with hue values in equidistant distributions. The closer of the tags, the more analogous of the colors.  
-![Analogous](English/usage/2.png)
+## Color Harmony Rules
+1. **Analogous**
+Analogous is the default rule. You could create a set of colors with hue values in equidistant distributions in this rule. Note that the closer the tags, the more analogous the colors.  
+![Analogous](English/usage/00.png)
 
 2. **Monochromatic**  
-Create a set of colors with same hue and different saturation and lightness values.  
-![Monochromatic](English/usage/3.png)
+You could create a set of colors with same hue and different saturation and lightness values in this rule.  
+![Monochromatic](English/usage/01.png)
 
 3. **Triad**  
-Create a set of colors with hue values in trigonal distributions.  
-![Triad](English/usage/4.png)
+You could create a set of colors with hue values in trigonal distributions in this rule.  
+![Triad](English/usage/02.png)
 
 4. **Tetrad**  
-Create a set of colors with colors complementary to each other in pairs.  
-![Tetrad](English/usage/5.png)
+You could create a set of colors with colors complementary to each other in pairs in this rule.  
+![Tetrad](English/usage/03.png)
 
 5. **Pentad**  
-Create a set of colors with hue values in pentagonal distributions.  
-![Pentad](English/usage/6.png)
+You could create a set of colors with hue values in pentagonal distributions in this rule.  
+![Pentad](English/usage/04.png)
 
 6. **Complementary**  
-Create a set of Complementary colors.  
-![Complementary](English/usage/7.png)
+You could create a set of Complementary colors in this rule.  
+![Complementary](English/usage/05.png)
 
 7. **Shades**  
-Create a set of colors with same hue and saturation values and different lightness values.  
-![Shades](English/usage/8.png)
+You could create a set of colors with same hue and saturation values and different lightness values in this rule.  
+![Shades](English/usage/06.png)
 
 8. **Custom**  
-Create a set of colors in custom.  
-![Custom](English/usage/9.png)
+You could create a set of colors in custom in this rule.  
+![Custom](English/usage/07.png)
 
-## Export Colors
-Harmonious colors can be exported to a readable and writable file for subsequent analysis and usage. Steps:  
-1. Click the "Export" button in tool box or click "Edit -> Export" from the menu bar to open the file dialog.  
-2. Change the directory, file name and extension and save it.
+## Locating a set of colors from color image
+You could click "**View**" in the **menu bar** and select "**Graph**" to switch into color image view if your current **work area** view isn't color image. The color image view is shown as below.  
+Left click anywhere above the image in **work area** after opening an existed image, and a color tag corresponding to the color square in **result window** would appeared at this position. Its color will also change into the corresponding color in image. Similarly, you could change the corresponding color by dragging the tag. Meanwhile, the position and color of other tags on color wheel would also changed according to the selected harmony rule. The harmony rule could be settled in **rule window**.  
+![Image](English/usage/09.png)
 
-## Data Formats
-Currently DigitalPalette can export color data into a file with following formats:  
-1. DigitalPalette Json File Format (*.json)  
-Data file with this format contains the harmony rule, hex code, RGB and HSV values of colors. This type of file can be imported by DigitalPalette.  
+## Attaching a set of colors into color depot
+You could click "**View**" in the **menu bar** and select "**Depot**" to switch into color depot view if your current **work area** view isn't color depot. The color depot view is shown as below.  
+You could add, delete, modify and check the stored color sets and their information in color depot. Each icon in color depot includes five color squares, which are corresponding to the five colors of color set. Note that the color of central square represents the major color.  
+![Depot](English/usage/10.png)
 
-2. Plain Text Format (*.txt)  
-Data file with this format contains the hex code, RGB and HSV values of colors. This type of file can be opened by editors.
+## Open and Save Color Depot and Import and Export Color Set
+All color sets in depot or color set in current result could be exported and save as readable and writable files or other formated files for subsequent usage and analysis. Steps:  
+1. Click the "**Save**" button in **operation window** and fill the file name and path in opened dialog. Click "Save" to export all color sets in depot.
+2. Click the "**Open**" button in **operation window** and fill the file name and path in opened dialog. Click "Open" to import all color sets in file.
+3. Click the "**Export**" button in **operation window** and fill the file name and path in opened dialog. Click "Save" to export the color set in current result.
+4. Click the "**Import**" button in **operation window** and fill the file name and path in opened dialog. Click "Open" to import the color set saved in file.
 
-3. Swatch File Format (*.aco)  
-Data file with this format contains twenty-five colors, including five harmonious colors and twenty colors derived from them. **Note that** the sequence of colors in swatch are: 1-5 selected harmonious colors (prefixed "N"); 6-10 colors with same hue and 100% saturation and lightness values (prefixed "F"); 11-15 colors with same hue and 50% saturation, 100% lightness values (prefixed "S"); 16-20 colors with same hue and 100% saturation, 50% lightness values (prefixed "V"); and 21-25 colors with same hue and 50% saturation and lightness values (prefixed "H").  
+### File Formats
+1. DigiPale Json File (*.json)  
+File in this format contains all color data, including the harmony rule, hex code, RGB and HSV values of colors. This type of file could be used as backups and can be imported (recovered) into DigitalPalette.
 
-## Import Colors (Swatches)
-Currently DigitalPalette can import color data in DigitalPalette Json File Format. You could import color swatches into general image processing softwares, such as GIMP and Photoshop.
-1. Import DigitalPalette Json File into DigitalPalette  
-Firstly, click the "Import" button in tool box or click "Edit -> Import" from the menu bar to open the file dialog.  
-Then, find the pre-saved file in DigitalPalette Json File Format and click "Open".
+2. Plain Text File (*.txt)  
+File in this format contains basic color data, including the hex code, RGB and HSV values of colors. This type of file has batter readability than DigiPale Json File and can be opened, readed and edited by ordinary editors directly.
 
-2. Import Swatch File into GIMP  
-Firstly, open GIMP and select "Import Palette" with right-buttom cliced in colormap and open the import dialog.  
-Then, find the pre-saved swatch file and click "Import".  
-![GIMP](English/usage/10.png)
+3. Adobe Swatch File (*.aco)  
+File in this format contains all color values and can be imported into image processing softwares such as Photoshop and GIMP as color swatches.
 
-3. Import Swatch File into Photoshop  
-Firstly, open Photoshop and select "Load" in swatch box and open the file dialog.  
-Then, find the pre-saved swatch file and click "Open". The harmonious colors would be added to the end of current swatch.  
-![Photoshop](Chinese/usage/11.png)
-
-4. Import Swatch File into UDongman Paint  
-Firstly, open UDongman Paint and select "Load" in swatch box and open the file dialog.  
-Then, find the pre-saved swatch file and click "Open". The harmonious colors would be opened in a new swatch.  
-![UDongman Paint](Chinese/usage/12.png)
-
-## Extract Colors from an image
-Currently DigitalPalette doesn't support to extract harmonious colors from an image automatically, and only provides tools for analysis and selections.  
+## Shortcuts
+| Name | Description | Shortcut |
+| --- | --- | --- |
+| **Work Area** | - | - |
+| Open | Open a color depot file. | Alt+O; Ctrl+O |
+| Save | Save a color depot file. | Alt+S; Ctrl+S |
+| Import | Import a color set file. | Alt+I; Ctrl+I |
+| Export | Export a color set file. | Alt+E; Ctrl+E |
+| Settings | Set settings. | Alt+T; ` |
+| Quit | Quit software. | Alt+Q; Esc |
+| Create | Switch into color wheel view or (and) create a set of colors from wheel. | Alt+C; Ctrl+W |
+| Locate | Switch into color image view or (and) locate a set of colors from image. | Alt+L; Ctrl+G |
+| Attach | Switch into color depot view or (and) attach a set of colors into depot. | Alt+A; Ctrl+D |
+| Homepage | Open the homepage website through web browser. | Alt+H; F1 |
+| Update | Search for software updates through web browser. | Alt+U; F2 |
+| About | Display information relative to this software. | Alt+B; F3 |
+| **Result Area** | - | - |
+| Copy Tagged RGB | Copy the RGB value (single) tagged by color tag into system clipboard. | R |
+| Copy Tagged HSV | Copy the HSV value (single) tagged by color tag into system clipboard. | H |
+| Copy Tagged Hex | Copy the Hex code (single) tagged by color tag into system clipboard. | X |
+| Copy RGB Result | Copy all RGB values (five) in result into system clipboard. | Shift+R |
+| Copy HSV Result | Copy all HSV values (five) in result into system clipboard. | Shift+H |
+| Copy Hex Result | Copy all RGB codes (five) in result into system clipboard. | Shift+X |
+| Activate Tag | Activate the corresponding color tag in color wheel. | 1; 2; 3; 4; 5 |
+| **Depot Area** | - | - |
+| Copy Current RGB | Copy the RGB values (five) selected in depot into system clipboard. | Ctrl+R |
+| Copy Current HSV | Copy the RGB values (five) selected in depot into system clipboard. | Ctrl+H |
+| Copy Current Hex | Copy the RGB values (five) selected in depot into system clipboard. | Ctrl+X |
+| Delete from Depot | Delete the selected color set from depot. | Delete; D |
+| Insert into Depot | Attach the color set in result area into depot or import the selected color set into result area. | Insert; I |
+| **Move Actions** | - | - |
+| Move | Move the opened image. | ↑; ↓; ←; → |
+| Zoom | Zoom the opened image. | =; -; [; ] |
+| Reset | Reset the position and size of image. | Home |
 
 # Author
-Liu Jia
+Jia Liu
+
+# Copyright
+Copyright © 2019. All Rights Reserved.
 
 # License
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
