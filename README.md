@@ -19,3 +19,4 @@ DigitalPalette is a free software, which is distributed in the hope that it will
 * 2019.11.26 (v2.0.3-dev): Add synchronization methods in rule. Repair rule group boxes. Optimize cube square display.
 * 2019.12.01 (v2.1.0-dev): Add depot for storing color sets.
 * 2019.12.04 (v2.1.1-dev): Modify export methods for result and depot. Repair tag moving behaviors. Repair export method.
+* 2019.12.06 (v2.1.2-dev): Add view actions into menu bar.

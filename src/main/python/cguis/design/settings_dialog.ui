@@ -92,7 +92,7 @@
             <number>11</number>
            </property>
            <item>
-            <widget class="QGroupBox" name="interface_color_wheel_gbox">
+            <widget class="QGroupBox" name="interface_wheel_window_gbox">
              <property name="title">
               <string>Color Wheel</string>
              </property>
@@ -679,9 +679,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="interface_graph_window_gbox">
+            <widget class="QGroupBox" name="interface_image_window_gbox">
              <property name="title">
-              <string>Graph Window</string>
+              <string>Color Image</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="0" column="0">
@@ -741,7 +741,7 @@
            <item>
             <widget class="QGroupBox" name="interface_depot_window_gbox">
              <property name="title">
-              <string>Depot Window</string>
+              <string>Color Depot</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
               <item row="0" column="0">
@@ -759,7 +759,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>coset_ratio</string>
+                 <string>coset ratio</string>
                 </property>
                </widget>
               </item>
@@ -849,7 +849,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QGroupBox" name="color_wheel_gbox">
+            <widget class="QGroupBox" name="rule_wheel_window_gbox">
              <property name="title">
               <string>Color Wheel</string>
              </property>
@@ -1278,9 +1278,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="rule_graph_window_gbox">
+            <widget class="QGroupBox" name="rule_image_window_gbox">
              <property name="title">
-              <string>Graph Window</string>
+              <string>Color Image</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
               <item row="0" column="0">
@@ -1393,7 +1393,7 @@
            <item>
             <widget class="QGroupBox" name="rule_depot_window_gbox">
              <property name="title">
-              <string>Depot Window</string>
+              <string>Color Depot</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="2">
@@ -1424,7 +1424,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>stab_column</string>
+                 <string>stab column</string>
                 </property>
                </widget>
               </item>
@@ -1528,28 +1528,6 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
-               <widget class="QCheckBox" name="store_loc_cbox">
-                <property name="minimumSize">
-                 <size>
-                  <width>300</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>store loc</string>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="1">
                <widget class="QComboBox" name="lang_comb">
                 <property name="minimumSize">
@@ -1565,6 +1543,19 @@
                  </size>
                 </property>
                </widget>
+              </item>
+              <item row="0" column="2">
+               <spacer name="hsp_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="usr_color_label">
@@ -1585,40 +1576,8 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <spacer name="hsp_7">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>10</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="3" column="0" colspan="3">
-               <widget class="QWidget" name="work_space_inner_space" native="true">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="1">
                <widget class="QLineEdit" name="usr_color_ledit"/>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="usr_image_ledit"/>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="usr_image_label">
@@ -1636,6 +1595,69 @@
                 </property>
                 <property name="text">
                  <string>usr image</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="usr_image_ledit"/>
+              </item>
+              <item row="3" column="0" colspan="3">
+               <widget class="QWidget" name="work_space_inner_space" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0" colspan="2">
+               <widget class="QCheckBox" name="store_loc_cbox">
+                <property name="minimumSize">
+                 <size>
+                  <width>400</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>400</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>store loc</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0" colspan="2">
+               <widget class="QCheckBox" name="press_act_cbox">
+                <property name="minimumSize">
+                 <size>
+                  <width>400</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>400</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>press act</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>

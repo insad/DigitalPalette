@@ -81,6 +81,7 @@ class Settings(QDialog, Ui_SettingsDialog):
         self.usr_color_ledit.setText(self._args.usr_color)
         self.usr_image_ledit.setText(self._args.usr_image)
 
+        self.press_act_cbox.setChecked(self._args.press_act)
         self.store_loc_cbox.setChecked(self._args.store_loc)
 
         self.hm_rule_comb.setCurrentIndex(self._args.global_hm_rules.index(self._args.hm_rule))
@@ -136,6 +137,7 @@ class Settings(QDialog, Ui_SettingsDialog):
         self._args.modify_settings("usr_color", self.usr_color_ledit.text())
         self._args.modify_settings("usr_image", self.usr_image_ledit.text())
 
+        self._args.modify_settings("press_act", self.press_act_cbox.isChecked())
         self._args.modify_settings("store_loc", self.store_loc_cbox.isChecked())
 
         hm_rule = self._args.hm_rule

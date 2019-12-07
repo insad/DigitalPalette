@@ -424,9 +424,9 @@ class Operation(QWidget):
         )
 
         self._file_descs = (
-            _translate("MainWindow", "DigiPale Json File"),
-            _translate("MainWindow", "Plain Text File"),
-            _translate("MainWindow", "Adobe Swatch File"),
+            _translate("Operation", "DigiPale Json File"),
+            _translate("Operation", "Plain Text File"),
+            _translate("Operation", "Adobe Swatch File"),
         )
 
         self._operation_errs = (

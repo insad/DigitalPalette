@@ -17,7 +17,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.1.1-dev
+v2.1.2-dev
 """
 
 __AUTHOR__ = """
@@ -25,7 +25,7 @@ Jia Liu
 """
 
 __DATE__ = """
-Dec. 4th, 2019
+Dec. 6th, 2019
 """
 
 import os
@@ -38,7 +38,7 @@ from cguis.design.main_window import Ui_MainWindow
 from cguis.resource import view_rc
 from clibs.args import Args
 from wgets.wheel import Wheel
-from wgets.graph import Graph
+from wgets.image import Image
 from wgets.depot import Depot
 from wgets.cube import CubeTable
 from wgets.rule import Rule
@@ -96,6 +96,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionLocate.triggered.connect(self._wget_operation.locate_btn.click)
         self.actionAttach.triggered.connect(self._wget_operation.attach_btn.click)
         self.actionSettings.triggered.connect(self._wget_settings.showup)
+
+        self.actionWheel.triggered.connect(lambda x: self._inner_create(False)(False))
+        self.actionImage.triggered.connect(lambda x: self._inner_locate(False)(False))
+        self.actionDepot.triggered.connect(lambda x: self._inner_attach(False)(False))
 
         self.actionRule.triggered.connect(self._inner_show_or_hide(self.rule_dock_widget))
         self.actionChannel.triggered.connect(self._inner_show_or_hide(self.channel_dock_widget))
@@ -188,22 +192,22 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
     def _setup_workarea(self):
         """
-        Setup workarea (wheel or graph).
+        Setup workarea (wheel or image).
         """
 
         central_widget_grid_layout = QGridLayout(self.central_widget)
         central_widget_grid_layout.setContentsMargins(2, 2, 2, 2)
 
         self._wget_wheel = Wheel(self.central_widget, self._args)
-        self._wget_graph = Graph(self.central_widget, self._args)
+        self._wget_image = Image(self.central_widget, self._args)
         self._wget_depot = Depot(self.central_widget, self._args)
 
         self._wget_wheel.show()
-        self._wget_graph.hide()
+        self._wget_image.hide()
         self._wget_depot.hide()
 
         central_widget_grid_layout.addWidget(self._wget_wheel)
-        central_widget_grid_layout.addWidget(self._wget_graph)
+        central_widget_grid_layout.addWidget(self._wget_image)
         central_widget_grid_layout.addWidget(self._wget_depot)
 
     def _setup_result(self):
@@ -220,10 +224,10 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_wheel.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color())
         self._wget_wheel.ps_index_changed.connect(lambda x: self._wget_cube_table.update_index())
 
-        self._wget_graph.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color())
+        self._wget_image.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color())
 
         self._wget_cube_table.ps_color_changed.connect(lambda x: self._wget_wheel.update())
-        self._wget_cube_table.ps_color_changed.connect(lambda x: self._wget_graph.update_color_loc())
+        self._wget_cube_table.ps_color_changed.connect(lambda x: self._wget_image.update_color_loc())
 
     def _setup_rule(self):
         """
@@ -262,9 +266,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_operation = Operation(self.operation_dock_contents, self._args)
         operation_grid_layout.addWidget(self._wget_operation)
 
-        self._wget_operation.ps_create.connect(lambda x: self._inner_create())
-        self._wget_operation.ps_locate.connect(lambda x: self._inner_locate())
-        self._wget_operation.ps_attach.connect(lambda x: self._inner_attach())
+        self._wget_operation.ps_create.connect(self._inner_create(True))
+        self._wget_operation.ps_locate.connect(self._inner_locate(True))
+        self._wget_operation.ps_attach.connect(self._inner_attach(True))
 
         self._wget_operation.ps_update.connect(lambda x: self._wget_cube_table.update_color())
         self._wget_operation.ps_update.connect(lambda x: self._wget_rule.update_rule())
@@ -285,7 +289,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_channel = Channel(self.channel_dock_contents, self._args)
         channel_grid_layout.addWidget(self._wget_channel)
 
-        self._wget_channel.ps_channel_changed.connect(lambda x: self._wget_graph.open_category())
+        self._wget_channel.ps_channel_changed.connect(lambda x: self._wget_image.open_category())
 
     def _setup_transformation(self):
         """
@@ -298,9 +302,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_transformation = Transformation(self.transformation_dock_contents, self._args)
         transformation_grid_layout.addWidget(self._wget_transformation)
 
-        self._wget_transformation.ps_home.connect(lambda x: self._wget_graph.home())
-        self._wget_transformation.ps_move.connect(lambda x: self._wget_graph.move(x[0], x[1]))
-        self._wget_transformation.ps_zoom.connect(lambda x: self._wget_graph.zoom(x, "default"))
+        self._wget_transformation.ps_home.connect(lambda x: self._wget_image.home())
+        self._wget_transformation.ps_move.connect(lambda x: self._wget_image.move(x[0], x[1]))
+        self._wget_transformation.ps_zoom.connect(lambda x: self._wget_image.zoom(x, "default"))
 
         self._wget_transformation.ps_home.connect(lambda x: self._wget_depot.home())
         self._wget_transformation.ps_move.connect(lambda x: self._wget_depot.move(x[0], x[1]))
@@ -318,44 +322,62 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_settings.ps_settings_changed.connect(lambda x: self._inner_update())
         self._wget_settings.ps_clean_up.connect(lambda x: self._wget_depot.clean_up())
 
-    def _inner_create(self):
+    def _inner_create(self, act):
         """
         For connection in _setup_operation with create sign.
         """
 
-        if self._wget_wheel.isVisible():
-            self._wget_cube_table.create_set()
+        def _func_(value):
+            if self._wget_wheel.isVisible() and act:
+                self._wget_cube_table.create_set()
 
-        else:
-            self._wget_wheel.show()
-            self._wget_graph.hide()
-            self._wget_depot.hide()
+            else:
+                self._wget_wheel.show()
+                self._wget_image.hide()
+                self._wget_depot.hide()
 
-    def _inner_locate(self):
+                if self._args.press_act and act:
+                    self._wget_cube_table.create_set()
+
+        return _func_
+
+    def _inner_locate(self, act):
         """
         For connection in _setup_operation with locate sign.
         """
 
-        if self._wget_graph.isVisible():
-            self._wget_graph.open_image_dialog()
+        def _func_(value):
+            if self._wget_image.isVisible() and act:
+                self._wget_image.open_image_dialog()
 
-        else:
-            self._wget_wheel.hide()
-            self._wget_graph.show()
-            self._wget_depot.hide()
+            else:
+                self._wget_wheel.hide()
+                self._wget_image.show()
+                self._wget_depot.hide()
 
-    def _inner_attach(self):
+                if self._args.press_act and act:
+                    self._wget_image.open_image_dialog()
+
+        return _func_
+
+    def _inner_attach(self, act):
         """
         For connection in _setup_operation with attach sign.
         """
 
-        if self._wget_depot.isVisible():
-            self._wget_depot.attach_set()
+        def _func_(value):
+            if self._wget_depot.isVisible() and act:
+                self._wget_depot.attach_set()
 
-        else:
-            self._wget_wheel.hide()
-            self._wget_graph.hide()
-            self._wget_depot.show()
+            else:
+                self._wget_wheel.hide()
+                self._wget_image.hide()
+                self._wget_depot.show()
+
+                if self._args.press_act and act:
+                    self._wget_depot.attach_set()
+
+        return _func_
 
     def _inner_update(self):
         """
@@ -365,7 +387,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._args.sys_color_set.set_overflow(self._args.overflow)
         self._args.sys_color_set.set_hsv_ranges(self._args.h_range, self._args.s_range, self._args.v_range)
         self._wget_wheel.update()
-        self._wget_graph.update_all()
+        self._wget_image.update_all()
         self._wget_depot.update_all()
         self._wget_cube_table.update_all()
         self._wget_cube_table.modify_box_visibility()
@@ -401,7 +423,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self._app.installTranslator(self._tr)
 
         self._func_tr_()
-        self._wget_graph._func_tr_()
+        self._wget_image._func_tr_()
         self._wget_depot._func_tr_()
         self._wget_rule._func_tr_()
         self._wget_channel._func_tr_()
@@ -473,7 +495,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         Actions before close DigitalPalette.
         """
 
-        self._wget_graph.close()
+        self._wget_image.close()
         self._wget_depot.close()
         self._args.save_settings()
 

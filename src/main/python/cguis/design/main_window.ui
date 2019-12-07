@@ -84,8 +84,17 @@
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionWheel"/>
+    <addaction name="actionImage"/>
+    <addaction name="actionDepot"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -213,7 +222,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Set category and channel for opened graph.</string>
+    <string>Set category and channel for opened image.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -234,7 +243,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Move and zoom graph and depot content.</string>
+    <string>Move and zoom image and depot content.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -371,6 +380,21 @@
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
+   </property>
+  </action>
+  <action name="actionWheel">
+   <property name="text">
+    <string>Wheel</string>
+   </property>
+  </action>
+  <action name="actionImage">
+   <property name="text">
+    <string>Image</string>
+   </property>
+  </action>
+  <action name="actionDepot">
+   <property name="text">
+    <string>Depot</string>
    </property>
   </action>
  </widget>

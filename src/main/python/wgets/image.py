@@ -14,7 +14,7 @@ from clibs.color import Color
 
 class OverLabel(QLabel):
     """
-    OverLabel object based on QLabel. Init a over label above graph.
+    OverLabel object based on QLabel. Init a over label above Image.
     """
 
     ps_circle_moved = pyqtSignal(bool)
@@ -60,21 +60,6 @@ class OverLabel(QLabel):
         painter.end()
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
-
-    def mouseDoubleClickEvent(self, event):
-        if event.button() == Qt.LeftButton and not self._image_imported:
-            p_x = event.x()
-            p_y = event.y()
-
-            box = (self._wid * 0.2, self._hig * 0.2, self._wid * 0.6, self._hig * 0.6)
-
-            if box[0] < p_x < (box[0] + box[2]) and box[1] < p_y < (box[1] + box[3]):
-                self.slot_open_graph()
-
-                event.accept()
-                self.update()
-            else:
-                event.ignore()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -122,16 +107,16 @@ class OverLabel(QLabel):
         event.ignore()
 
 
-class Graph(QWidget):
+class Image(QWidget):
     """
-    Graph object based on QWidget. Init a graph pannel in workarea.
+    Image object based on QWidget. Init a image pannel in workarea.
     """
 
     ps_color_changed = pyqtSignal(bool)
 
     def __init__(self, wget, args):
         """
-        Init Graph pannel.
+        Init Image pannel.
         """
 
         super().__init__(wget)
@@ -194,7 +179,7 @@ class Graph(QWidget):
 
             self._tip_label.setGeometry(QRect(*self._tip_box))
 
-            self._tip_label.setText(self._graph_descs[0])
+            self._tip_label.setText(self._action_descs[0])
             self._tip_label.setAlignment(Qt.AlignCenter)
 
         elif self._args.sys_category not in self._categories:
@@ -403,7 +388,7 @@ class Graph(QWidget):
         """
 
         cb_filter = "All Images (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; PNG Image (*.png);; BMP Image (*.bmp);; JPEG Image (*.jpg *.jpeg);; TIFF Image (*.tif *.tiff)"
-        cb_file = QFileDialog.getOpenFileName(None, self._graph_descs[1], self._args.usr_image, filter=cb_filter)
+        cb_file = QFileDialog.getOpenFileName(None, self._action_descs[1], self._args.usr_image, filter=cb_filter)
 
         if cb_file[0]:
             self._args.usr_image = os.path.dirname(os.path.abspath(cb_file[0]))
@@ -419,7 +404,7 @@ class Graph(QWidget):
         """
 
         if self._image3c.isRunning():
-            self.warning(self._graph_errs[1])
+            self.warning(self._image_errs[1])
             return
 
         self._categories = []
@@ -439,7 +424,7 @@ class Graph(QWidget):
             return
 
         if not self._image3c.check_temp_dir():
-            self.warning(self._graph_errs[2])
+            self.warning(self._image_errs[2])
             return
 
         self._display = None
@@ -495,7 +480,7 @@ class Graph(QWidget):
 
         self.ps_color_changed.emit(True)
         # update_color_loc() is completed by 
-        # self._wget_graph.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color()) in main.py.
+        # self._wget_image.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color()) in main.py.
 
     def update_color_loc(self):
         """
@@ -520,16 +505,16 @@ class Graph(QWidget):
 
     def warning(self, text):
         box = QMessageBox(self)
-        box.setWindowTitle(self._graph_errs[0])
+        box.setWindowTitle(self._image_errs[0])
         box.setText(text)
         box.setIcon(QMessageBox.Warning)
-        box.addButton(self._graph_errs[3], QMessageBox.AcceptRole)
+        box.addButton(self._image_errs[3], QMessageBox.AcceptRole)
 
         box.exec_()
 
     def closeEvent(self, event):
         """
-        Actions before close Graph.
+        Actions before close Image.
         """
 
         self._image3c.remove_temp_dir()
@@ -539,34 +524,34 @@ class Graph(QWidget):
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
-        self._graph_descs = (
-            _translate("Graph", "Double click here to open an image."),
-            _translate("Graph", "Open"),
+        self._action_descs = (
+            _translate("Image", "Double click here to open an image."),
+            _translate("Image", "Open"),
         )
 
-        self._graph_errs = (
-            _translate("Graph", "Error"),
-            _translate("Graph", "Could not open image. Already has an image in process."),
-            _translate("Graph", "Could not create temporary dir. Dir is not created."),
-            _translate("Graph", "OK"),
+        self._image_errs = (
+            _translate("Image", "Error"),
+            _translate("Image", "Could not open image. Already has an image in process."),
+            _translate("Image", "Could not create temporary dir. Dir is not created."),
+            _translate("Image", "OK"),
         )
 
         self._image_descs = (
-            _translate("Graph", "Finishing."),
-            _translate("Graph", "Loading RGB data."),
-            _translate("Graph", "Saving RGB data."),
-            _translate("Graph", "Loading HSV data."),
-            _translate("Graph", "Saving HSV data."),
-            _translate("Graph", "Loading RGB vertical edge data."),
-            _translate("Graph", "Saving RGB vertical edge data."),
-            _translate("Graph", "Loading RGB horizontal edge data."),
-            _translate("Graph", "Saving RGB horizontal edge data."),
-            _translate("Graph", "Loading RGB final edge data."),
-            _translate("Graph", "Saving RGB final edge data."),
-            _translate("Graph", "Loading HSV vertical edge data."),
-            _translate("Graph", "Saving HSV vertical edge data."),
-            _translate("Graph", "Loading HSV horizontal edge data."),
-            _translate("Graph", "Saving HSV horizontal edge data."),
-            _translate("Graph", "Loading HSV final edge data."),
-            _translate("Graph", "Saving HSV final edge data."),
+            _translate("Image", "Finishing."),
+            _translate("Image", "Loading RGB data."),
+            _translate("Image", "Saving RGB data."),
+            _translate("Image", "Loading HSV data."),
+            _translate("Image", "Saving HSV data."),
+            _translate("Image", "Loading RGB vertical edge data."),
+            _translate("Image", "Saving RGB vertical edge data."),
+            _translate("Image", "Loading RGB horizontal edge data."),
+            _translate("Image", "Saving RGB horizontal edge data."),
+            _translate("Image", "Loading RGB final edge data."),
+            _translate("Image", "Saving RGB final edge data."),
+            _translate("Image", "Loading HSV vertical edge data."),
+            _translate("Image", "Saving HSV vertical edge data."),
+            _translate("Image", "Loading HSV horizontal edge data."),
+            _translate("Image", "Saving HSV horizontal edge data."),
+            _translate("Image", "Loading HSV final edge data."),
+            _translate("Image", "Saving HSV final edge data."),
         )

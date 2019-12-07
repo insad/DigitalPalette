@@ -81,12 +81,12 @@ class Args(object):
         # software informations.
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_version_zh = "v2.1.1-开发版"
-        self.info_version_en = "v2.1.1-dev"
+        self.info_version_zh = "v2.1.2-开发版"
+        self.info_version_en = "v2.1.2-dev"
         self.info_author_zh = "刘佳"
         self.info_author_en = "Jia Liu"
-        self.info_date_zh = "2019年12月4日"
-        self.info_date_en = "Dec. 4th, 2019"
+        self.info_date_zh = "2019年12月6日"
+        self.info_date_en = "Dec. 6th, 2019"
 
         # special system settings.
         self.sys_activated_idx = 0
@@ -107,6 +107,7 @@ class Args(object):
         self.modify_settings("lang", "default")
 
         # load local store tag.
+        self.press_act = False
         self.store_loc = False
 
         if os.path.isfile(os.sep.join((self.resources, "settings.json"))):
@@ -178,7 +179,7 @@ class Args(object):
         }
 
         items = (
-            "usr_color", "usr_image", "store_loc", "hm_rule", "overflow", "lang", "press_move",
+            "usr_color", "usr_image", "press_act", "store_loc", "hm_rule", "overflow", "lang", "press_move",
             "show_hsv", "show_rgb", "h_range", "s_range", "v_range",
             "wheel_ratio", "volum_ratio", "cubic_ratio", "coset_ratio",
             "s_tag_radius", "v_tag_radius", "zoom_step", "move_step", "circle_dist",
@@ -222,6 +223,7 @@ class Args(object):
         items = {
             "usr_color": lambda vl: self.pfmt_path(vl, self.usr_color),
             "usr_image": lambda vl: self.pfmt_path(vl, self.usr_image),
+            "press_act": lambda vl: self.pfmt_value(vl, bool, self.press_act),
             "store_loc": lambda vl: self.pfmt_value(vl, bool, self.store_loc),
             "hm_rule": lambda vl: self.pfmt_str_in_list(vl, self.global_hm_rules, self.hm_rule),
             "overflow": lambda vl: self.pfmt_str_in_list(vl, self.global_overflows, self.overflow),
