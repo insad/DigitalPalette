@@ -150,7 +150,7 @@ File in this format contains all color values and can be imported into image pro
 # Shortcuts
 | Name | Description | Shortcut |
 | --- | --- | --- |
-| **Work Area** | - | - |
+| Work Area | # | # |
 | Open | Open a color depot file. | Alt+O; Ctrl+O |
 | Save | Save a color depot file. | Alt+S; Ctrl+S |
 | Import | Import a color set file. | Alt+I; Ctrl+I |
@@ -163,7 +163,7 @@ File in this format contains all color values and can be imported into image pro
 | Homepage | Open the homepage website through web browser. | Alt+H; F1 |
 | Update | Search for software updates through web browser. | Alt+U; F2 |
 | About | Display information relative to this software. | Alt+B; F3 |
-| **Result Area** | - | - |
+| Result Area | # | # |
 | Copy Tagged RGB | Copy the RGB value (single) tagged by color tag into system clipboard. | R |
 | Copy Tagged HSV | Copy the HSV value (single) tagged by color tag into system clipboard. | H |
 | Copy Tagged Hex | Copy the Hex code (single) tagged by color tag into system clipboard. | X |
@@ -171,13 +171,13 @@ File in this format contains all color values and can be imported into image pro
 | Copy HSV Result | Copy all HSV values (five) in result into system clipboard. | Shift+H |
 | Copy Hex Result | Copy all RGB codes (five) in result into system clipboard. | Shift+X |
 | Activate Tag | Activate the corresponding color tag in color wheel. | 1; 2; 3; 4; 5 |
-| **Depot Area** | - | - |
+| Depot Area | # | # |
 | Copy Current RGB | Copy the RGB values (five) selected in depot into system clipboard. | Ctrl+R |
 | Copy Current HSV | Copy the RGB values (five) selected in depot into system clipboard. | Ctrl+H |
 | Copy Current Hex | Copy the RGB values (five) selected in depot into system clipboard. | Ctrl+X |
 | Delete from Depot | Delete the selected color set from depot. | Delete; D |
 | Insert into Depot | Attach the color set in result area into depot or import the selected color set into result area. | Insert; I |
-| **Move Actions** | - | - |
+| Move Actions | # | # |
 | Move | Move the opened image. | ↑; ↓; ←; → |
 | Zoom | Zoom the opened image. | =; -; [; ] |
 | Reset | Reset the position and size of image. | Home |
