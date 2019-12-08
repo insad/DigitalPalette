@@ -99,7 +99,7 @@ class Operation(QWidget):
         """
 
         cb_filter = "{} (*.json)".format(self._file_descs[0])
-        cb_file = QFileDialog.getOpenFileName(None, self._operation_descs[0], self._args.usr_color, filter=cb_filter)
+        cb_file = QFileDialog.getOpenFileName(None, self._operation_descs[5], self._args.usr_color, filter=cb_filter)
 
         if cb_file[0]:
             self._args.usr_color = os.path.dirname(os.path.abspath(cb_file[0]))
@@ -189,7 +189,7 @@ class Operation(QWidget):
         name = "{}".format(time.strftime("DigiPale_Depot_%Y_%m_%d.json", time.localtime()))
 
         cb_filter = "{} (*.json);; {} (*.txt);; {} (*.aco)".format(self._file_descs[0], self._file_descs[1], self._file_descs[2])
-        cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[1], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
+        cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[6], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
             self._args.usr_color = os.path.dirname(os.path.abspath(cb_file[0]))
