@@ -92,12 +92,50 @@ You could click "**View**" in the **menu bar** and select "**Depot**" to switch 
 You could add, delete, modify and check the stored color sets and their information in color depot. Each icon in color depot includes five color squares, which are corresponding to the five colors of color set. Note that the color of central square represents the major color.  
 ![Depot](English/usage/10.png)
 
+## Example
+1. Switch **work area** into color image view and open the image below. This image could be found in samples folder under the install directory of DigitalPalette.  
+![Sample](English/example/H_range.png)
+
+2. The interface of DigitalPalette is shown as below after open an image.  
+![Open](English/example/0.png)
+
+3. Change the harmony rule in **rule window** into "Custom" and click the third color square in **result window**, then click the center purple area in image. It could be seen that a color tag is appeared at where we clicked. Meanwhile, the color of the third color square has changed into purple. Similarly, we could settle the color of other color squares as the other colors in image.  
+![Locate](English/example/1.png)
+
+4. Switch **work area** into color depot view. The interface of DigitalPalette is shown as below.  
+![Depot](English/example/2.png)
+
+5. Double click the last empty color set icon and add the color set we located from image into color depot.  
+![Attach](English/example/3.png)
+
+6. Right click the added color set icon and click "Detail" and open the color set information dialog.  
+![Check](English/example/4.png)
+
+7. We could check the colors and harmony rule of color set and modify the name and description of color set. It could be seen that the harmony rule of this color set is "Custom" and it is mainly composed of blue, green, purple, yellow and red, where purple is the major color. Click the editor beside "Name" and modify the name as "My first color set". Click the editor below "Description" and modify the description as "This is my first color set collected from a DigitalPalette image sample."  
+![Modify](English/example/5.png)
+
+8. Switch **work area** into color wheel view and check the distribution of each color in this color set. It could be seen that these colors are distribute in pentad shape, and the saturation and lightness of colors are extremely high.  
+![Distribution](English/example/6.png)
+
+9. We could change the harmony rule into "Pentad" according to the distribution of colors as discussed above. Then we could drag the color tag and lower their saturation and lightness and get the other color set.  
+![Modify](English/example/7.png)
+
+10. Switch **work area** into color depot view and add this color set into color depot, check and modify the information of this color set in the same way.  
+![Attach](English/example/8.png)
+
 ## Open and Save Color Depot and Import and Export Color Set
 All color sets in depot or color set in current result could be exported and save as readable and writable files or other formated files for subsequent usage and analysis. Steps:  
-1. Click the "**Save**" button in **operation window** and fill the file name and path in opened dialog. Click "Save" to export all color sets in depot.
-2. Click the "**Open**" button in **operation window** and fill the file name and path in opened dialog. Click "Open" to import all color sets in file.
-3. Click the "**Export**" button in **operation window** and fill the file name and path in opened dialog. Click "Save" to export the color set in current result.
-4. Click the "**Import**" button in **operation window** and fill the file name and path in opened dialog. Click "Open" to import the color set saved in file.
+1. Click the "**Save**" button in **operation window** and fill the file name and path in opened dialog. Click "Save" to export all color sets in depot.  
+![Save](English/operation/1.png)
+
+2. Click the "**Open**" button in **operation window** and fill the file name and path in opened dialog. Click "Open" to import all color sets in file.  
+![Open](English/operation/0.png)
+
+3. Click the "**Export**" button in **operation window** and fill the file name and path in opened dialog. Click "Save" to export the color set in current result.  
+![Export](English/operation/3.png)
+
+4. Click the "**Import**" button in **operation window** and fill the file name and path in opened dialog. Click "Open" to import the color set saved in file.  
+![Import](English/operation/2.png)
 
 ### File Formats
 1. DigiPale Json File (*.json)  
@@ -109,7 +147,7 @@ File in this format contains basic color data, including the hex code, RGB and H
 3. Adobe Swatch File (*.aco)  
 File in this format contains all color values and can be imported into image processing softwares such as Photoshop and GIMP as color swatches.
 
-## Shortcuts
+# Shortcuts
 | Name | Description | Shortcut |
 | --- | --- | --- |
 | **Work Area** | - | - |
