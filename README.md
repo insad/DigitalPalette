@@ -4,7 +4,7 @@
 DigitalPalette is a free software for generating a set of harmonious colors from color wheel or existed images and applying it into your creative works.
 
 # Version
-2.1.2 (develop)
+2.2.1 (develop)
 
 # Download
 To be released.
