@@ -205,15 +205,6 @@ class Image3C(QThread):
         self.ps_describe.emit(3)
         self.ps_proceses.emit(int(pro_scope[0]))
 
-        '''
-        self.hsv_data = np.zeros(self.rgb_data.shape, dtype=np.float32)
-
-        self.ps_proceses.emit(int(pro_scope[0] + pro_scope[1] * 0.25))
-        for i in range(self.hsv_data.shape[0]):
-            for j in range(self.hsv_data.shape[1]):
-                self.hsv_data[i][j] = Color.rgb2hsv(self.rgb_data[i][j])
-        '''
-
         self.hsv_data = Color.rgb2hsv_array(self.rgb_data)
 
         self.ps_describe.emit(4)
@@ -495,35 +486,21 @@ class Image3C(QThread):
         Save h, s, v channel images.
         """
 
-        '''
-        h_channel = np.zeros(hsv_data.shape, dtype=np.uint8)
-        s_channel = np.zeros(hsv_data.shape, dtype=np.uint8)
-        v_channel = np.zeros(hsv_data.shape, dtype=np.uint8)
-
-        for i in range(hsv_data.shape[0]):
-            for j in range(hsv_data.shape[1]):
-                h, s, v = hsv_data[i][j]
-                h_channel[i][j] = Color.hsv2rgb((h, 1, 1))
-                s_channel[i][j] = Color.hsv2rgb((0, s, 1))
-                v_channel[i][j] = Color.hsv2rgb((0, 1, v))
-        '''
-
         ones = np.ones(hsv_data.shape[:2])
         zeros = np.zeros(hsv_data.shape[:2])
 
-        h_channel = Color.hsv2rgb_array(np.stack((hsv_data[:, :, 0], ones, ones), axis=2))
-        s_channel = Color.hsv2rgb_array(np.stack((zeros, hsv_data[:, :, 1], ones), axis=2))
-        v_channel = Color.hsv2rgb_array(np.stack((zeros, ones, hsv_data[:, :, 2]), axis=2))
-
-        h_chl = QImage(h_channel, h_channel.shape[1], h_channel.shape[0], h_channel.shape[1] * 3, QImage.Format_RGB888)
+        h_chl = Color.hsv2rgb_array(np.stack((hsv_data[:, :, 0], ones, ones), axis=2))
+        h_chl = QImage(h_chl, h_chl.shape[1], h_chl.shape[0], h_chl.shape[1] * 3, QImage.Format_RGB888)
         h_chl.save(self._temp_dir.path() + os.sep + "{}_1.png".format(prefix))
         self.ps_finished.emit(prefix * 10 + 1)
 
-        s_chl = QImage(s_channel, s_channel.shape[1], s_channel.shape[0], s_channel.shape[1] * 3, QImage.Format_RGB888)
+        s_chl = Color.hsv2rgb_array(np.stack((zeros, hsv_data[:, :, 1], ones), axis=2))
+        s_chl = QImage(s_chl, s_chl.shape[1], s_chl.shape[0], s_chl.shape[1] * 3, QImage.Format_RGB888)
         s_chl.save(self._temp_dir.path() + os.sep + "{}_2.png".format(prefix))
         self.ps_finished.emit(prefix * 10 + 2)
 
-        v_chl = QImage(v_channel, v_channel.shape[1], v_channel.shape[0], v_channel.shape[1] * 3, QImage.Format_RGB888)
+        v_chl = Color.hsv2rgb_array(np.stack((zeros, ones, hsv_data[:, :, 2]), axis=2))
+        v_chl = QImage(v_chl, v_chl.shape[1], v_chl.shape[0], v_chl.shape[1] * 3, QImage.Format_RGB888)
         v_chl.save(self._temp_dir.path() + os.sep + "{}_3.png".format(prefix))
         self.ps_finished.emit(prefix * 10 + 3)
 

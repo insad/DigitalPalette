@@ -602,6 +602,9 @@ class Image(QWidget):
         self.overlabel_display.locations = [None, None, None, None, None]
         self._image3c.display = None
 
+        self._image3c.rgb_data = None
+        self._image3c.hsv_data = None
+
         if isinstance(script, tuple):
             if script[0] in ("ZOOM", "CROP"):
                 self._move_pos = None
