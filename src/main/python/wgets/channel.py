@@ -21,6 +21,8 @@ class Channel(QWidget):
         # load args.
         self._args = args
 
+        self._backups = ()
+
         # load translations.
         self._func_tr_()
 
@@ -37,7 +39,7 @@ class Channel(QWidget):
 
         scroll_contents = QWidget()
         scroll_grid_layout = QGridLayout(scroll_contents)
-        scroll_grid_layout.setContentsMargins(1, 1, 1, 1)
+        scroll_grid_layout.setContentsMargins(8, 8, 8, 8)
         scroll_grid_layout.setHorizontalSpacing(8)
         scroll_grid_layout.setVerticalSpacing(12)
         scroll_area.setWidget(scroll_contents)
@@ -82,15 +84,18 @@ class Channel(QWidget):
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
         gbox_grid_layout.addItem(spacer, 4, 1, 1, 1)
 
-        self._category_btns[self._args.sys_category].setChecked(True)
-        self._channel_btns[self._args.sys_channel].setChecked(True)
-
-        self.update_text()
+        self.reset()
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(180, 90)
+        return QSize(185, 90)
+
+    def reset(self):
+        self._category_btns[self._args.sys_category].setChecked(True)
+        self._channel_btns[self._args.sys_channel].setChecked(True)
+
+        self.update_text()
 
     def modify_category(self, idx):
         """
@@ -98,6 +103,8 @@ class Channel(QWidget):
         """
 
         def _func_(value):
+            self._backups = (self._args.sys_category, self._args.sys_channel)
+
             self._args.sys_category = idx
             self.ps_channel_changed.emit(True)
 
@@ -111,10 +118,20 @@ class Channel(QWidget):
         """
 
         def _func_(value):
+            self._backups = (self._args.sys_category, self._args.sys_channel)
+
             self._args.sys_channel = idx
             self.ps_channel_changed.emit(True)
 
         return _func_
+
+    def recover(self):
+        """
+        Recover sys_category and sys_channel from backups.
+        """
+
+        self._args.sys_category, self._args.sys_channel = self._backups
+        self.reset()
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 

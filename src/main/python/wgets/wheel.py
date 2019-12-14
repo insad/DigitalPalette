@@ -38,10 +38,8 @@ class Wheel(QWidget):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        wid = self.geometry().width()
-        hig = self.geometry().height()
-        self._center = np.array((wid / 2.0, hig / 2.0))
-        self._radius = min(wid, hig) * self._args.wheel_ratio / 2
+        self._center = np.array((self.width() / 2.0, self.height() / 2.0))
+        self._radius = min(self.width(), self.height()) * self._args.wheel_ratio / 2
 
         painter = QPainter()
         painter.begin(self)
@@ -70,9 +68,48 @@ class Wheel(QWidget):
         painter.setBrush(rgrad)
         painter.drawEllipse(*wheel_box)
 
+        # bars.
+        bar_hsv = self._args.sys_color_set[self._args.sys_activated_idx].hsv
+        bar_v = bar_hsv[2]
+        bar_rgb = Color.hsv2rgb((bar_hsv[0], bar_hsv[1], 1.0))
+        self._v_tag_radius = min(self.width(), self.height()) * self._args.v_tag_radius / 2
+
+        re_wid = self.width() * (1 - self._args.wheel_ratio) / 2 * self._args.volum_ratio
+        re_wid = self._v_tag_radius * 3 if self._v_tag_radius * 3 < re_wid else re_wid
+
+        bar_1_center = ((self.width() - self._radius * 2) / 4, self.height() / 2)
+        self._bar_1_box = (bar_1_center[0] - re_wid / 2, bar_1_center[1] - self.height() * self._args.volum_ratio / 2, re_wid, self.height() * self._args.volum_ratio)
+        painter.setPen(QPen(QColor(*self._args.wheel_ed_color), self._args.wheel_ed_wid))
+        lgrad = QLinearGradient(self._bar_1_box[0], self._bar_1_box[1], self._bar_1_box[0], self._bar_1_box[3])
+        lgrad.setColorAt(1.0, Qt.white)
+        lgrad.setColorAt(0.0, Qt.black)
+        painter.setBrush(lgrad)
+        painter.drawRect(*self._bar_1_box)
+
+        self._cir_1_center = (bar_1_center[0], self._bar_1_box[1] + self._bar_1_box[3] * bar_v)
+        cir_1_box = get_outer_box(self._cir_1_center, self._v_tag_radius)
+        painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+        painter.setBrush(QBrush(Qt.NoBrush))
+        painter.drawEllipse(*cir_1_box)
+
+        bar_2_center = (self.width() - (self.width() - self._radius * 2) / 4, self.height() / 2)
+        self._bar_2_box = (bar_2_center[0] - re_wid / 2, bar_2_center[1] - self.height() * self._args.volum_ratio / 2, re_wid, self.height() * self._args.volum_ratio)
+        painter.setPen(QPen(QColor(*self._args.wheel_ed_color), self._args.wheel_ed_wid))
+        lgrad = QLinearGradient(self._bar_2_box[0], self._bar_2_box[1], self._bar_2_box[0], self._bar_2_box[3])
+        lgrad.setColorAt(1.0, QColor(*bar_rgb))
+        lgrad.setColorAt(0.0, Qt.black)
+        painter.setBrush(lgrad)
+        painter.drawRect(*self._bar_2_box)
+
+        self._cir_2_center = (bar_2_center[0], self._bar_2_box[1] + self._bar_2_box[3] * bar_v)
+        cir_2_box = get_outer_box(self._cir_2_center, self._v_tag_radius)
+        painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+        painter.setBrush(QBrush(Qt.NoBrush))
+        painter.drawEllipse(*cir_2_box)
+
         # color set tags.
         self._tag_center = [None] * 5
-        self._tag_radius = min(wid, hig) * self._args.s_tag_radius / 2
+        self._tag_radius = min(self.width(), self.height()) * self._args.s_tag_radius / 2
 
         idx_seq = list(range(5))
         idx_seq = idx_seq[self._args.sys_activated_idx + 1: ] + idx_seq[: self._args.sys_activated_idx + 1]
@@ -92,45 +129,6 @@ class Wheel(QWidget):
             painter.drawLine(QPoint(*self._center), QPoint(*color_center))
             painter.setBrush(QColor(*self._args.sys_color_set[idx].rgb))
             painter.drawEllipse(*color_box)
-
-        # bars.
-        bar_hsv = self._args.sys_color_set[self._args.sys_activated_idx].hsv
-        bar_v = bar_hsv[2]
-        bar_rgb = Color.hsv2rgb((bar_hsv[0], bar_hsv[1], 1.0))
-        self._v_tag_radius = min(wid, hig) * self._args.v_tag_radius / 2
-
-        re_wid = wid * (1 - self._args.wheel_ratio) / 2 * self._args.volum_ratio
-        re_wid = self._v_tag_radius * 3 if self._v_tag_radius * 3 < re_wid else re_wid
-
-        bar_1_center = ((wid - self._radius * 2) / 4, hig / 2)
-        self._bar_1_box = (bar_1_center[0] - re_wid / 2, bar_1_center[1] - hig * self._args.volum_ratio / 2, re_wid, hig * self._args.volum_ratio)
-        painter.setPen(QPen(QColor(*self._args.wheel_ed_color), self._args.wheel_ed_wid))
-        lgrad = QLinearGradient(self._bar_1_box[0], self._bar_1_box[1], self._bar_1_box[0], self._bar_1_box[3])
-        lgrad.setColorAt(1.0, Qt.white)
-        lgrad.setColorAt(0.0, Qt.black)
-        painter.setBrush(lgrad)
-        painter.drawRect(*self._bar_1_box)
-
-        self._cir_1_center = (bar_1_center[0], self._bar_1_box[1] + self._bar_1_box[3] * bar_v)
-        cir_1_box = get_outer_box(self._cir_1_center, self._v_tag_radius)
-        painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
-        painter.setBrush(QBrush(Qt.NoBrush))
-        painter.drawEllipse(*cir_1_box)
-
-        bar_2_center = (wid - (wid - self._radius * 2) / 4, hig / 2)
-        self._bar_2_box = (bar_2_center[0] - re_wid / 2, bar_2_center[1] - hig * self._args.volum_ratio / 2, re_wid, hig * self._args.volum_ratio)
-        painter.setPen(QPen(QColor(*self._args.wheel_ed_color), self._args.wheel_ed_wid))
-        lgrad = QLinearGradient(self._bar_2_box[0], self._bar_2_box[1], self._bar_2_box[0], self._bar_2_box[3])
-        lgrad.setColorAt(1.0, QColor(*bar_rgb))
-        lgrad.setColorAt(0.0, Qt.black)
-        painter.setBrush(lgrad)
-        painter.drawRect(*self._bar_2_box)
-
-        self._cir_2_center = (bar_2_center[0], self._bar_2_box[1] + self._bar_2_box[3] * bar_v)
-        cir_2_box = get_outer_box(self._cir_2_center, self._v_tag_radius)
-        painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
-        painter.setBrush(QBrush(Qt.NoBrush))
-        painter.drawEllipse(*cir_2_box)
 
         painter.end()
 

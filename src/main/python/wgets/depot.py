@@ -151,17 +151,14 @@ class UnitCell(QWidget):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        wid = self.geometry().width()
-        hig = self.geometry().height()
-
-        cs_wid = int(min(wid, hig) * self._args.coset_ratio / 2)
+        cs_wid = int(min(self.width(), self.height()) * self._args.coset_ratio / 2)
 
         cs_boxes = (
-            (wid / 2 - cs_wid, hig / 2 - cs_wid, cs_wid, cs_wid),
-            (wid / 2, hig / 2 - cs_wid, cs_wid, cs_wid),
-            (wid / 2 - cs_wid, hig / 2, cs_wid, cs_wid),
-            (wid / 2, hig / 2, cs_wid, cs_wid),
-            (wid / 2 - cs_wid / 2, hig / 2 - cs_wid / 2, cs_wid, cs_wid),
+            (self.width() / 2 - cs_wid, self.height() / 2 - cs_wid, cs_wid, cs_wid),
+            (self.width() / 2, self.height() / 2 - cs_wid, cs_wid, cs_wid),
+            (self.width() / 2 - cs_wid, self.height() / 2, cs_wid, cs_wid),
+            (self.width() / 2, self.height() / 2, cs_wid, cs_wid),
+            (self.width() / 2 - cs_wid / 2, self.height() / 2 - cs_wid / 2, cs_wid, cs_wid),
         )
 
         painter = QPainter()
@@ -173,7 +170,7 @@ class UnitCell(QWidget):
         if self.activated:
             painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
             painter.setBrush(QColor(Qt.white))
-            painter.drawRoundedRect(self._args.positive_wid, self._args.positive_wid, wid - self._args.positive_wid * 2, hig - self._args.positive_wid * 2, wid / 9, hig / 9)
+            painter.drawRoundedRect(self._args.positive_wid, self._args.positive_wid, self.width() - self._args.positive_wid * 2, self.height() - self._args.positive_wid * 2, self.width() / 9, self.height() / 9)
 
         for idx in range(5):
             if self.activated:
@@ -267,11 +264,11 @@ class Depot(QWidget):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        self._pl_wid = int((self.geometry().width() - 2) / self._args.stab_column)
+        self._pl_wid = int((self.width() - 2) / self._args.stab_column)
         self._tot_rows = len(self._args.stab_ucells) // self._args.stab_column if len(self._args.stab_ucells) % self._args.stab_column == 0 else len(self._args.stab_ucells) // self._args.stab_column + 1
 
         height = self._pl_wid * self._tot_rows
-        height = height if height > self.geometry().height() else self.geometry().height()
+        height = height if height > self.height() else self.height()
 
         self._scroll_contents.setMinimumSize(self._pl_wid * self._args.stab_column, height)
         self._scroll_contents.setMaximumSize(self._pl_wid * self._args.stab_column, height)
@@ -283,10 +280,20 @@ class Depot(QWidget):
                 if idx < len(self._args.stab_ucells) and isinstance(self._args.stab_ucells[idx], UnitCell):
                     self._args.stab_ucells[idx].setGeometry(self._pl_wid * j, self._pl_wid * i, self._pl_wid, self._pl_wid)
 
+        status_idx = self._current_idx
+
+        if status_idx == None:
+            status_idx = 0
+
+        else:
+            status_idx = status_idx + 1
+
+        self.setStatusTip(self._status_descs[0].format(self._tot_rows, self._args.stab_column, len(self._args.stab_ucells) - 1, status_idx))
+
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mousePressEvent(self, event):
-        point = np.array((event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y()))
+        point = np.array((event.x() - self._scroll_contents.x(), event.y() - self._scroll_contents.y()))
 
         col = point[0] // self._pl_wid
         row = point[1] // self._pl_wid
@@ -324,16 +331,24 @@ class Depot(QWidget):
 
     def mouseMoveEvent(self, event):
         if self._left_click:
-            point = np.array((event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y()))
-
-            if isinstance(self._start_pt, np.ndarray) and np.linalg.norm(self._start_pt - point) < self._pl_wid / 5:
+            if isinstance(self._start_pt, np.ndarray) and np.linalg.norm(self._start_pt - np.array((event.x(), event.y()))) < self._pl_wid / 5:
+                # fixed icon in small region.
                 event.ignore()
 
             else:
+                x = event.x()
+                y = event.y()
+                x = x if x > self._pl_wid / 5 else self._pl_wid / 5
+                x = x if x < self.width() - self._pl_wid / 5 else self.width() - self._pl_wid / 5
+                y = y if y > self._pl_wid / 5 else self._pl_wid / 5
+                y = y if y < self.height() - self._pl_wid / 5 else self.height() - self._pl_wid / 5
+                x = int(x) - self._scroll_contents.x()
+                y = int(y) - self._scroll_contents.y()
+
                 self._start_pt = None
 
-                col = point[0] // self._pl_wid
-                row = point[1] // self._pl_wid
+                col = x // self._pl_wid
+                row = y // self._pl_wid
 
                 if col <= self._args.stab_column:
                     idx = self._args.stab_column * row + col
@@ -344,7 +359,7 @@ class Depot(QWidget):
 
                         self._args.stab_ucells.insert(idx, None)
 
-                self._fetched_cell.setGeometry(point[0] - self._pl_wid / 2, point[1] - self._pl_wid / 2, self._pl_wid, self._pl_wid)
+                self._fetched_cell.setGeometry(x - self._pl_wid / 2, y - self._pl_wid / 2, self._pl_wid, self._pl_wid)
 
                 self.update()
                 event.accept()
@@ -377,7 +392,7 @@ class Depot(QWidget):
 
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
-            point = (event.x() - self._scroll_contents.geometry().x(), event.y() - self._scroll_contents.geometry().y())
+            point = (event.x() - self._scroll_contents.x(), event.y() - self._scroll_contents.y())
 
             col = point[0] // self._pl_wid
             row = point[1] // self._pl_wid
@@ -390,7 +405,7 @@ class Depot(QWidget):
 
                     if idx == len(self._args.stab_ucells) - 1:
                         self.attach_set()
-                    
+
                     else:
                         self.import_set()
 
@@ -507,14 +522,24 @@ class Depot(QWidget):
             self._args.stab_ucells[self._current_idx].update()
 
             if update:
-                upp_pos = self._scroll_contents.geometry().y() + self._args.stab_ucells[self._current_idx].geometry().y()
-                low_pos = self._scroll_contents.geometry().y() + self._args.stab_ucells[self._current_idx].geometry().y() + self._args.stab_ucells[self._current_idx].geometry().height()
+                upp_pos = self._scroll_contents.y() + self._args.stab_ucells[self._current_idx].y()
+                low_pos = self._scroll_contents.y() + self._args.stab_ucells[self._current_idx].y() + self._args.stab_ucells[self._current_idx].height()
 
                 if upp_pos <= 0:
-                    self._scroll_bar.setValue(self._args.stab_ucells[self._current_idx].geometry().y())
+                    self._scroll_bar.setValue(self._args.stab_ucells[self._current_idx].y())
 
-                elif low_pos >= self._scroll_area.geometry().height():
-                    self._scroll_bar.setValue(self._args.stab_ucells[self._current_idx].geometry().y() + self._pl_wid - self._scroll_area.geometry().height())
+                elif low_pos >= self._scroll_area.height():
+                    self._scroll_bar.setValue(self._args.stab_ucells[self._current_idx].y() + self._pl_wid - self._scroll_area.height())
+
+        status_idx = self._current_idx
+
+        if status_idx == None:
+            status_idx = 0
+
+        else:
+            status_idx = status_idx + 1
+
+        self.setStatusTip(self._status_descs[0].format(self._tot_rows, self._args.stab_column, len(self._args.stab_ucells) - 1, status_idx))
 
     def move(self, shift_x, shift_y):
         """
@@ -766,4 +791,8 @@ class Depot(QWidget):
             _translate("Depot", "Delete"),
             _translate("Depot", "Detail"),
             _translate("Depot", "Attach"),
+        )
+
+        self._status_descs = (
+            _translate("Depot", "Depot Volume: Row {}, Col {}, Total {}, Index {}."),
         )

@@ -81,12 +81,12 @@ class Args(object):
         # software informations.
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_version_zh = "v2.1.2-开发版"
-        self.info_version_en = "v2.1.2-dev"
+        self.info_version_zh = "v2.2.1-开发版"
+        self.info_version_en = "v2.2.1-dev"
         self.info_author_zh = "刘佳"
         self.info_author_en = "Jia Liu"
-        self.info_date_zh = "2019年12月6日"
-        self.info_date_en = "Dec. 6th, 2019"
+        self.info_date_zh = "2019年12月12日"
+        self.info_date_en = "Dec. 12th, 2019"
 
         # special system settings.
         self.sys_activated_idx = 0
@@ -430,7 +430,7 @@ class Args(object):
         """
 
         try:
-            for vre in (r"^v2\.[1].*",):
+            for vre in (r"^v2\.[12].*",):
                 if re.match(vre, version):
                     return True
 

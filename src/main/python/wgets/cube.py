@@ -29,11 +29,9 @@ class Square(QWidget):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        wid = self.geometry().width()
-        hig = self.geometry().height()
         rto = (1.0 - self._args.cubic_ratio) / 2
 
-        self._box = [wid * rto, hig * rto, wid * self._args.cubic_ratio, hig * self._args.cubic_ratio]
+        self._box = [self.width() * rto, self.height() * rto, self.width() * self._args.cubic_ratio, self.height() * self._args.cubic_ratio]
 
         painter = QPainter()
         painter.begin(self)
@@ -123,7 +121,7 @@ class Cube(QWidget, Ui_ScrollCube):
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
-        wid = self.cube_color.geometry().width()
+        wid = self.cube_color.width()
         self.cube_color.setMinimumHeight(wid * 3 / 5)
 
 

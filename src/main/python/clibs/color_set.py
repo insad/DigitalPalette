@@ -302,22 +302,22 @@ class ColorSet(object):
         us_random = self._color_set[0].s
         ls_random = self._color_set[0].s
         if us_random < 0.5:
-            us_random += 0.4 * random.random()
-            ls_random += 0.1 * random.random()
+            us_random = us_random + 0.2 + 0.25 * random.random()
+            ls_random = ls_random + 0.15 * random.random()
 
         else:
-            us_random -= 0.4 * random.random()
-            ls_random -= 0.1 * random.random()
+            us_random = us_random - 0.2 - 0.25 * random.random()
+            ls_random = ls_random - 0.15 * random.random()
 
         uv_random = self._color_set[0].v
         lv_random = self._color_set[0].v
         if uv_random < 0.5:
-            uv_random += 0.4 * random.random()
-            lv_random += 0.1 * random.random()
+            uv_random = uv_random + 0.2 + 0.25 * random.random()
+            lv_random = lv_random + 0.15 * random.random()
 
         else:
-            uv_random -= 0.4 * random.random()
-            lv_random -= 0.1 * random.random()
+            uv_random = uv_random - 0.2 - 0.25 * random.random()
+            lv_random = lv_random - 0.15 * random.random()
 
         self._color_set[1].s = us_random
         self._color_set[2].s = us_random
@@ -459,22 +459,22 @@ class ColorSet(object):
         us_random = self._color_set[0].s
         ls_random = self._color_set[0].s
         if us_random < 0.5:
-            us_random += 0.4 * random.random()
-            ls_random += 0.1 * random.random()
+            us_random = us_random + 0.2 + 0.25 * random.random()
+            ls_random = ls_random + 0.15 * random.random()
 
         else:
-            us_random -= 0.4 * random.random()
-            ls_random -= 0.1 * random.random()
+            us_random = us_random - 0.2 - 0.25 * random.random()
+            ls_random = ls_random - 0.15 * random.random()
 
         uv_random = self._color_set[0].v
         lv_random = self._color_set[0].v
         if uv_random < 0.5:
-            uv_random += 0.4 * random.random()
-            lv_random += 0.1 * random.random()
+            uv_random = uv_random + 0.2 + 0.25 * random.random()
+            lv_random = lv_random + 0.15 * random.random()
 
         else:
-            uv_random -= 0.4 * random.random()
-            lv_random -= 0.1 * random.random()
+            uv_random = uv_random - 0.2 - 0.25 * random.random()
+            lv_random = lv_random - 0.15 * random.random()
 
         self._color_set[1].s = us_random
         self._color_set[2].s = us_random

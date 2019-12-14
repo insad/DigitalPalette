@@ -71,9 +71,12 @@
     <addaction name="actionRule"/>
     <addaction name="actionChannel"/>
     <addaction name="actionOperation"/>
+    <addaction name="actionScript"/>
     <addaction name="actionMode"/>
     <addaction name="actionTransformation"/>
     <addaction name="actionResult"/>
+    <addaction name="separator"/>
+    <addaction name="actionAll"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -113,7 +116,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Display and modify color set result.</string>
+    <string>Result.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea</set>
@@ -147,7 +150,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Set harmony rule and synchronization method for color set.</string>
+    <string>Rule.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -174,7 +177,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Manipulate files and work area.</string>
+    <string>Operation.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -186,6 +189,27 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="operation_dock_contents"/>
+  </widget>
+  <widget class="QDockWidget" name="script_dock_widget">
+   <property name="minimumSize">
+    <size>
+     <width>165</width>
+     <height>90</height>
+    </size>
+   </property>
+   <property name="toolTip">
+    <string>Script.</string>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Script</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="script_dock_contents"/>
   </widget>
   <widget class="QDockWidget" name="mode_dock_widget">
    <property name="sizePolicy">
@@ -201,7 +225,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Set display mode for color set result.</string>
+    <string>Mode.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -222,7 +246,7 @@
     </size>
    </property>
    <property name="toolTip">
-    <string>Set category and channel for opened image.</string>
+    <string>Channel.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -239,11 +263,11 @@
    <property name="minimumSize">
     <size>
      <width>165</width>
-     <height>42</height>
+     <height>90</height>
     </size>
    </property>
    <property name="toolTip">
-    <string>Move and zoom image and depot content.</string>
+    <string>Transformation.</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -395,6 +419,22 @@
   <action name="actionDepot">
    <property name="text">
     <string>Depot</string>
+   </property>
+  </action>
+  <action name="actionScript">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Script</string>
+   </property>
+  </action>
+  <action name="actionAll">
+   <property name="text">
+    <string>All</string>
    </property>
   </action>
  </widget>

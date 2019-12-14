@@ -37,7 +37,7 @@ class Rule(QWidget):
 
         scroll_contents = QWidget()
         scroll_grid_layout = QGridLayout(scroll_contents)
-        scroll_grid_layout.setContentsMargins(1, 1, 1, 1)
+        scroll_grid_layout.setContentsMargins(8, 8, 8, 8)
         scroll_grid_layout.setHorizontalSpacing(8)
         scroll_grid_layout.setVerticalSpacing(12)
         scroll_area.setWidget(scroll_contents)
@@ -90,7 +90,7 @@ class Rule(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(180, 90)
+        return QSize(185, 90)
 
     def modify_rule(self, idx):
         """

@@ -369,6 +369,24 @@ class Color(object):
             raise ValueError("expect rgb color in length 3: {}.".format(rgb))
 
     @classmethod
+    def fmt_rgb_array(cls, rgb_array):
+        """
+        Class method. Format item to standard rgb array.
+
+        Args:
+            rgb_array (3D array): array item to be formated.
+
+        Returns:
+            Standard rgb array.
+        """
+
+        if isinstance(rgb_array, np.ndarray) and len(rgb_array.shape) == 3 and rgb_array.shape[2] == 3:
+            return np.rint(rgb_array).astype(np.uint8)
+
+        else:
+            raise ValueError("expect rgb array in length 3: {}.".format(rgb_array))
+
+    @classmethod
     def fmt_hsv(cls, hsv, overflow="cutoff"):
         """
         Class method. Format item to standard hsv color.
@@ -413,6 +431,37 @@ class Color(object):
 
         else:
             raise ValueError("expect hsv color in length 3: {}.".format(hsv))
+
+    @classmethod
+    def fmt_hsv_array(cls, hsv_array):
+        """
+        Class method. Format item to standard hsv array.
+
+        Args:
+            hsv_array (3D array): array item to be formated.
+
+        Returns:
+            Standard hsv array.
+        """
+
+        if isinstance(hsv_array, np.ndarray) and len(hsv_array.shape) == 3 and hsv_array.shape[2] == 3:
+            _h = hsv_array[:, :, 0]
+            _s = hsv_array[:, :, 1]
+            _v = hsv_array[:, :, 2]
+
+            _s[np.where(_s < 0.0)] = 0.0
+            _s[np.where(_s > 1.0)] = 1.0
+            _v[np.where(_v < 0.0)] = 0.0
+            _v[np.where(_v > 1.0)] = 1.0
+
+            _h = np.round(_h % 360.0 * 1E5) / 1E5
+            _s = np.round(_s * 1E5) / 1E5
+            _v = np.round(_v * 1E5) / 1E5
+
+            return np.stack((_h, _s, _v), axis=2).astype(np.float32)
+
+        else:
+            raise ValueError("expect hsv color in length 3: {}.".format(hsv_array))
 
     @classmethod
     def fmt_hec(cls, hec):
@@ -466,7 +515,7 @@ class Color(object):
 
         else:
             color = (color - 255 * (1 - s)) / s
-            color = np.rint(color).astype(int)
+            color = np.rint(color).astype(np.uint8)
 
         if color[0] == 255:
             if color[2] == 0:
@@ -498,7 +547,7 @@ class Color(object):
                 h = 240 + color[0] / 255 * 60
 
             elif color[0] == 0:
-                # cyan to blue.
+                # cyan to blue, 180 to 240.
                 h = 240 - color[1] / 255 * 60
 
             else:
@@ -508,6 +557,67 @@ class Color(object):
             raise ValueError("value 255 is not found in color: {}.".format(color))
 
         return cls.fmt_hsv((h, s, v))
+
+    @classmethod
+    def rgb2hsv_array(cls, rgb_array):
+        """
+        Translate rgb array into hsv array.
+
+        Args:
+            rgb (3D array): rgb array.
+
+        Returns:
+            hsv array.
+        """
+
+        colors = cls.fmt_rgb_array(rgb_array).astype(np.float64)
+
+        v = np.max(colors, axis=2) / 255.0
+        v[np.where(v < 1E-5)] = 1E-12
+
+        colors[:, :, 0] = colors[:, :, 0] / v
+        colors[:, :, 1] = colors[:, :, 1] / v
+        colors[:, :, 2] = colors[:, :, 2] / v
+        colors[np.where(v < 1E-5)] = np.array((255, 0, 0))
+        v[np.where(v < 1E-5)] = 0
+
+        s = 1 - np.min(colors, axis=2) / 255.0
+        s[np.where(s < 1E-5)] = 1E-12
+
+        colors[:, :, 0] = (colors[:, :, 0] - 255 * (1 - s)) / s
+        colors[:, :, 1] = (colors[:, :, 1] - 255 * (1 - s)) / s
+        colors[:, :, 2] = (colors[:, :, 2] - 255 * (1 - s)) / s
+        colors[np.where(s < 1E-5)] = np.array((255, 0, 0))
+        colors = np.rint(colors).astype(np.uint8)
+        s[np.where(s < 1E-5)] = 0
+
+        h = np.zeros(v.shape, dtype=np.float32)
+
+        # cyan to blue, 180 to 240.
+        pos = np.where((colors[:, :, 2] == 255) & (colors[:, :, 0] == 0))
+        h[pos] = 240 - colors[pos][:, 1] / 255 * 60
+
+        # blue to magenta, 240 to 300.
+        pos = np.where((colors[:, :, 2] == 255) & (colors[:, :, 1] == 0))
+        h[pos] = 240 + colors[pos][:, 0] / 255 * 60
+
+        # yellow to green, 60 to 120.
+        pos = np.where((colors[:, :, 1] == 255) & (colors[:, :, 2] == 0))
+        h[pos] = 120 - colors[pos][:, 0] / 255 * 60
+
+        # green to cyan, 120 to 180.
+        pos = np.where((colors[:, :, 1] == 255) & (colors[:, :, 0] == 0))
+        h[pos] = 120 + colors[pos][:, 2] / 255 * 60
+
+        # magenta to red, 300 to 360.
+        pos = np.where((colors[:, :, 0] == 255) & (colors[:, :, 1] == 0))
+        h[pos] = 360 - colors[pos][:, 2] / 255 * 60
+
+        # red to yellow, 0 to 60.
+        pos = np.where((colors[:, :, 0] == 255) & (colors[:, :, 2] == 0))
+        h[pos] = colors[pos][:, 1] / 255 * 60
+
+        return cls.fmt_hsv_array(np.stack((h, s, v), axis=2))
 
     @classmethod
     def hsv2rgb(cls, hsv):
@@ -525,7 +635,7 @@ class Color(object):
 
         # red to yellow.
         if 0 <= h < 60:
-            g = round((h - 0) / 60 * 255)
+            g = round(h / 60 * 255)
             color = np.array((255, g, 0))
 
         # yellow to green.
@@ -560,6 +670,64 @@ class Color(object):
         color = color * v
 
         return cls.fmt_rgb(color)
+
+    @classmethod
+    def hsv2rgb_array(cls, hsv_array):
+        """
+        Translate hsv array into rgb array.
+
+        Args:
+            hsv (3D array): hsv array.
+
+        Returns:
+            rgb array.
+        """
+
+        colors = cls.fmt_hsv_array(hsv_array)
+
+        r = np.zeros(colors.shape[:2], dtype=np.uint8)
+        g = np.zeros(colors.shape[:2], dtype=np.uint8)
+        b = np.zeros(colors.shape[:2], dtype=np.uint8)
+
+        # red to yellow.
+        pos = np.where((colors[:, :, 0] >= 0) & (colors[:, :, 0] < 60))
+        r[pos] = 255
+        g[pos] = np.round(colors[pos][:, 0] / 60 * 255)
+
+        # yellow to green.
+        pos = np.where((colors[:, :, 0] >= 60) & (colors[:, :, 0] < 120))
+        r[pos] = np.round((1 - (colors[pos][:, 0] - 60) / 60) * 255)
+        g[pos] = 255
+
+        # green to cyan.
+        pos = np.where((colors[:, :, 0] >= 120) & (colors[:, :, 0] < 180))
+        g[pos] = 255
+        b[pos] = np.round((colors[pos][:, 0] - 120) / 60 * 255)
+
+        # cyan to blue.
+        pos = np.where((colors[:, :, 0] >= 180) & (colors[:, :, 0] < 240))
+        g[pos] = np.round((1 - (colors[pos][:, 0] - 180) / 60) * 255)
+        b[pos] = 255
+
+        # blue to magenta.
+        pos = np.where((colors[:, :, 0] >= 240) & (colors[:, :, 0] < 300))
+        r[pos] = np.round((colors[pos][:, 0] - 240) / 60 * 255)
+        b[pos] = 255
+
+        # magenta to red.
+        pos = np.where((colors[:, :, 0] >= 300) & (colors[:, :, 0] < 360))
+        r[pos] = 255
+        b[pos] = np.round((1 - (colors[pos][:, 0] - 300) / 60) * 255)
+
+        r = r + (r * -1 + 255) * (1 - colors[:, :, 1])
+        g = g + (g * -1 + 255) * (1 - colors[:, :, 1])
+        b = b + (b * -1 + 255) * (1 - colors[:, :, 1])
+
+        r = r * colors[:, :, 2]
+        g = g * colors[:, :, 2]
+        b = b * colors[:, :, 2]
+
+        return cls.fmt_rgb_array(np.stack((r, g, b), axis=2))
 
     @classmethod
     def rgb2hec(cls, rgb):
@@ -669,8 +837,16 @@ class TestColor(unittest.TestCase):
                     self.assertEqual(color.s, hsv[1])
                     self.assertEqual(color.v, hsv[2])
 
+                    hsv_array = Color.rgb2hsv_array(np.array([[color.rgb]]))
+                    self.assertTrue(abs(hsv[0] - hsv_array[0, 0][0]) < 1E-4)
+                    self.assertTrue(abs(hsv[1] - hsv_array[0, 0][1]) < 1E-4)
+                    self.assertTrue(abs(hsv[2] - hsv_array[0, 0][2]) < 1E-4)
+
                     rgb = Color.hsv2rgb(hsv)
                     self.assertTrue(color.rgb == tuple(rgb))
+
+                    rgb_array = Color.hsv2rgb_array(hsv_array)
+                    self.assertEqual(tuple(rgb), tuple(rgb_array[0, 0]))
 
                     pr_color.r = r
                     pr_color.g = g
@@ -684,7 +860,7 @@ class TestColor(unittest.TestCase):
 
         for h in range(361):
             for s in range(101):
-                print("testing hsv2rgb with r, g = {}, {}.".format(h, s))
+                print("testing hsv2rgb with h, s = {}, {}.".format(h, s))
 
                 for v in range(101):
                     hsv = np.array([h, s / 100, v / 100])

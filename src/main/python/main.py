@@ -17,7 +17,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.1.2-dev
+v2.2.1-dev
 """
 
 __AUTHOR__ = """
@@ -25,7 +25,7 @@ Jia Liu
 """
 
 __DATE__ = """
-Dec. 6th, 2019
+Dec. 12th, 2019
 """
 
 import os
@@ -44,6 +44,7 @@ from wgets.cube import CubeTable
 from wgets.rule import Rule
 from wgets.mode import Mode
 from wgets.operation import Operation
+from wgets.script import Script
 from wgets.channel import Channel
 from wgets.transformation import Transformation
 from wgets.settings import Settings
@@ -79,10 +80,12 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._setup_rule()
         self._setup_mode()
         self._setup_operation()
+        self._setup_script()
         self._setup_channel()
         self._setup_transformation()
         self._setup_settings()
 
+        self.tabifyDockWidget(self.script_dock_widget, self.operation_dock_widget)
         self.tabifyDockWidget(self.transformation_dock_widget, self.mode_dock_widget)
         self.tabifyDockWidget(self.channel_dock_widget, self.rule_dock_widget)
 
@@ -104,9 +107,11 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.actionRule.triggered.connect(self._inner_show_or_hide(self.rule_dock_widget))
         self.actionChannel.triggered.connect(self._inner_show_or_hide(self.channel_dock_widget))
         self.actionOperation.triggered.connect(self._inner_show_or_hide(self.operation_dock_widget))
+        self.actionScript.triggered.connect(self._inner_show_or_hide(self.script_dock_widget))
         self.actionMode.triggered.connect(self._inner_show_or_hide(self.mode_dock_widget))
         self.actionTransformation.triggered.connect(self._inner_show_or_hide(self.transformation_dock_widget))
         self.actionResult.triggered.connect(self._inner_show_or_hide(self.result_dock_widget))
+        self.actionAll.triggered.connect(self._inner_all_show_or_hide)
 
         self.actionHomepage.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_main_site)))
         self.actionUpdate.triggered.connect(lambda x: QDesktopServices.openUrl(QUrl(self._args.info_update_site)))
@@ -115,6 +120,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self.rule_dock_widget.visibilityChanged.connect(lambda x: self.actionRule.setChecked(self.rule_dock_widget.isVisible()))
         self.channel_dock_widget.visibilityChanged.connect(lambda x: self.actionChannel.setChecked(self.channel_dock_widget.isVisible()))
         self.operation_dock_widget.visibilityChanged.connect(lambda x: self.actionOperation.setChecked(self.operation_dock_widget.isVisible()))
+        self.script_dock_widget.visibilityChanged.connect(lambda x: self.actionScript.setChecked(self.script_dock_widget.isVisible()))
         self.mode_dock_widget.visibilityChanged.connect(lambda x: self.actionMode.setChecked(self.mode_dock_widget.isVisible()))
         self.transformation_dock_widget.visibilityChanged.connect(lambda x: self.actionTransformation.setChecked(self.transformation_dock_widget.isVisible()))
         self.result_dock_widget.visibilityChanged.connect(lambda x: self.actionResult.setChecked(self.result_dock_widget.isVisible()))
@@ -278,6 +284,21 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_depot.ps_update.connect(lambda x: self._wget_rule.update_rule())
         self._wget_depot.ps_export.connect(self._wget_operation.exec_export)
 
+    def _setup_script(self):
+        """
+        Setup script.
+        """
+
+        script_grid_layout = QGridLayout(self.script_dock_contents)
+        script_grid_layout.setContentsMargins(2, 2, 2, 2)
+
+        self._wget_script = Script(self.script_dock_contents, self._args)
+        script_grid_layout.addWidget(self._wget_script)
+
+        self._wget_script.ps_filter.connect(lambda x: self._wget_image.open_image("", script=x))
+        self._wget_script.ps_enhance.connect(self._wget_image.enhance_image)
+        self._wget_script.ps_crop.connect(self._wget_image.crop_image)
+
     def _setup_channel(self):
         """
         Setup channel.
@@ -290,6 +311,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         channel_grid_layout.addWidget(self._wget_channel)
 
         self._wget_channel.ps_channel_changed.connect(lambda x: self._wget_image.open_category())
+        self._wget_image.ps_image_changed.connect(lambda x: self._wget_channel.reset())
+        self._wget_image.ps_recover_channel.connect(lambda x: self._wget_channel.recover())
 
     def _setup_transformation(self):
         """
@@ -410,6 +433,29 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         return _func_
 
+    def _inner_all_show_or_hide(self):
+        """
+        Change all hidden wget to shown state and change shown wget to hidden state.
+        """
+
+        if self.rule_dock_widget.isVisible() and self.channel_dock_widget.isVisible() and self.operation_dock_widget.isVisible() and self.script_dock_widget.isVisible() and self.mode_dock_widget.isVisible() and self.transformation_dock_widget.isVisible() and self.result_dock_widget.isVisible():
+            self.rule_dock_widget.hide()
+            self.channel_dock_widget.hide()
+            self.operation_dock_widget.hide()
+            self.script_dock_widget.hide()
+            self.mode_dock_widget.hide()
+            self.transformation_dock_widget.hide()
+            self.result_dock_widget.hide()
+
+        else:
+            self.rule_dock_widget.show()
+            self.channel_dock_widget.show()
+            self.operation_dock_widget.show()
+            self.script_dock_widget.show()
+            self.mode_dock_widget.show()
+            self.transformation_dock_widget.show()
+            self.result_dock_widget.show()
+
     def _install_translator(self):
         """
         Translate DigitalPalette interface.
@@ -428,6 +474,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_rule._func_tr_()
         self._wget_channel._func_tr_()
         self._wget_operation._func_tr_()
+        self._wget_script._func_tr_()
         self._wget_settings.retranslateUi(self._wget_settings)
         self._wget_settings._func_tr_()
         self.retranslateUi(self)
@@ -436,6 +483,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_rule.update_text()
         self._wget_channel.update_text()
         self._wget_operation.update_text()
+        self._wget_script.update_text()
         self._wget_settings.update_text()
 
         # set window title.

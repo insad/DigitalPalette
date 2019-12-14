@@ -128,4 +128,4 @@ class Transformation(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(180, 90)
+        return QSize(185, 90)

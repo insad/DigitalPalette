@@ -3,7 +3,7 @@
 import os
 import time
 import json
-from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QGroupBox, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 from clibs.export import export_list, export_text, export_swatch
 from clibs.color import Color
@@ -51,47 +51,70 @@ class Operation(QWidget):
         scroll_grid_layout.setVerticalSpacing(12)
         scroll_area.setWidget(scroll_contents)
 
-        self.open_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.open_btn, 0, 1, 1, 1)
+        # file functional region.
+        self._file_gbox = QGroupBox(scroll_contents)
+        gbox_grid_layout = QGridLayout(self._file_gbox)
+        gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
+        gbox_grid_layout.setHorizontalSpacing(8)
+        gbox_grid_layout.setVerticalSpacing(12)
+        scroll_grid_layout.addWidget(self._file_gbox, 0, 1, 1, 1)
+
+        self.open_btn = QPushButton(self._file_gbox)
+        gbox_grid_layout.addWidget(self.open_btn, 0, 1, 1, 1)
         self.open_btn.clicked.connect(self.exec_open)
 
-        self.save_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.save_btn, 1, 1, 1, 1)
+        self.save_btn = QPushButton(self._file_gbox)
+        gbox_grid_layout.addWidget(self.save_btn, 1, 1, 1, 1)
         self.save_btn.clicked.connect(self.exec_save)
 
-        self.import_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.import_btn, 2, 1, 1, 1)
+        self.import_btn = QPushButton(self._file_gbox)
+        gbox_grid_layout.addWidget(self.import_btn, 2, 1, 1, 1)
         self.import_btn.clicked.connect(self.exec_import)
 
-        self.export_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.export_btn, 3, 1, 1, 1)
+        self.export_btn = QPushButton(self._file_gbox)
+        gbox_grid_layout.addWidget(self.export_btn, 3, 1, 1, 1)
         self.export_btn.clicked.connect(self.exec_export)
 
-        self.create_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.create_btn, 4, 1, 1, 1)
+        spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        gbox_grid_layout.addItem(spacer, 4, 1, 1, 1)
+        spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        gbox_grid_layout.addItem(spacer, 4, 0, 1, 1)
+        spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        gbox_grid_layout.addItem(spacer, 4, 2, 1, 1)
+
+        # view functional region.
+        self._view_gbox = QGroupBox(scroll_contents)
+        gbox_grid_layout = QGridLayout(self._view_gbox)
+        gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
+        gbox_grid_layout.setHorizontalSpacing(8)
+        gbox_grid_layout.setVerticalSpacing(12)
+        scroll_grid_layout.addWidget(self._view_gbox, 1, 1, 1, 1)
+
+        self.create_btn = QPushButton(self._view_gbox)
+        gbox_grid_layout.addWidget(self.create_btn, 0, 1, 1, 1)
         self.create_btn.clicked.connect(self.exec_create)
 
-        self.locate_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.locate_btn, 5, 1, 1, 1)
+        self.locate_btn = QPushButton(self._view_gbox)
+        gbox_grid_layout.addWidget(self.locate_btn, 1, 1, 1, 1)
         self.locate_btn.clicked.connect(self.exec_locate)
 
-        self.attach_btn = QPushButton(scroll_contents)
-        scroll_grid_layout.addWidget(self.attach_btn, 6, 1, 1, 1)
+        self.attach_btn = QPushButton(self._view_gbox)
+        gbox_grid_layout.addWidget(self.attach_btn, 2, 1, 1, 1)
         self.attach_btn.clicked.connect(self.exec_attach)
 
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        scroll_grid_layout.addItem(spacer, 7, 1, 1, 1)
+        gbox_grid_layout.addItem(spacer, 3, 1, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 7, 0, 1, 1)
+        gbox_grid_layout.addItem(spacer, 3, 0, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 7, 2, 1, 1)
+        gbox_grid_layout.addItem(spacer, 3, 2, 1, 1)
 
         self.update_text()
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(180, 160)
+        return QSize(185, 230)
 
     def exec_open(self, value):
         """
@@ -402,16 +425,24 @@ class Operation(QWidget):
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
     def update_text(self):
+        self._file_gbox.setTitle(self._gbox_descs[0])
         self.import_btn.setText(self._operation_descs[0])
         self.export_btn.setText(self._operation_descs[1])
         self.create_btn.setText(self._operation_descs[2])
         self.locate_btn.setText(self._operation_descs[3])
         self.attach_btn.setText(self._operation_descs[4])
+
+        self._view_gbox.setTitle(self._gbox_descs[1])
         self.open_btn.setText(self._operation_descs[5])
         self.save_btn.setText(self._operation_descs[6])
 
     def _func_tr_(self):
         _translate = QCoreApplication.translate
+
+        self._gbox_descs = (
+            _translate("MainWindow", "File"),
+            _translate("MainWindow", "View"),
+        )
 
         self._operation_descs = (
             _translate("MainWindow", "Import"),

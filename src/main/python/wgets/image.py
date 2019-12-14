@@ -4,8 +4,8 @@ import os
 import sys
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QRect
-from PyQt5.QtGui import QPainter, QPen, QColor, QPixmap, QImage, QCursor
+from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QRect, QPoint
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage, QCursor
 from cguis.resource import view_rc
 from clibs.image3c import Image3C
 from clibs.transpt import get_outer_box
@@ -29,13 +29,12 @@ class OverLabel(QLabel):
         # load args.
         self._args = args
         self._pressed = False
+
+        self.croping = False
         self.locations = [None, None, None, None, None]
 
     def paintEvent(self, event):
         super().paintEvent(event)
-
-        self._wid = self.geometry().width()
-        self._hig = self.geometry().height()
 
         painter = QPainter()
         painter.begin(self)
@@ -45,7 +44,7 @@ class OverLabel(QLabel):
 
         for idx in range(5):
             if self.locations[idx]:
-                pt_xy = np.array((self.locations[idx][0] * self._wid, self.locations[idx][1] * self._hig))
+                pt_xy = np.array((self.locations[idx][0] * self.width(), self.locations[idx][1] * self.height()))
                 pt_box = get_outer_box(pt_xy, self._args.circle_dist)
 
                 if idx == self._args.sys_activated_idx:
@@ -57,20 +56,56 @@ class OverLabel(QLabel):
                 painter.setBrush(QColor(*self._args.sys_color_set[idx].rgb))
                 painter.drawEllipse(*pt_box)
 
+        if isinstance(self.croping, tuple):
+            painter.setPen(QPen(Qt.NoPen))
+            painter.setBrush(QColor(255, 255, 255, 160))
+
+            croping = self.sort_croping()
+            croping = (int(self.width() * croping[0]), int(self.height() * croping[1]), int(self.width() * croping[2]), int(self.height() * croping[3]))
+            self.draw_rect(painter, 0, 0, croping[0], self.height())
+            self.draw_rect(painter, croping[2], 0, self.width(), self.height())
+            self.draw_rect(painter, croping[0], 0, croping[2], croping[1])
+            self.draw_rect(painter, croping[0], croping[3], croping[2], self.height())
+
+            painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+            painter.setBrush(QBrush(Qt.NoBrush))
+
+            if 0 <= self.croping[0] <= self.width():
+                painter.drawLine(QPoint(self.croping[0] * self.width(), 0), QPoint(self.croping[0] * self.width(), self.height()))
+
+            if 0 <= self.croping[1] <= self.height():
+                painter.drawLine(QPoint(0, self.croping[1] * self.height()), QPoint(self.width(), self.croping[1] * self.height()))
+
+            if 0 <= self.croping[2] <= self.width():
+                painter.drawLine(QPoint(self.croping[2] * self.width(), 0), QPoint(self.croping[2] * self.width(), self.height()))
+
+            if 0 <= self.croping[3] <= self.height():
+                painter.drawLine(QPoint(0, self.croping[3] * self.height()), QPoint(self.width(), self.croping[3] * self.height()))
+
+        elif self.croping:
+            painter.setPen(QPen(Qt.NoPen))
+            painter.setBrush(QColor(255, 255, 255, 160))
+
+            painter.drawRect(0, 0, self.width(), self.height())
+
         painter.end()
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mousePressEvent(self, event):
+        if self.croping:
+            event.ignore()
+            return
+
         if event.button() == Qt.LeftButton:
             point = np.array((event.x(), event.y()))
 
-            loc = [point[0] / self._wid, point[1] / self._hig]
+            loc = [point[0] / self.width(), point[1] / self.height()]
             loc[0] = 0.0 if loc[0] < 0.0 else loc[0]
             loc[0] = 1.0 if loc[0] > 1.0 else loc[0]
             loc[1] = 0.0 if loc[1] < 0.0 else loc[1]
             loc[1] = 1.0 if loc[1] > 1.0 else loc[1]
-            
+
             self.locations[self._args.sys_activated_idx] = tuple(loc)
             self.ps_circle_moved.emit(True)
 
@@ -83,10 +118,14 @@ class OverLabel(QLabel):
             event.ignore()
 
     def mouseMoveEvent(self, event):
+        if self.croping:
+            event.ignore()
+            return
+
         if self._pressed:
             point = np.array((event.x(), event.y()))
 
-            loc = [point[0] / self._wid, point[1] / self._hig]
+            loc = [point[0] / self.width(), point[1] / self.height()]
             loc[0] = 0.0 if loc[0] < 0.0 else loc[0]
             loc[0] = 1.0 if loc[0] > 1.0 else loc[0]
             loc[1] = 0.0 if loc[1] < 0.0 else loc[1]
@@ -106,6 +145,67 @@ class OverLabel(QLabel):
 
         event.ignore()
 
+    # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
+
+    def draw_rect(self, painter, x0, y0, x1, y1):
+        """
+        Draw rect by two points.
+        """
+
+        if x0 == x1 or y0 == y1:
+            return
+
+        painter.drawRect(x0, y0, x1 - x0, y1 - y0)
+
+    def sort_croping(self):
+        """
+        Sort the croping value from mouse move to standard value.
+        """
+
+        croping = list(self.croping)
+        croping[0] = 0.0 if croping[0] < 0.0 else croping[0]
+        croping[1] = 0.0 if croping[1] < 0.0 else croping[1]
+        croping[2] = 0.0 if croping[2] < 0.0 else croping[2]
+        croping[3] = 0.0 if croping[3] < 0.0 else croping[3]
+        croping[0] = 1.0 if croping[0] > 1.0 else croping[0]
+        croping[1] = 1.0 if croping[1] > 1.0 else croping[1]
+        croping[2] = 1.0 if croping[2] > 1.0 else croping[2]
+        croping[3] = 1.0 if croping[3] > 1.0 else croping[3]
+
+        if croping[0] > croping[2]:
+            croping[0], croping[2] = croping[2], croping[0]
+
+        if croping[1] > croping[3]:
+            croping[1], croping[3] = croping[3], croping[1]
+
+        return croping
+
+    def revise_croping(self, rgb_data_shape):
+        """
+        Revise the croping value from mouse move to standard value (full in image).
+        """
+
+        croping = self.sort_croping()
+
+        min_wid_rto = 5.0 / rgb_data_shape[1]
+        min_hig_rto = 5.0 / rgb_data_shape[0]
+
+        if croping[2] - croping[0] < min_wid_rto:
+            croping[2] = croping[0] + min_wid_rto
+
+            if croping[2] > 1.0:
+                croping[2] = 1.0
+                croping[0] = 1.0 - min_wid_rto
+
+        if croping[3] - croping[1] < min_hig_rto:
+            croping[3] = croping[1] + min_hig_rto
+
+            if croping[3] > 1.0:
+                croping[3] = 1.0
+                croping[1] = 1.0 - min_hig_rto
+
+        self.croping = tuple(croping)
+
 
 class Image(QWidget):
     """
@@ -113,6 +213,8 @@ class Image(QWidget):
     """
 
     ps_color_changed = pyqtSignal(bool)
+    ps_image_changed = pyqtSignal(bool)
+    ps_recover_channel = pyqtSignal(bool)
 
     def __init__(self, wget, args):
         """
@@ -123,10 +225,13 @@ class Image(QWidget):
 
         # load args.
         self._args = args
-        self._categories = []
+        self._categories = set()
         self._drag_image = None
         self._move_pos = None
         self._start_pt = None
+        self._is_croping = False
+        self._enhance_lock = False
+        self._resizing_image = False
 
         # load translations.
         self._func_tr_()
@@ -148,16 +253,13 @@ class Image(QWidget):
         self._image3c.ps_describe.connect(self.update_loading_label)
         self._image3c.ps_proceses.connect(self.update_loading_bar)
         self._image3c.ps_finished.connect(self.loading_finished)
+        self._image3c.ps_enhanced.connect(self.enhance_finished)
 
-        self._display = None
         self.overlabel_display = OverLabel(self, self._args)
         self.overlabel_display.ps_circle_moved.connect(lambda x: self.modify_color_loc())
 
     def paintEvent(self, event):
-        wid = self.geometry().width()
-        hig = self.geometry().height()
-
-        if not self._categories:
+        if not self._image3c.run_image:
             self._loading_bar.hide()
             self._ico_label.hide()
             self._tip_label.show()
@@ -171,8 +273,8 @@ class Image(QWidget):
 
             painter.setPen(QPen(Qt.black, Qt.PenStyle(Qt.DashLine), 3))
             painter.setBrush(Qt.white)
-            self._tip_box = (wid * 0.2, hig * 0.2, wid * 0.6, hig * 0.6)
-            radius = min(wid * 0.1, hig * 0.1)
+            self._tip_box = (self.width() * 0.2, self.height() * 0.2, self.width() * 0.6, self.height() * 0.6)
+            radius = min(self.width() * 0.1, self.height() * 0.1)
             painter.drawRoundedRect(*self._tip_box, radius, radius)
 
             painter.end()
@@ -182,25 +284,25 @@ class Image(QWidget):
             self._tip_label.setText(self._action_descs[0])
             self._tip_label.setAlignment(Qt.AlignCenter)
 
-        elif self._args.sys_category not in self._categories:
+        elif self._args.sys_category * 10 + self._args.sys_channel not in self._categories:
             self._loading_bar.show()
             self._ico_label.show()
             self._tip_label.show()
             self.overlabel_display.hide()
 
-            bar_wid = wid * 0.8
-            bar_hig = hig * 0.1
+            bar_wid = self.width() * 0.8
+            bar_hig = self.height() * 0.1
 
-            self._loading_bar.setGeometry((wid - bar_wid) / 2, hig - bar_hig * 1.2, bar_wid, bar_hig)
+            self._loading_bar.setGeometry((self.width() - bar_wid) / 2, self.height() - bar_hig * 1.2, bar_wid, bar_hig)
 
-            resized_img = self._ico.scaled(wid * 0.8, hig * 0.8, Qt.KeepAspectRatio)
+            resized_img = self._ico.scaled(self.width() * 0.8, self.height() * 0.8, Qt.KeepAspectRatio)
             img_wid = resized_img.size().width()
             img_hig = resized_img.size().height()
 
             self._ico_label.setPixmap(QPixmap.fromImage(resized_img))
-            self._ico_label.setGeometry((wid - img_wid) / 2, bar_hig * 0.2, img_wid, img_hig)
+            self._ico_label.setGeometry((self.width() - img_wid) / 2, bar_hig * 0.2, img_wid, img_hig)
 
-            self._tip_label.setGeometry((wid - bar_wid) / 2, hig - bar_hig * 2.2, bar_wid, bar_hig)
+            self._tip_label.setGeometry((self.width() - bar_wid) / 2, self.height() - bar_hig * 2.2, bar_wid, bar_hig)
 
         else:
             self._loading_bar.hide()
@@ -208,29 +310,50 @@ class Image(QWidget):
             self._tip_label.hide()
             self.overlabel_display.show()
 
-            if self._display:
+            if self._image3c.display:
                 if not self._move_pos:
                     self.home()
 
-                self._move_pos[0] = wid - 2 if self._move_pos[0] > wid - 2 else self._move_pos[0]
+                self._move_pos[0] = self.width() - 2 if self._move_pos[0] > self.width() - 2 else self._move_pos[0]
                 self._move_pos[0] = 2 - self._move_pos[2] if self._move_pos[0] < 2 - self._move_pos[2] else self._move_pos[0]
-                self._move_pos[1] = hig - 2 if self._move_pos[1] > hig - 2 else self._move_pos[1]
+                self._move_pos[1] = self.height() - 2 if self._move_pos[1] > self.height() - 2 else self._move_pos[1]
                 self._move_pos[1] = 2 - self._move_pos[3] if self._move_pos[1] < 2 - self._move_pos[3] else self._move_pos[1]
 
-                resized_img = self._display.scaled(self._move_pos[2], self._move_pos[3], Qt.KeepAspectRatio)
+                # aspect ratio mode: IgnoreAspectRatio, KeepAspectRatio and KeepAspectRatioByExpanding.
+                if self._resizing_image:
+                    resized_img = self._image3c.display.scaled(self._move_pos[2], self._move_pos[3], Qt.IgnoreAspectRatio)
+                    self.overlabel_display.setPixmap(QPixmap.fromImage(resized_img))
+                    self._resizing_image = False
 
-                self.overlabel_display.setPixmap(QPixmap.fromImage(resized_img))
                 self.overlabel_display.setGeometry(*self._move_pos)
 
+                if isinstance(self.overlabel_display.croping, tuple):
+                    painter = QPainter()
+                    painter.begin(self)
+                    painter.setRenderHint(QPainter.Antialiasing, True)
+                    painter.setRenderHint(QPainter.TextAntialiasing, True)
+                    painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+
+                    painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+
+                    painter.drawLine(QPoint(self.overlabel_display.croping[0] * self.overlabel_display.width() + self.overlabel_display.x(), 0), QPoint(self.overlabel_display.croping[0] * self.overlabel_display.width() + self.overlabel_display.x(), self.height()))
+                    painter.drawLine(QPoint(0, self.overlabel_display.croping[1] * self.overlabel_display.height() + self.overlabel_display.y()), QPoint(self.width(), self.overlabel_display.croping[1] * self.overlabel_display.height() + self.overlabel_display.y()))
+
+                    painter.drawLine(QPoint(self.overlabel_display.croping[2] * self.overlabel_display.width() + self.overlabel_display.x(), 0), QPoint(self.overlabel_display.croping[2] * self.overlabel_display.width() + self.overlabel_display.x(), self.height()))
+                    painter.drawLine(QPoint(0, self.overlabel_display.croping[3] * self.overlabel_display.height() + self.overlabel_display.y()), QPoint(self.width(), self.overlabel_display.croping[3] * self.overlabel_display.height() + self.overlabel_display.y()))
+
+                    painter.end()
+
             else:
-                self._display = self._image3c.load_image(self._args.sys_category, self._args.sys_channel)
-                
+                self._image3c.load_image(self._args.sys_category, self._args.sys_channel)
+                self._resizing_image = True
+
                 self.update()
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mouseDoubleClickEvent(self, event):
-        if not self._categories and event.button() == Qt.LeftButton:
+        if not self._image3c.run_image and event.button() == Qt.LeftButton:
             p_x = event.x()
             p_y = event.y()
 
@@ -274,33 +397,54 @@ class Image(QWidget):
             event.ignore()
 
     def wheelEvent(self, event):
-        if not self.overlabel_display.isVisible():
-            event.ignore()
+        if self.overlabel_display.isVisible() and self._image3c.display:
+            point = (event.x(), event.y())
+            ratio = (event.angleDelta() / 120).y()
 
-        point = (event.x(), event.y())
-        ratio = (event.angleDelta() / 120).y()
+            if ratio:
+                ratio = ratio * self._args.zoom_step if ratio > 0 else -1 * ratio / self._args.zoom_step
 
-        if ratio:
-            ratio = ratio * self._args.zoom_step if ratio > 0 else -1 * ratio / self._args.zoom_step
+            else:
+                ratio = 1
 
-        else:
-            ratio = 1
-
-        self.zoom(ratio, point)
-
-        event.accept()
-        self.update()
-
-    def mousePressEvent(self, event):
-        if not self.overlabel_display.isVisible():
-            event.ignore()
-
-        if event.button() == Qt.MidButton:
-            self.setCursor(QCursor(Qt.ClosedHandCursor))
-            self._start_pt = (event.x(), event.y())
+            self.zoom(ratio, point)
 
             event.accept()
-            self.update()
+            # self.update() is completed by self.zoom.
+            # self.update()
+
+        else:
+            event.ignore()
+
+    def mousePressEvent(self, event):
+        if self.overlabel_display.isVisible() and self._image3c.display:
+            if event.button() == Qt.MidButton:
+                self.setCursor(QCursor(Qt.ClosedHandCursor))
+                self._start_pt = (event.x(), event.y())
+
+                event.accept()
+                self.update()
+
+            elif event.button() == Qt.LeftButton and self.overlabel_display.croping:
+                self._is_croping = True
+                self.overlabel_display.croping = (
+                    (event.x() - self.overlabel_display.x()) / self.overlabel_display.width(),
+                    (event.y() - self.overlabel_display.y()) / self.overlabel_display.height(),
+                    (event.x() - self.overlabel_display.x()) / self.overlabel_display.width(),
+                    (event.y() - self.overlabel_display.y()) / self.overlabel_display.height(),
+                )
+
+                event.accept()
+                self.update()
+
+            elif event.button() == Qt.RightButton and self.overlabel_display.croping:
+                self.overlabel_display.croping = False
+
+                event.accept()
+                self.update()
+
+            else:
+                event.ignore()
 
         else:
             event.ignore()
@@ -313,6 +457,18 @@ class Image(QWidget):
             self._start_pt = point
 
             event.accept()
+            # self.update() is completed by self.move.
+            # self.update()
+
+        elif self._is_croping:
+            self.overlabel_display.croping = (
+                self.overlabel_display.croping[0],
+                self.overlabel_display.croping[1],
+                (event.x() - self.overlabel_display.x()) / self.overlabel_display.width(),
+                (event.y() - self.overlabel_display.y()) / self.overlabel_display.height(),
+            )
+
+            event.accept()
             self.update()
 
         else:
@@ -321,6 +477,12 @@ class Image(QWidget):
     def mouseReleaseEvent(self, event):
         self.setCursor(QCursor(Qt.ArrowCursor))
         self._start_pt = None
+
+        if self._is_croping:
+            self.overlabel_display.revise_croping(self._image3c.rgb_data.shape)
+            self._is_croping = False
+
+            self.update()
 
         event.ignore()
 
@@ -331,61 +493,75 @@ class Image(QWidget):
         Zoom displayed image.
         """
 
-        if not self.overlabel_display.isVisible():
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
             return
 
         if center == "default":
-            center = (self.geometry().width() / 2, self.geometry().height() / 2)
+            center = (self.width() / 2, self.height() / 2)
 
-        x = self.overlabel_display.geometry().x()
-        y = self.overlabel_display.geometry().y()
-        wid = self.overlabel_display.geometry().width()
-        hig = self.overlabel_display.geometry().height()
+        x = self.overlabel_display.x()
+        y = self.overlabel_display.y()
+        wid = self.overlabel_display.width()
+        hig = self.overlabel_display.height()
 
         x = (x - center[0]) * ratio + center[0]
         y = (y - center[1]) * ratio + center[1]
 
-        self._move_pos = [x, y, wid * ratio, hig * ratio]
+        self._move_pos = [int(round(x)), int(round(y)), int(round(wid * ratio)), int(round(hig * ratio))]
+        self._resizing_image = True
+
+        self.update()
 
     def move(self, shift_x, shift_y):
         """
         Move displayed image.
         """
 
-        if not self.overlabel_display.isVisible():
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
             return
 
-        x = self.overlabel_display.geometry().x()
-        y = self.overlabel_display.geometry().y()
-        wid = self.overlabel_display.geometry().width()
-        hig = self.overlabel_display.geometry().height()
+        x = self.overlabel_display.x()
+        y = self.overlabel_display.y()
+        wid = self.overlabel_display.width()
+        hig = self.overlabel_display.height()
 
         x = x + shift_x
         y = y + shift_y
 
         self._move_pos = [x, y, wid, hig]
+        self._resizing_image = False
+
+        self.update()
 
     def home(self):
         """
         Home displayed image.
         """
 
-        if not self.overlabel_display.isVisible():
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
             return
 
-        wid = self.geometry().width()
-        hig = self.geometry().height()
+        img_wid = self._image3c.display.size().width()
+        img_hig = self._image3c.display.size().height()
 
-        img_wid = self._display.size().width()
-        img_hig = self._display.size().height()
+        ratio = min(self.width() / img_wid, self.height() / img_hig)
+        self._move_pos = [
+            int(round((self.width() - img_wid * ratio) / 2)),
+            int(round((self.height() - img_hig * ratio) / 2)),
+            int(round(img_wid * ratio)),
+            int(round(img_hig * ratio)),
+        ]
+        self._resizing_image = True
 
-        ratio = min(wid / img_wid, hig / img_hig)
-        self._move_pos = [(wid - img_wid * ratio) / 2, (hig - img_hig * ratio) / 2, img_wid * ratio, img_hig * ratio]
+        self.update()
 
     def open_image_dialog(self):
         """
         Open a image dialog.
         """
+
+        if not self.isVisible():
+            return
 
         cb_filter = "All Images (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; PNG Image (*.png);; BMP Image (*.bmp);; JPEG Image (*.jpg *.jpeg);; TIFF Image (*.tif *.tiff)"
         cb_file = QFileDialog.getOpenFileName(None, self._action_descs[1], self._args.usr_image, filter=cb_filter)
@@ -398,40 +574,122 @@ class Image(QWidget):
             # closed without open a file.
             return
 
-    def open_image(self, image):
+    def open_image(self, image, script=""):
         """
         Open a image.
         """
 
-        if self._image3c.isRunning():
-            self.warning(self._image_errs[1])
+        if not self.isVisible():
             return
 
-        self._categories = []
-        self._image3c.initialize(image)
-        self.overlabel_display.locations = [None, None, None, None, None]
-        self._zoom_rto = None
-        self._move_pos = None
+        if script and (not self._image3c.img_data):
+            return
 
-        self.open_category()
-
-    def open_category(self):
-        """
-        Open this image in other category.
-        """
-
-        if not self._image3c.run_image:
+        if self._image3c.isRunning():
+            self.warning(self._image_errs[1])
             return
 
         if not self._image3c.check_temp_dir():
             self.warning(self._image_errs[2])
             return
 
-        self._display = None
+        self._categories = set()
 
-        if self._args.sys_category not in self._categories:
+        self._args.sys_category = 0
+        self._args.sys_channel = 0
+        self.ps_image_changed.emit(True)
+
+        self.overlabel_display.locations = [None, None, None, None, None]
+        self._image3c.display = None
+
+        if isinstance(script, tuple):
+            if script[0] in ("ZOOM", "CROP"):
+                self._move_pos = None
+
+            self._image3c.run_args = script
+            self._image3c.run_category = "init"
+            self._image3c.start()
+
+        else:
+            self._move_pos = None
+
+            self._image3c.run_args = None
+            self._image3c.run_image = image
+
+            self._image3c.run_category = "init"
+            self._image3c.start()
+
+        self.update()
+
+    def open_category(self):
+        """
+        Open this image in other category.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible()):
+            return
+
+        if not self._image3c.run_image:
+            return
+
+        if not self._image3c.check_temp_dir():
+            self.ps_recover_channel.emit(True)
+            self.warning(self._image_errs[2])
+            return
+
+        if self._enhance_lock:
+            self.ps_recover_channel.emit(True)
+            self.warning(self._image_errs[1])
+            return
+
+        self._image3c.display = None
+
+        if self._args.sys_category * 10 + self._args.sys_channel not in self._categories:
             self._image3c.run_category = self._args.sys_category
             self._image3c.start()
+
+        self.update()
+
+    def enhance_image(self, values):
+        """
+        Modify r, g or (and) b values to enhance the contrast of image.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
+            return
+
+        if self._image3c.isRunning():
+            self.warning(self._image_errs[1])
+            return
+
+        if not self._image3c.display:
+            return
+
+        self._enhance_lock = True
+
+        self._image3c.run_args = values
+        self._image3c.run_category = "enhance"
+        self._image3c.start()
+
+        self.update()
+
+    def crop_image(self, value):
+        """
+        Crop image.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
+            return
+
+        if value:
+            if isinstance(self.overlabel_display.croping, tuple):
+                self.open_image("", ("CROP", self.overlabel_display.croping))
+
+            else:
+                self.overlabel_display.croping = True
+
+        else:
+            self.overlabel_display.croping = False
 
         self.update()
 
@@ -459,7 +717,22 @@ class Image(QWidget):
         Loading finished.
         """
 
-        self._categories.append(idx)
+        self._categories.add(idx)
+        self.setStatusTip(self._status_descs[0].format(*self._image3c.rgb_data.shape))
+        self.overlabel_display.croping = False
+        self._resizing_image = True
+
+        self.update()
+
+    def enhance_finished(self, idx):
+        """
+        Enhance finished.
+        """
+
+        if idx == 1:
+            self._enhance_lock = False
+
+        self._resizing_image = True
 
         self.update()
 
@@ -529,9 +802,13 @@ class Image(QWidget):
             _translate("Image", "Open"),
         )
 
+        self._status_descs = (
+            _translate("Image", "Image Size: {} x {}."),
+        )
+
         self._image_errs = (
             _translate("Image", "Error"),
-            _translate("Image", "Could not open image. Already has an image in process."),
+            _translate("Image", "Could not process image. There is a process of image not finished."),
             _translate("Image", "Could not create temporary dir. Dir is not created."),
             _translate("Image", "OK"),
         )
@@ -554,4 +831,5 @@ class Image(QWidget):
             _translate("Image", "Saving HSV horizontal edge data."),
             _translate("Image", "Loading HSV final edge data."),
             _translate("Image", "Saving HSV final edge data."),
+            _translate("Image", "Applying filter to image data."),
         )
