@@ -4,7 +4,7 @@
 DigitalPalette is a free software for generating a set of harmonious colors from color wheel or existed images and applying it into your creative works.
 
 # Version
-2.2.1 (develop)
+2.2.2 (develop)
 
 # Installation
 ## Download
@@ -183,7 +183,7 @@ File in this format contains all color values and can be imported into image pro
 | Reset | Reset the position and size of image. | Home |
 
 # Author
-Jia Liu
+Huasheng
 
 # Copyright
 Copyright © 2019. All Rights Reserved.
