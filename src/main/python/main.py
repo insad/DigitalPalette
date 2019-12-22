@@ -17,19 +17,20 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.2.1-dev
+v2.2.2-dev
 """
 
 __AUTHOR__ = """
-Jia Liu
+Huasheng
 """
 
 __DATE__ = """
-Dec. 12th, 2019
+Dec. 22th, 2019
 """
 
 import os
 import sys
+import json
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QMessageBox, QShortcut, QPushButton
 from PyQt5.QtCore import QCoreApplication, QUrl, QTranslator
@@ -55,7 +56,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
     DigitalPalette main window framework.
     """
 
-    def __init__(self, resources):
+    def __init__(self, resources, sys_argv):
         """
         Init main window.
         """
@@ -190,6 +191,27 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._app = QApplication.instance()
         self._install_translator()
 
+        if len(sys_argv) > 1:
+            try:
+                if sys_argv[1].split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff"):
+                    self._inner_locate(False)(False)
+                    self._wget_image.open_image(sys_argv[1])
+
+                else:
+                    with open(sys_argv[1], "r", encoding='utf-8') as f:
+                        color_dict = json.load(f)
+
+                        if isinstance(color_dict, dict) and "type" in color_dict:
+                            if color_dict["type"] == "depot":
+                                self._inner_attach(False)(False)
+                                self._wget_operation.dp_open(sys_argv[1])
+
+                            elif color_dict["type"] == "set":
+                                self._wget_operation.dp_import(sys_argv[1])
+
+            except:
+                pass
+
         # install stylesheet.
         """
         with open(os.sep.join((resources, "styles", "dark", "style.qss"))) as qf:
@@ -207,6 +229,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_wheel = Wheel(self.central_widget, self._args)
         self._wget_image = Image(self.central_widget, self._args)
         self._wget_depot = Depot(self.central_widget, self._args)
+
+        self._wget_image.ps_status_changed.connect(lambda x: self.statusbar.showMessage(self._status_descs[1].format(*x)) if len(x) == 2 else self.statusbar.showMessage(self._status_descs[2].format(*x)))
+        self._wget_depot.ps_status_changed.connect(lambda x: self.statusbar.showMessage(self._status_descs[3].format(*x)))
 
         self._wget_wheel.show()
         self._wget_image.hide()
@@ -284,6 +309,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_depot.ps_update.connect(lambda x: self._wget_rule.update_rule())
         self._wget_depot.ps_export.connect(self._wget_operation.exec_export)
 
+        self._wget_wheel.ps_dropped.connect(lambda x: self._inner_import(x))
+        self._wget_depot.ps_dropped.connect(lambda x: self._inner_open(x))
+
     def _setup_script(self):
         """
         Setup script.
@@ -298,6 +326,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_script.ps_filter.connect(lambda x: self._wget_image.open_image("", script=x))
         self._wget_script.ps_enhance.connect(self._wget_image.enhance_image)
         self._wget_script.ps_crop.connect(self._wget_image.crop_image)
+        self._wget_script.ps_replace.connect(self._wget_image.replace_color)
 
     def _setup_channel(self):
         """
@@ -358,6 +387,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 self._wget_wheel.show()
                 self._wget_image.hide()
                 self._wget_depot.hide()
+                self.statusbar.showMessage(self._status_descs[0])
 
                 if self._args.press_act and act:
                     self._wget_cube_table.create_set()
@@ -377,6 +407,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 self._wget_wheel.hide()
                 self._wget_image.show()
                 self._wget_depot.hide()
+                self.statusbar.showMessage(self._status_descs[0])
 
                 if self._args.press_act and act:
                     self._wget_image.open_image_dialog()
@@ -396,6 +427,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 self._wget_wheel.hide()
                 self._wget_image.hide()
                 self._wget_depot.show()
+                self.statusbar.showMessage(self._status_descs[0])
 
                 if self._args.press_act and act:
                     self._wget_depot.attach_set()
@@ -431,6 +463,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             else:
                 wget.show()
 
+            self.statusbar.showMessage(self._status_descs[0])
+
         return _func_
 
     def _inner_all_show_or_hide(self):
@@ -455,6 +489,26 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
             self.mode_dock_widget.show()
             self.transformation_dock_widget.show()
             self.result_dock_widget.show()
+
+        self.statusbar.showMessage(self._status_descs[0])
+
+    def _inner_open(self, depot_file):
+        """
+        Open a depot file.
+        """
+
+        self._wget_operation.dp_open(depot_file[0], direct_dict=depot_file[1])
+
+        self.update()
+
+    def _inner_import(self, set_file):
+        """
+        Import a set file.
+        """
+
+        self._wget_operation.dp_import(set_file[0], direct_dict=set_file[1])
+
+        self.update()
 
     def _install_translator(self):
         """
@@ -567,12 +621,15 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
         self._status_descs = (
             _translate("DigitalPalette", "Ready."),
+            _translate("DigitalPalette", "Image Size: {} x {}."),
+            _translate("DigitalPalette", "Image Size: {} x {}. Position: {} %, {} %."),
+            _translate("DigitalPalette", "Depot Volume: Row {}, Col {}; Total {}, Index {}."),
         )
 
 
 if __name__ == "__main__":
     appctxt = ApplicationContext()
-    DP = DigitalPalette(appctxt.get_resource('.'))
+    DP = DigitalPalette(appctxt.get_resource('.'), sys.argv)
     DP.show()
     exit_code = appctxt.app.exec_()
     sys.exit(exit_code)

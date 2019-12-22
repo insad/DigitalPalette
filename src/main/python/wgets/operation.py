@@ -121,7 +121,7 @@ class Operation(QWidget):
         Exec open operation.
         """
 
-        cb_filter = "{} (*.json)".format(self._file_descs[0])
+        cb_filter = "{} (*.dpc);; {} (*.json)".format(self._file_descs[4], self._file_descs[0])
         cb_file = QFileDialog.getOpenFileName(None, self._operation_descs[5], self._args.usr_color, filter=cb_filter)
 
         if cb_file[0]:
@@ -131,19 +131,30 @@ class Operation(QWidget):
             # closed without open a file.
             return
 
+        self.dp_open(cb_file[0])
+
+    def dp_open(self, depot_file, direct_dict=False):
+        """
+        Open a color depot file.
+        """
+
         color_dict = {}
 
-        with open(cb_file[0], "r", encoding='utf-8') as f:
-            try:
-                color_dict = json.load(f)
+        if direct_dict:
+            color_dict = depot_file
 
-            except Exception as err:
-                self.warning(self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
-                return
+        else:
+            with open(depot_file, "r", encoding='utf-8') as f:
+                try:
+                    color_dict = json.load(f)
 
-            if not isinstance(color_dict, dict):
-                self.warning(self._operation_errs[2])
-                return
+                except Exception as err:
+                    self.warning(self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
+                    return
+
+                if not isinstance(color_dict, dict):
+                    self.warning(self._operation_errs[2])
+                    return
 
         if "version" in color_dict:
             if not self._args.check_version(color_dict["version"]):
@@ -209,9 +220,9 @@ class Operation(QWidget):
         Exec save operation.
         """
 
-        name = "{}".format(time.strftime("DigiPale_Depot_%Y_%m_%d.json", time.localtime()))
+        name = "{}".format(time.strftime("DigiPale_Depot_%Y_%m_%d.dpc", time.localtime()))
 
-        cb_filter = "{} (*.json);; {} (*.txt);; {} (*.aco)".format(self._file_descs[0], self._file_descs[1], self._file_descs[2])
+        cb_filter = "{} (*.dpc);; {} (*.txt);; {} (*.aco)".format(self._file_descs[4], self._file_descs[1], self._file_descs[2])
         cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[6], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
@@ -221,6 +232,13 @@ class Operation(QWidget):
             # closed without open a file.
             return
 
+        self.dp_save(cb_file[0], value)
+
+    def dp_save(self, depot_file, value):
+        """
+        Save a color depot file.
+        """
+
         # load color set from unit cells, which is different from export.
         color_list = []
 
@@ -229,21 +247,21 @@ class Operation(QWidget):
                 color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.desc))
 
         # process start.
-        if cb_file[0].split(".")[-1].lower() == "json":
+        if depot_file.split(".")[-1].lower() == "dpc":
             color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "depot"}
             color_dict["palettes"] = export_list(color_list)
 
-            with open(cb_file[0], "w", encoding='utf-8') as f:
+            with open(depot_file, "w", encoding='utf-8') as f:
                 json.dump(color_dict, f, indent=4)
 
-        elif cb_file[0].split(".")[-1].lower() == "txt":
-            with open(cb_file[0], "w") as f:
+        elif depot_file.split(".")[-1].lower() == "txt":
+            with open(depot_file, "w") as f:
                 f.write("# DigitalPalette Color Depot Export\n")
                 f.write("# Version: {}\n\n".format(self._args.info_version_en))
                 f.write(export_text(color_list))
 
-        elif cb_file[0].split(".")[-1].lower() == "aco":
-            with open(cb_file[0], "wb") as f:
+        elif depot_file.split(".")[-1].lower() == "aco":
+            with open(depot_file, "wb") as f:
                 f.write(export_swatch(color_list))
 
         else:
@@ -254,7 +272,7 @@ class Operation(QWidget):
         Exec import operation.
         """
 
-        cb_filter = "{} (*.json)".format(self._file_descs[0])
+        cb_filter = "{} (*.dps);; {} (*.json)".format(self._file_descs[3], self._file_descs[0])
         cb_file = QFileDialog.getOpenFileName(None, self._operation_descs[0], self._args.usr_color, filter=cb_filter)
 
         if cb_file[0]:
@@ -264,19 +282,30 @@ class Operation(QWidget):
             # closed without open a file.
             return
 
+        self.dp_import(cb_file[0])
+
+    def dp_import(self, set_file, direct_dict=False):
+        """
+        Import a color set file.
+        """
+
         color_dict = {}
 
-        with open(cb_file[0], "r", encoding='utf-8') as f:
-            try:
-                color_dict = json.load(f)
+        if direct_dict:
+            color_dict = set_file
 
-            except Exception as err:
-                self.warning(self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
-                return
+        else:
+            with open(set_file, "r", encoding='utf-8') as f:
+                try:
+                    color_dict = json.load(f)
 
-            if not isinstance(color_dict, dict):
-                self.warning(self._operation_errs[2])
-                return
+                except Exception as err:
+                    self.warning(self._operation_errs[1] + "\n{}\n{}".format(self._operation_errs[17], err))
+                    return
+
+                if not isinstance(color_dict, dict):
+                    self.warning(self._operation_errs[2])
+                    return
 
         if "version" in color_dict:
             if not self._args.check_version(color_dict["version"]):
@@ -344,9 +373,9 @@ class Operation(QWidget):
         Exec export operation.
         """
 
-        name = "{}".format(time.strftime("DigiPale_Set_%Y_%m_%d.json", time.localtime()))
+        name = "{}".format(time.strftime("DigiPale_Set_%Y_%m_%d.dps", time.localtime()))
 
-        cb_filter = "{} (*.json);; {} (*.txt);; {} (*.aco)".format(self._file_descs[0], self._file_descs[1], self._file_descs[2])
+        cb_filter = "{} (*.dps);; {} (*.txt);; {} (*.aco)".format(self._file_descs[3], self._file_descs[1], self._file_descs[2])
         cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[1], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
@@ -355,6 +384,13 @@ class Operation(QWidget):
         else:
             # closed without open a file.
             return
+
+        self.dp_export(cb_file[0], value)
+
+    def dp_export(self, set_file, value):
+        """
+        Export a color set file.
+        """
 
         # load color set from sys or depot, which is different from save.
         color_set = None
@@ -372,21 +408,21 @@ class Operation(QWidget):
             desc = self._args.stab_ucells[value].desc
 
         # process start.
-        if cb_file[0].split(".")[-1].lower() == "json":
+        if set_file.split(".")[-1].lower() == "dps":
             color_dict = {"version": self._args.info_version_en,"site": self._args.info_main_site, "type": "set"}
             color_dict["palettes"] = export_list([(color_set, hm_rule, desc),])
 
-            with open(cb_file[0], "w", encoding='utf-8') as f:
+            with open(set_file, "w", encoding='utf-8') as f:
                 json.dump(color_dict, f, indent=4)
 
-        elif cb_file[0].split(".")[-1].lower() == "txt":
-            with open(cb_file[0], "w") as f:
+        elif set_file.split(".")[-1].lower() == "txt":
+            with open(set_file, "w") as f:
                 f.write("# DigitalPalette Color Set Export\n")
                 f.write("# Version: {}\n\n".format(self._args.info_version_en))
                 f.write(export_text([(color_set, hm_rule, desc),]))
 
-        elif cb_file[0].split(".")[-1].lower() == "aco":
-            with open(cb_file[0], "wb") as f:
+        elif set_file.split(".")[-1].lower() == "aco":
+            with open(set_file, "wb") as f:
                 f.write(export_swatch([(color_set, hm_rule, desc),]))
 
         else:
@@ -458,6 +494,8 @@ class Operation(QWidget):
             _translate("Operation", "DigiPale Json File"),
             _translate("Operation", "Plain Text File"),
             _translate("Operation", "Adobe Swatch File"),
+            _translate("Operation", "DigiPale Set File"),
+            _translate("Operation", "DigiPale Depot File"),
         )
 
         self._operation_errs = (

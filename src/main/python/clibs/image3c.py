@@ -44,7 +44,6 @@ class Image3C(QThread):
         # load args.
         self._temp_dir = QTemporaryDir()
 
-        self.run_image = None
         self.img_data = None
         self.display = None
 
@@ -61,6 +60,7 @@ class Image3C(QThread):
         self._hsv_hrz_data = None
         self._ori_display_data = None
         self._res_display_data = None
+        self._rev_display_data = None
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
@@ -147,7 +147,6 @@ class Image3C(QThread):
         else:
             self.ps_describe.emit(1)
             self.ps_proceses.emit(int(process_scope[0]))
-            self.img_data = Image.open(self.run_image)
 
             ratio = max(5.0 / self.img_data.size[0], 5.0 / self.img_data.size[1])
 
@@ -444,6 +443,30 @@ class Image3C(QThread):
         self._hsv_vtl_data = None
         self._hsv_hrz_data = None
 
+    def save_load_data(self, load_image):
+        """
+        Save load image from clipboard, etc.
+        """
+
+        i = 0
+        image_path = self._temp_dir.path() + os.sep + "load_{}.png"
+        while os.path.isfile(image_path.format(i)):
+            i += 1
+
+        image_path = image_path.format(i)
+
+        try:
+            load_image.save(image_path)
+
+        except Exception as err:
+            return None
+
+        if os.path.isfile(image_path):
+            return image_path
+
+        else:
+            return None
+
     def save_rgb_full_data(self, rgb_data, prefix):
         """
         Save rgb full channel image (0_0.png for category 0 and 4 and channel 0).
@@ -523,7 +546,7 @@ class Image3C(QThread):
         else:
             self.display = None
 
-    def run_enhance(self, process_scope, values):
+    def run_enhance_rgb(self, process_scope, values):
         """
         Enhance rgb display by factor. Modify r, g or (and) b values to enhance the contrast of image.
 
@@ -539,29 +562,85 @@ class Image3C(QThread):
         else:
             display_data = np.array(self._ori_display_data, dtype=np.uint8)
 
-            if res:
-                self._res_display_data = display_data
+        if isinstance(separ, (int, float)) and isinstance(fact, (int, float)):
+            separ = int(separ * 256)
+            separ = 0 if separ < 0 else separ
+            separ = 256 if separ > 256 else separ
+            separ = (separ, separ, separ)
 
-            else:
-                self._res_display_data = None
-
-        separ = int(separ * 256)
-        separ = 0 if separ < 0 else separ
-        separ = 256 if separ > 256 else separ
-
-        fact = float(fact)
-        fact = 0.0 if fact < 0.0 else fact
-        fact = 1.0 if fact > 1.0 else fact
+            fact = float(fact)
+            fact = 0.0 if fact < 0.0 else fact
+            fact = 1.0 if fact > 1.0 else fact
+            fact = (fact, fact, fact)
 
         for k in reg:
-            selection = np.where(display_data[:, :, k] >= separ)
+            selection = np.where(display_data[:, :, k] >= separ[k])
             addi = np.array([0, 0, 0], dtype=np.uint8)
-            addi[k] = 255 * fact
+            addi[k] = 255 * fact[k]
 
-            display_data[:, :, k] = display_data[:, :, k] * (1 - fact)
+            display_data[:, :, k] = display_data[:, :, k] * (1 - fact[k])
             display_data[selection] += addi
 
-            self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
-            self.ps_enhanced.emit(0)
+        if res:
+            self._res_display_data = display_data
 
+        else:
+            self._res_display_data = None
+
+        self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
+        self.ps_enhanced.emit(1)
+
+    def run_enhance_hsv(self, process_scope, values):
+        """
+        Enhance hsv display by factor. Modify h, s or (and) v values to enhance the contrast of image.
+
+        Args:
+            values (tuple or list): (region, separation, factor, reserve)
+        """
+
+        reg, separ, fact, res = values
+
+        if res and isinstance(self._rev_display_data, np.ndarray):
+            display_data = self._rev_display_data
+
+        else:
+            display_data = np.array(self._ori_display_data, dtype=np.uint8)
+            display_data = Color.rgb2hsv_array(display_data)
+
+        if isinstance(separ, (int, float)) and isinstance(fact, (int, float)):
+            separ = float(separ * 1.001)
+            separ = 0.0 if separ < 0.0 else separ
+            separ = 1.001 if separ > 1.001 else separ
+            separ = (separ, separ, separ)
+
+            fact = float(fact)
+            fact = 0.0 if fact < 0.0 else fact
+            fact = 1.0 if fact > 1.0 else fact
+            fact = (fact, fact, fact)
+
+        for k in reg:
+            if k == 0:
+                display_data[:, :, 0] = display_data[:, :, 0] + fact[k] * 360
+
+            else:
+                selection = np.where(display_data[:, :, k] >= separ[k])
+                addi = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+                addi[k] = fact[k]
+
+                display_data[:, :, k] = display_data[:, :, k] * (1 - fact[k])
+                display_data[selection] += addi
+
+        if res:
+            self._rev_display_data = display_data
+
+        else:
+            self._rev_display_data = None
+            self._res_display_data = None
+
+        display_data = Color.hsv2rgb_array(display_data)
+
+        if res:
+            self._res_display_data = display_data
+
+        self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)

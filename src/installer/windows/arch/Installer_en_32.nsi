@@ -2,8 +2,8 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "DigitalPalette"
-!define PRODUCT_VERSION "2.2.1"
-!define PRODUCT_PUBLISHER "DigitalPalette Project"
+!define PRODUCT_VERSION "2.2.2"
+!define PRODUCT_PUBLISHER "Huasheng"
 !define PRODUCT_WEB_SITE "https://liujiacode.github.io/DigitalPalette"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\DigitalPalette.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -80,6 +80,20 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
+Section -DPCfile
+  WriteRegStr HKCR ".dpc" "" "DPCfile"
+  WriteRegStr HKCR "DPCfile" "" "DigiPale Depot File"
+  WriteRegStr HKCR "DPCfile\DefaultIcon" "" "$INSTDIR\icons\depot.ico"
+  WriteRegStr HKCR "DPCfile\shell\open\command" "" '"$INSTDIR\DigitalPalette.exe" "%1"'
+SectionEnd
+
+Section -DPSfile
+  WriteRegStr HKCR ".dps" "" "DPSfile"
+  WriteRegStr HKCR "DPSfile" "" "DigiPale Set File"
+  WriteRegStr HKCR "DPSfile\DefaultIcon" "" "$INSTDIR\icons\set.ico"
+  WriteRegStr HKCR "DPSfile\shell\open\command" "" '"$INSTDIR\DigitalPalette.exe" "%1"'
+SectionEnd
+
 
 Function un.onUninstSuccess
   HideWindow
@@ -102,5 +116,9 @@ Section Uninstall
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  DeleteRegKey HKCR ".dpc"
+  DeleteRegKey HKCR "DPCfile"
+  DeleteRegKey HKCR ".dps"
+  DeleteRegKey HKCR "DPSfile"
   SetAutoClose true
 SectionEnd

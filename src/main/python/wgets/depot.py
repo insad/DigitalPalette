@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import os
+import sys
+import json
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QGridLayout, QScrollArea, QFrame, QShortcut, QMenu, QAction, QDialog, QDialogButtonBox, QPushButton, QApplication
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QMimeData
@@ -197,6 +200,8 @@ class Depot(QWidget):
 
     ps_update = pyqtSignal(bool)
     ps_export = pyqtSignal(int)
+    ps_status_changed = pyqtSignal(tuple)
+    ps_dropped = pyqtSignal(tuple)
 
     def __init__(self, wget, args):
         """
@@ -206,7 +211,10 @@ class Depot(QWidget):
         super().__init__(wget)
 
         # load args.
+        self.setAcceptDrops(True)
+
         self._args = args
+        self._drop_file = None
 
         self._left_click = False
         self._start_hig = None
@@ -261,6 +269,9 @@ class Depot(QWidget):
         shortcut = QShortcut(QKeySequence("Ctrl+X"), self)
         shortcut.activated.connect(self.clipboard_cur("hec"))
 
+        shortcut = QShortcut(QKeySequence("Ctrl+V"), self)
+        shortcut.activated.connect(self.clipboard_in)
+
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
@@ -288,7 +299,7 @@ class Depot(QWidget):
         else:
             status_idx = status_idx + 1
 
-        self.setStatusTip(self._status_descs[0].format(self._tot_rows, self._args.stab_column, len(self._args.stab_ucells) - 1, status_idx))
+        self.ps_status_changed.emit((self._tot_rows, self._args.stab_column, len(self._args.stab_ucells) - 1, status_idx))
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
@@ -420,6 +431,36 @@ class Depot(QWidget):
         else:
             event.ignore()
 
+    def dragEnterEvent(self, event):
+        depot_file = event.mimeData().text()
+
+        # ubuntu would add \r\n at end.
+        depot_file = depot_file[:-1] if depot_file[-1:] == "\n" else depot_file
+        depot_file = depot_file[:-1] if depot_file[-1:] == "\r" else depot_file
+
+        if depot_file[:4] == "file" and depot_file.split(".")[-1].lower() in ("dpc", "json"):
+            # ubuntu need / at start.
+            if sys.platform[:3].lower() == "win":
+                self._drop_file = depot_file[8:]
+
+            else:
+                self._drop_file = depot_file[7:]
+
+            event.accept()
+
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if self._drop_file:
+            self.ps_dropped.emit((self._drop_file, False))
+            self._drop_file = None
+
+            event.accept()
+
+        else:
+            event.ignore()
+
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def initialize(self):
@@ -539,7 +580,7 @@ class Depot(QWidget):
         else:
             status_idx = status_idx + 1
 
-        self.setStatusTip(self._status_descs[0].format(self._tot_rows, self._args.stab_column, len(self._args.stab_ucells) - 1, status_idx))
+        self.ps_status_changed.emit((self._tot_rows, self._args.stab_column, len(self._args.stab_ucells) - 1, status_idx))
 
     def move(self, shift_x, shift_y):
         """
@@ -697,6 +738,42 @@ class Depot(QWidget):
 
         self.update()
 
+    def clipboard_in(self):
+        """
+        Load depot from clipboard.
+        """
+
+        clipboard = QApplication.clipboard()
+        depot_file = clipboard.text()
+
+        # ubuntu would add \r\n at end.
+        depot_file = depot_file[:-1] if depot_file[-1:] == "\n" else depot_file
+        depot_file = depot_file[:-1] if depot_file[-1:] == "\r" else depot_file
+
+        if depot_file[:4] == "file" and depot_file.split(".")[-1].lower() in ("dps", "json"):
+            # ubuntu need / at start.
+            if sys.platform[:3].lower() == "win":
+                depot_file = depot_file[8:]
+
+            else:
+                depot_file = depot_file[7:]
+
+            if os.path.isfile(depot_file):
+                self.ps_dropped.emit((depot_file, False))
+
+        else:
+            color_dict = {}
+
+            try:
+                color_dict = json.loads(depot_file)
+
+            except:
+                return
+
+            if isinstance(color_dict, dict) and "type" in color_dict and "palettes" in color_dict:
+                if color_dict["type"] == "depot":
+                    self.ps_dropped.emit((color_dict, True))
+
     def clipboard_cur(self, ctp):
         """
         Set the rgb, hsv or hec (hex code) of current color set as the clipboard data by shortcut Ctrl + r, h or c.
@@ -791,8 +868,4 @@ class Depot(QWidget):
             _translate("Depot", "Delete"),
             _translate("Depot", "Detail"),
             _translate("Depot", "Attach"),
-        )
-
-        self._status_descs = (
-            _translate("Depot", "Depot Volume: Row {}, Col {}, Total {}, Index {}."),
         )

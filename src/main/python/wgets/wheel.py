@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+import json
 import numpy as np
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QShortcut, QApplication
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QSize, pyqtSignal
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient, QKeySequence
 from clibs.transpt import get_outer_box, rotate_point_center, get_theta_center
 from clibs.color import Color
 
@@ -15,6 +18,7 @@ class Wheel(QWidget):
 
     ps_color_changed = pyqtSignal(bool)
     ps_index_changed = pyqtSignal(bool)
+    ps_dropped = pyqtSignal(tuple)
 
     def __init__(self, wget, args):
         """
@@ -24,8 +28,11 @@ class Wheel(QWidget):
         super().__init__(wget)
 
         # load args.
+        self.setAcceptDrops(True)
+
         self._args = args
         self._backup = self._args.sys_color_set.backup()
+        self._drop_file = None
 
         # init global args.
         self._pressed_in_wheel = False
@@ -34,6 +41,9 @@ class Wheel(QWidget):
 
         # init qt args.
         self.setMinimumSize(QSize(300, 200))
+
+        shortcut = QShortcut(QKeySequence("Ctrl+V"), self)
+        shortcut.activated.connect(self.clipboard_in)
 
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
@@ -257,3 +267,71 @@ class Wheel(QWidget):
             self._pressed_in_bar_2 = False
 
         event.ignore()
+
+    def dragEnterEvent(self, event):
+        set_file = event.mimeData().text()
+
+        # ubuntu would add \r\n at end.
+        set_file = set_file[:-1] if set_file[-1:] == "\n" else set_file
+        set_file = set_file[:-1] if set_file[-1:] == "\r" else set_file
+
+        if set_file[:4] == "file" and set_file.split(".")[-1].lower() in ("dps", "json"):
+            # ubuntu need / at start.
+            if sys.platform[:3].lower() == "win":
+                self._drop_file = set_file[8:]
+
+            else:
+                self._drop_file = set_file[7:]
+
+            event.accept()
+
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if self._drop_file:
+            self.ps_dropped.emit((self._drop_file, False))
+            self._drop_file = None
+
+            event.accept()
+
+        else:
+            event.ignore()
+
+    # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
+
+    def clipboard_in(self):
+        """
+        Load set from clipboard.
+        """
+
+        clipboard = QApplication.clipboard()
+        set_file = clipboard.text()
+
+        # ubuntu would add \r\n at end.
+        set_file = set_file[:-1] if set_file[-1:] == "\n" else set_file
+        set_file = set_file[:-1] if set_file[-1:] == "\r" else set_file
+
+        if set_file[:4] == "file" and set_file.split(".")[-1].lower() in ("dps", "json"):
+            # ubuntu need / at start.
+            if sys.platform[:3].lower() == "win":
+                set_file = set_file[8:]
+
+            else:
+                set_file = set_file[7:]
+
+            if os.path.isfile(set_file):
+                self.ps_dropped.emit((set_file, False))
+
+        else:
+            color_dict = {}
+
+            try:
+                color_dict = json.loads(set_file)
+
+            except:
+                return
+
+            if isinstance(color_dict, dict) and "type" in color_dict and "palettes" in color_dict:
+                if color_dict["type"] == "set":
+                    self.ps_dropped.emit((color_dict, True))

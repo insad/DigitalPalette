@@ -3,9 +3,10 @@
 import os
 import sys
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog
+from PIL import Image as PImage
+from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog, QShortcut, QApplication
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QRect, QPoint
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage, QCursor
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPixmap, QImage, QCursor, QKeySequence
 from cguis.resource import view_rc
 from clibs.image3c import Image3C
 from clibs.transpt import get_outer_box
@@ -31,6 +32,7 @@ class OverLabel(QLabel):
         self._pressed = False
 
         self.croping = False
+        self.locating = False
         self.locations = [None, None, None, None, None]
 
     def paintEvent(self, event):
@@ -82,7 +84,22 @@ class OverLabel(QLabel):
             if 0 <= self.croping[3] <= self.height():
                 painter.drawLine(QPoint(0, self.croping[3] * self.height()), QPoint(self.width(), self.croping[3] * self.height()))
 
-        elif self.croping:
+        elif isinstance(self.locating, tuple):
+            painter.setPen(QPen(Qt.NoPen))
+            painter.setBrush(QColor(255, 255, 255, 160))
+
+            painter.drawRect(0, 0, self.width(), self.height())
+
+            painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+            painter.setBrush(QBrush(Qt.NoBrush))
+
+            if 0 <= self.locating[0] <= self.width():
+                painter.drawLine(QPoint(self.locating[0] * self.width(), 0), QPoint(self.locating[0] * self.width(), self.height()))
+
+            if 0 <= self.locating[1] <= self.height():
+                painter.drawLine(QPoint(0, self.locating[1] * self.height()), QPoint(self.width(), self.locating[1] * self.height()))
+
+        elif self.croping or self.locating:
             painter.setPen(QPen(Qt.NoPen))
             painter.setBrush(QColor(255, 255, 255, 160))
 
@@ -93,7 +110,7 @@ class OverLabel(QLabel):
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mousePressEvent(self, event):
-        if self.croping:
+        if self.croping or self.locating:
             event.ignore()
             return
 
@@ -206,6 +223,20 @@ class OverLabel(QLabel):
 
         self.croping = tuple(croping)
 
+    def revise_locating(self):
+        """
+        Revise the locating value from mouse move to standard value (full in image).
+        """
+
+        locating = list(self.locating)
+
+        locating[0] = 0.0 if locating[0] < 0.0 else locating[0]
+        locating[1] = 0.0 if locating[1] < 0.0 else locating[1]
+        locating[0] = 1.0 if locating[0] > 1.0 else locating[0]
+        locating[1] = 1.0 if locating[1] > 1.0 else locating[1]
+
+        self.locating = tuple(locating)
+
 
 class Image(QWidget):
     """
@@ -215,6 +246,7 @@ class Image(QWidget):
     ps_color_changed = pyqtSignal(bool)
     ps_image_changed = pyqtSignal(bool)
     ps_recover_channel = pyqtSignal(bool)
+    ps_status_changed = pyqtSignal(tuple)
 
     def __init__(self, wget, args):
         """
@@ -230,6 +262,7 @@ class Image(QWidget):
         self._move_pos = None
         self._start_pt = None
         self._is_croping = False
+        self._is_locating = False
         self._enhance_lock = False
         self._resizing_image = False
 
@@ -258,8 +291,11 @@ class Image(QWidget):
         self.overlabel_display = OverLabel(self, self._args)
         self.overlabel_display.ps_circle_moved.connect(lambda x: self.modify_color_loc())
 
+        shortcut = QShortcut(QKeySequence("Ctrl+V"), self)
+        shortcut.activated.connect(self.clipboard_in)
+
     def paintEvent(self, event):
-        if not self._image3c.run_image:
+        if not self._image3c.img_data:
             self._loading_bar.hide()
             self._ico_label.hide()
             self._tip_label.show()
@@ -344,6 +380,30 @@ class Image(QWidget):
 
                     painter.end()
 
+                    self.ps_status_changed.emit((self._image3c.rgb_data.shape[1], self._image3c.rgb_data.shape[0], "{:.1f}".format(self.overlabel_display.croping[2] * 100), "{:.1f}".format(self.overlabel_display.croping[3] * 100)))
+
+                elif isinstance(self.overlabel_display.locating, tuple):
+                    painter = QPainter()
+                    painter.begin(self)
+                    painter.setRenderHint(QPainter.Antialiasing, True)
+                    painter.setRenderHint(QPainter.TextAntialiasing, True)
+                    painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+
+                    painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+
+                    painter.drawLine(QPoint(self.overlabel_display.locating[0] * self.overlabel_display.width() + self.overlabel_display.x(), 0), QPoint(self.overlabel_display.locating[0] * self.overlabel_display.width() + self.overlabel_display.x(), self.height()))
+                    painter.drawLine(QPoint(0, self.overlabel_display.locating[1] * self.overlabel_display.height() + self.overlabel_display.y()), QPoint(self.width(), self.overlabel_display.locating[1] * self.overlabel_display.height() + self.overlabel_display.y()))
+
+                    painter.end()
+
+                    self.ps_status_changed.emit((self._image3c.rgb_data.shape[1], self._image3c.rgb_data.shape[0], "{:.1f}".format(self.overlabel_display.locating[0] * 100), "{:.1f}".format(self.overlabel_display.locating[1] * 100)))
+
+                elif self.overlabel_display.locations[self._args.sys_activated_idx]:
+                    self.ps_status_changed.emit((self._image3c.rgb_data.shape[1], self._image3c.rgb_data.shape[0], "{:.1f}".format(self.overlabel_display.locations[self._args.sys_activated_idx][0] * 100), "{:.1f}".format(self.overlabel_display.locations[self._args.sys_activated_idx][1] * 100)))
+
+                else:
+                    self.ps_status_changed.emit((self._image3c.rgb_data.shape[1], self._image3c.rgb_data.shape[0]))
+
             else:
                 self._image3c.load_image(self._args.sys_category, self._args.sys_channel)
                 self._resizing_image = True
@@ -353,7 +413,7 @@ class Image(QWidget):
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
     def mouseDoubleClickEvent(self, event):
-        if not self._image3c.run_image and event.button() == Qt.LeftButton:
+        if not self._image3c.img_data and event.button() == Qt.LeftButton:
             p_x = event.x()
             p_y = event.y()
 
@@ -437,8 +497,26 @@ class Image(QWidget):
                 event.accept()
                 self.update()
 
+            elif event.button() == Qt.LeftButton and self.overlabel_display.locating:
+                self._is_locating = True
+                self.overlabel_display.locating = (
+                    (event.x() - self.overlabel_display.x()) / self.overlabel_display.width(),
+                    (event.y() - self.overlabel_display.y()) / self.overlabel_display.height(),
+                )
+
+                event.accept()
+                self.update()
+
             elif event.button() == Qt.RightButton and self.overlabel_display.croping:
+                self._is_croping = False
                 self.overlabel_display.croping = False
+
+                event.accept()
+                self.update()
+
+            elif event.button() == Qt.RightButton and self.overlabel_display.locating:
+                self._is_locating = False
+                self.overlabel_display.locating = False
 
                 event.accept()
                 self.update()
@@ -471,6 +549,15 @@ class Image(QWidget):
             event.accept()
             self.update()
 
+        elif self._is_locating:
+            self.overlabel_display.locating = (
+                (event.x() - self.overlabel_display.x()) / self.overlabel_display.width(),
+                (event.y() - self.overlabel_display.y()) / self.overlabel_display.height(),
+            )
+
+            event.accept()
+            self.update()
+
         else:
             event.ignore()
 
@@ -481,6 +568,12 @@ class Image(QWidget):
         if self._is_croping:
             self.overlabel_display.revise_croping(self._image3c.rgb_data.shape)
             self._is_croping = False
+
+            self.update()
+
+        if self._is_locating:
+            self.overlabel_display.revise_locating()
+            self._is_locating = False
 
             self.update()
 
@@ -579,19 +672,29 @@ class Image(QWidget):
         Open a image.
         """
 
-        if not self.isVisible():
+        if isinstance(script, tuple) and (not self.isVisible()):
             return
 
         if script and (not self._image3c.img_data):
             return
 
-        if self._image3c.isRunning():
+        if self._image3c.isRunning() or self._enhance_lock:
             self.warning(self._image_errs[1])
             return
 
         if not self._image3c.check_temp_dir():
             self.warning(self._image_errs[2])
             return
+
+        if not isinstance(script, tuple):
+            try:
+                img_data = PImage.open(image)
+
+            except:
+                self.warning(self._image_errs[4])
+                return
+
+            self._image3c.img_data = img_data
 
         self._categories = set()
 
@@ -617,7 +720,6 @@ class Image(QWidget):
             self._move_pos = None
 
             self._image3c.run_args = None
-            self._image3c.run_image = image
 
             self._image3c.run_category = "init"
             self._image3c.start()
@@ -632,7 +734,7 @@ class Image(QWidget):
         if not (self.isVisible() and self.overlabel_display.isVisible()):
             return
 
-        if not self._image3c.run_image:
+        if not self._image3c.img_data:
             return
 
         if not self._image3c.check_temp_dir():
@@ -665,13 +767,10 @@ class Image(QWidget):
             self.warning(self._image_errs[1])
             return
 
-        if not self._image3c.display:
-            return
-
         self._enhance_lock = True
 
-        self._image3c.run_args = values
-        self._image3c.run_category = "enhance"
+        self._image3c.run_args = values[1:]
+        self._image3c.run_category = "enhance_{}".format(values[0])
         self._image3c.start()
 
         self.update()
@@ -684,6 +783,13 @@ class Image(QWidget):
         if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
             return
 
+        if self.overlabel_display.locating:
+            return
+
+        if self._image3c.isRunning() or self._enhance_lock:
+            self.warning(self._image_errs[1])
+            return
+
         if value:
             if isinstance(self.overlabel_display.croping, tuple):
                 self.open_image("", ("CROP", self.overlabel_display.croping))
@@ -693,6 +799,78 @@ class Image(QWidget):
 
         else:
             self.overlabel_display.croping = False
+
+        self.update()
+
+    def replace_color(self, value):
+        """
+        Replace color.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
+            return
+
+        if self._image3c.isRunning():
+            self.warning(self._image_errs[1])
+            return
+
+        if self.overlabel_display.croping:
+            return
+
+        if value:
+            if isinstance(self.overlabel_display.locating, tuple):
+                shape = self._image3c.rgb_data.shape
+
+                rgb = self._image3c.rgb_data[int(self.overlabel_display.locating[1] * (shape[0] - 1))][int(self.overlabel_display.locating[0] * (shape[1] - 1))]
+                separ = []
+                fact = []
+
+                if value == 1:
+                    for i in range(3):
+                        if self._args.sys_color_set[self._args.sys_activated_idx].rgb[i] > rgb[i]:
+                            separ.append(0)
+                            fact.append((self._args.sys_color_set[self._args.sys_activated_idx].rgb[i] - rgb[i]) / (255 - rgb[i]))
+
+                        else:
+                            separ.append(256)
+                            fact.append((rgb[i] - self._args.sys_color_set[self._args.sys_activated_idx].rgb[i]) / rgb[i])
+
+                    self._image3c.run_args = ((0, 1, 2), tuple(separ), tuple(fact), False)
+                    self._image3c.run_category = "enhance_rgb"
+
+                elif value == 2:
+                    hsv = Color.rgb2hsv(rgb)
+                    separ.append(0)
+                    fact.append((self._args.sys_color_set[self._args.sys_activated_idx].hsv[0] - hsv[0]) / 360)
+
+                    if self._args.sys_color_set[self._args.sys_activated_idx].hsv[1] > hsv[1]:
+                        separ.append(0)
+                        fact.append((self._args.sys_color_set[self._args.sys_activated_idx].hsv[1] - hsv[1]) / (1.0 - hsv[1]))
+
+                    else:
+                        separ.append(1.00001)
+                        fact.append((hsv[1] - self._args.sys_color_set[self._args.sys_activated_idx].hsv[1]) / hsv[1])
+
+                    if self._args.sys_color_set[self._args.sys_activated_idx].hsv[2] > hsv[2]:
+                        separ.append(0)
+                        fact.append((self._args.sys_color_set[self._args.sys_activated_idx].hsv[2] - hsv[2]) / (1.0 - hsv[2]))
+
+                    else:
+                        separ.append(1.00001)
+                        fact.append((hsv[2] - self._args.sys_color_set[self._args.sys_activated_idx].hsv[2]) / hsv[2])
+
+                    self._image3c.run_args = ((0, 1, 2), tuple(separ), tuple(fact), False)
+                    self._image3c.run_category = "enhance_hsv"
+
+                self._image3c.start()
+
+                self._enhance_lock = True
+
+            else:
+                self.overlabel_display.locating = True
+
+        else:
+            self.overlabel_display.locating = False
 
         self.update()
 
@@ -721,8 +899,8 @@ class Image(QWidget):
         """
 
         self._categories.add(idx)
-        self.setStatusTip(self._status_descs[0].format(*self._image3c.rgb_data.shape))
         self.overlabel_display.croping = False
+        self.overlabel_display.locating = False
         self._resizing_image = True
 
         self.update()
@@ -736,6 +914,7 @@ class Image(QWidget):
             self._enhance_lock = False
 
         self._resizing_image = True
+        self.overlabel_display.locating = False
 
         self.update()
 
@@ -775,6 +954,35 @@ class Image(QWidget):
 
         self.overlabel_display.update()
 
+    def clipboard_in(self):
+        """
+        Load image from clipboard.
+        """
+
+        clipboard = QApplication.clipboard()
+        load_image = self._image3c.save_load_data(clipboard.pixmap())
+
+        if load_image:
+            self.open_image(load_image)
+
+        else:
+            image = clipboard.text()
+
+            # ubuntu would add \r\n at end.
+            image = image[:-1] if image[-1:] == "\n" else image
+            image = image[:-1] if image[-1:] == "\r" else image
+
+            if image[:4] == "file" and image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff"):
+                # ubuntu need / at start.
+                if sys.platform[:3].lower() == "win":
+                    image = image[8:]
+
+                else:
+                    image = image[7:]
+
+                if os.path.isfile(image):
+                    self.open_image(image)
+
     def update_all(self):
         self.overlabel_display.update()
         self.update()
@@ -805,15 +1013,12 @@ class Image(QWidget):
             _translate("Image", "Open"),
         )
 
-        self._status_descs = (
-            _translate("Image", "Image Size: {} x {}."),
-        )
-
         self._image_errs = (
             _translate("Image", "Error"),
             _translate("Image", "Could not process image. There is a process of image not finished."),
             _translate("Image", "Could not create temporary dir. Dir is not created."),
             _translate("Image", "OK"),
+            _translate("Image", "Could not open image. This image is broken."),
         )
 
         self._image_descs = (
