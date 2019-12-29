@@ -107,6 +107,8 @@ class Settings(QDialog, Ui_SettingsDialog):
 
         self.stab_column_dp.setValue(self._args.stab_column)
 
+        self.rev_direct_cbox.setChecked(self._args.rev_direct)
+
         self.s_tag_radius_dp.setValue(self._args.s_tag_radius)
         self.v_tag_radius_dp.setValue(self._args.v_tag_radius)
 
@@ -168,6 +170,8 @@ class Settings(QDialog, Ui_SettingsDialog):
         self._args.modify_settings("coset_ratio", self.coset_ratio_dp.value())
 
         self._args.modify_settings("stab_column", self.stab_column_dp.value())
+
+        self._args.modify_settings("rev_direct", self.rev_direct_cbox.isChecked())
 
         self._args.modify_settings("s_tag_radius", self.s_tag_radius_dp.value())
         self._args.modify_settings("v_tag_radius", self.v_tag_radius_dp.value())

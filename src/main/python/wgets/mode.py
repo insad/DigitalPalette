@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QCheckBox, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy
-from PyQt5.QtCore import Qt, QSize, pyqtSignal
+from PyQt5.QtWidgets import QWidget, QCheckBox, QGridLayout, QScrollArea, QFrame, QGroupBox, QSpacerItem, QSizePolicy
+from PyQt5.QtCore import Qt, QSize, pyqtSignal, QCoreApplication
 
 
 class Mode(QWidget):
@@ -21,6 +21,9 @@ class Mode(QWidget):
         # load args.
         self._args = args
 
+        # load translations.
+        self._func_tr_()
+
         # init qt args.
         mode_grid_layout = QGridLayout(self)
         mode_grid_layout.setContentsMargins(1, 1, 1, 1)
@@ -39,24 +42,34 @@ class Mode(QWidget):
         scroll_grid_layout.setVerticalSpacing(12)
         scroll_area.setWidget(scroll_contents)
 
-        self._cbox_rgb = QCheckBox(scroll_contents)
+        # display functional region.
+        self._display_gbox = QGroupBox(scroll_contents)
+        gbox_grid_layout = QGridLayout(self._display_gbox)
+        gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
+        gbox_grid_layout.setHorizontalSpacing(8)
+        gbox_grid_layout.setVerticalSpacing(12)
+        scroll_grid_layout.addWidget(self._display_gbox, 0, 1, 1, 1)
+
+        self._cbox_rgb = QCheckBox(self._display_gbox)
         self._cbox_rgb.setText("RGB")
-        scroll_grid_layout.addWidget(self._cbox_rgb, 0, 1, 1, 1)
+        gbox_grid_layout.addWidget(self._cbox_rgb, 0, 1, 1, 1)
         self._cbox_rgb.stateChanged.connect(self.modify_state("rgb"))
 
-        self._cbox_hsv = QCheckBox(scroll_contents)
+        self._cbox_hsv = QCheckBox(self._display_gbox)
         self._cbox_hsv.setText("HSV")
-        scroll_grid_layout.addWidget(self._cbox_hsv, 1, 1, 1, 1)
+        gbox_grid_layout.addWidget(self._cbox_hsv, 1, 1, 1, 1)
         self._cbox_hsv.stateChanged.connect(self.modify_state("hsv"))
 
         self.update_mode()
 
         spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        scroll_grid_layout.addItem(spacer, 2, 1, 1, 1)
+        gbox_grid_layout.addItem(spacer, 2, 1, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 2, 0, 1, 1)
+        gbox_grid_layout.addItem(spacer, 2, 0, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        scroll_grid_layout.addItem(spacer, 2, 2, 1, 1)
+        gbox_grid_layout.addItem(spacer, 2, 2, 1, 1)
+
+        self.update_text()
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
@@ -82,3 +95,15 @@ class Mode(QWidget):
 
         self._cbox_rgb.setChecked(self._args.show_rgb)
         self._cbox_hsv.setChecked(self._args.show_hsv)
+
+    # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
+
+    def update_text(self):
+        self._display_gbox.setTitle(self._gbox_descs[0])
+
+    def _func_tr_(self):
+        _translate = QCoreApplication.translate
+
+        self._gbox_descs = (
+            _translate("Mode", "Display"),
+        )

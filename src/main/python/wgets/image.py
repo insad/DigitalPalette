@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 import numpy as np
 from PIL import Image as PImage
 from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar, QMessageBox, QFileDialog, QShortcut, QApplication
@@ -656,7 +657,7 @@ class Image(QWidget):
         if not self.isVisible():
             return
 
-        cb_filter = "All Images (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; PNG Image (*.png);; BMP Image (*.bmp);; JPEG Image (*.jpg *.jpeg);; TIFF Image (*.tif *.tiff)"
+        cb_filter = "{} (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; {} (*.png);; {} (*.bmp);; {} (*.jpg *.jpeg);; {} (*.tif *.tiff)".format(*self._extend_descs)
         cb_file = QFileDialog.getOpenFileName(None, self._action_descs[1], self._args.usr_image, filter=cb_filter)
 
         if cb_file[0]:
@@ -757,7 +758,7 @@ class Image(QWidget):
 
     def enhance_image(self, values):
         """
-        Modify r, g or (and) b values to enhance the contrast of image.
+        Modify r, g or (and) b values to enhance or inverse the contrast of image.
         """
 
         if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
@@ -770,7 +771,7 @@ class Image(QWidget):
         self._enhance_lock = True
 
         self._image3c.run_args = values[1:]
-        self._image3c.run_category = "enhance_{}".format(values[0])
+        self._image3c.run_category = values[0]
         self._image3c.start()
 
         self.update()
@@ -954,6 +955,48 @@ class Image(QWidget):
 
         self.overlabel_display.update()
 
+    def freeze_image(self, value):
+        """
+        Freeze current image.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
+            return
+
+        if self._image3c.isRunning():
+            self.warning(self._image_errs[1])
+            return
+
+        load_image = self._image3c.save_load_data(self._image3c.display)
+
+        if load_image:
+            self.open_image(load_image)
+
+        else:
+            self.warning(self._image_errs[5])
+
+    def print_image(self, value):
+        """
+        Exec print image.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
+            return
+
+        name = "{}".format(time.strftime("DigiPale_Image_%Y_%m_%d.png", time.localtime()))
+
+        cb_filter = "{} (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; {} (*.png);; {} (*.bmp);; {} (*.jpg *.jpeg);; {} (*.tif *.tiff)".format(*self._extend_descs)
+        cb_file = QFileDialog.getSaveFileName(None, self._action_descs[2], os.sep.join((self._args.usr_image, name)), filter=cb_filter)
+
+        if cb_file[0]:
+            self._args.usr_image = os.path.dirname(os.path.abspath(cb_file[0]))
+
+        else:
+            # closed without open a file.
+            return
+
+        self._image3c.display.save(cb_file[0])
+
     def clipboard_in(self):
         """
         Load image from clipboard.
@@ -1011,6 +1054,7 @@ class Image(QWidget):
         self._action_descs = (
             _translate("Image", "Double click here to open an image."),
             _translate("Image", "Open"),
+            _translate("Image", "Print"),
         )
 
         self._image_errs = (
@@ -1019,6 +1063,7 @@ class Image(QWidget):
             _translate("Image", "Could not create temporary dir. Dir is not created."),
             _translate("Image", "OK"),
             _translate("Image", "Could not open image. This image is broken."),
+            _translate("Image", "Could not process image. Translation is not completed."),
         )
 
         self._image_descs = (
@@ -1040,4 +1085,12 @@ class Image(QWidget):
             _translate("Image", "Loading HSV final edge data."),
             _translate("Image", "Saving HSV final edge data."),
             _translate("Image", "Applying filter to image data."),
+        )
+
+        self._extend_descs = (
+            _translate("Image", "All Images"),
+            _translate("Image", "PNG Image"),
+            _translate("Image", "BMP Image"),
+            _translate("Image", "JPG Image"),
+            _translate("Image", "TIF Image"),
         )

@@ -2,8 +2,8 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "DigitalPalette"
-!define PRODUCT_VERSION "2.2.2"
-!define PRODUCT_PUBLISHER "花生"
+!define PRODUCT_VERSION "2.2.3"
+!define PRODUCT_PUBLISHER "本征喵"
 !define PRODUCT_WEB_SITE "https://liujiacode.github.io/DigitalPalette"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\DigitalPalette.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"

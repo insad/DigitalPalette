@@ -17,15 +17,15 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.2.2-dev
+v2.2.3-dev
 """
 
 __AUTHOR__ = """
-Huasheng
+Eigenmiao
 """
 
 __DATE__ = """
-Dec. 22th, 2019
+Dec. 29th, 2019
 """
 
 import os
@@ -324,9 +324,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         script_grid_layout.addWidget(self._wget_script)
 
         self._wget_script.ps_filter.connect(lambda x: self._wget_image.open_image("", script=x))
-        self._wget_script.ps_enhance.connect(self._wget_image.enhance_image)
         self._wget_script.ps_crop.connect(self._wget_image.crop_image)
-        self._wget_script.ps_replace.connect(self._wget_image.replace_color)
+        self._wget_script.ps_freeze.connect(self._wget_image.freeze_image)
+        self._wget_script.ps_print.connect(self._wget_image.print_image)
 
     def _setup_channel(self):
         """
@@ -361,6 +361,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_transformation.ps_home.connect(lambda x: self._wget_depot.home())
         self._wget_transformation.ps_move.connect(lambda x: self._wget_depot.move(x[0], x[1]))
         self._wget_transformation.ps_zoom.connect(lambda x: self._wget_depot.zoom(x))
+
+        self._wget_transformation.ps_replace.connect(self._wget_image.replace_color)
+        self._wget_transformation.ps_enhance.connect(self._wget_image.enhance_image)
 
     def _setup_settings(self):
         """
@@ -528,6 +531,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_rule._func_tr_()
         self._wget_channel._func_tr_()
         self._wget_operation._func_tr_()
+        self._wget_transformation._func_tr_()
+        self._wget_mode._func_tr_()
         self._wget_script._func_tr_()
         self._wget_settings.retranslateUi(self._wget_settings)
         self._wget_settings._func_tr_()
@@ -537,6 +542,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_rule.update_text()
         self._wget_channel.update_text()
         self._wget_operation.update_text()
+        self._wget_transformation.update_text()
+        self._wget_mode.update_text()
         self._wget_script.update_text()
         self._wget_settings.update_text()
 

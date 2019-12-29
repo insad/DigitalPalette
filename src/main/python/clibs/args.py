@@ -81,12 +81,12 @@ class Args(object):
         # software informations.
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_version_zh = "v2.2.2-开发版"
-        self.info_version_en = "v2.2.2-dev"
-        self.info_author_zh = "花生"
-        self.info_author_en = "Huasheng"
-        self.info_date_zh = "2019年12月22日"
-        self.info_date_en = "Dec. 22th, 2019"
+        self.info_version_zh = "v2.2.3-开发版"
+        self.info_version_en = "v2.2.3-dev"
+        self.info_author_zh = "本征喵"
+        self.info_author_en = "Eigenmiao"
+        self.info_date_zh = "2019年12月29日"
+        self.info_date_en = "Dec. 29th, 2019"
 
         # special system settings.
         self.sys_activated_idx = 0
@@ -139,8 +139,8 @@ class Args(object):
         self.hm_rule = "analogous"
         self.overflow = "return"
         self.press_move = True
-        self.show_hsv = True
         self.show_rgb = True
+        self.show_hsv = True
 
         self.h_range = (0.0, 360.0)
         self.s_range = (0.4, 1.0)
@@ -153,6 +153,8 @@ class Args(object):
 
         self.s_tag_radius = 0.08
         self.v_tag_radius = 0.08
+
+        self.rev_direct = True
 
         self.zoom_step = 1.1
         self.move_step = 5
@@ -180,9 +182,9 @@ class Args(object):
 
         items = (
             "usr_color", "usr_image", "press_act", "store_loc", "hm_rule", "overflow", "lang", "press_move",
-            "show_hsv", "show_rgb", "h_range", "s_range", "v_range",
+            "show_rgb", "show_hsv", "h_range", "s_range", "v_range",
             "wheel_ratio", "volum_ratio", "cubic_ratio", "coset_ratio",
-            "s_tag_radius", "v_tag_radius", "zoom_step", "move_step", "circle_dist",
+            "rev_direct", "s_tag_radius", "v_tag_radius", "zoom_step", "move_step", "circle_dist",
             "positive_wid", "negative_wid", "wheel_ed_wid",
             "positive_color", "negative_color", "wheel_ed_color",
             "stab_column",
@@ -229,8 +231,8 @@ class Args(object):
             "overflow": lambda vl: self.pfmt_str_in_list(vl, self.global_overflows, self.overflow),
             "lang": lambda vl: self.pfmt_str_in_list(vl, [x[1] for x in self.usr_langs], self.lang),
             "press_move": lambda vl: self.pfmt_value(vl, bool, self.press_move),
-            "show_hsv": lambda vl: self.pfmt_value(vl, bool, self.show_hsv),
             "show_rgb": lambda vl: self.pfmt_value(vl, bool, self.show_rgb),
+            "show_hsv": lambda vl: self.pfmt_value(vl, bool, self.show_hsv),
             "h_range": lambda vl: self.pfmt_num_pair_in_scope(vl, (0.0, 360.0), float, self.h_range),
             "s_range": lambda vl: self.pfmt_num_pair_in_scope(vl, (0.0, 1.0), float, self.s_range),
             "v_range": lambda vl: self.pfmt_num_pair_in_scope(vl, (0.0, 1.0), float, self.v_range),
@@ -238,6 +240,7 @@ class Args(object):
             "volum_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.volum_ratio),
             "cubic_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.cubic_ratio),
             "coset_ratio": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 1.0), float, self.coset_ratio),
+            "rev_direct": lambda vl: self.pfmt_value(vl, bool, self.rev_direct),
             "s_tag_radius": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 0.2), float, self.s_tag_radius),
             "v_tag_radius": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 0.2), float, self.v_tag_radius),
             "zoom_step": lambda vl: self.pfmt_num_in_scope(vl, (1.0, 10.0), float, self.zoom_step),

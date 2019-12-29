@@ -1231,28 +1231,6 @@
                </widget>
               </item>
               <item row="7" column="0" colspan="3">
-               <widget class="QCheckBox" name="show_hsv_cbox">
-                <property name="minimumSize">
-                 <size>
-                  <width>300</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>show hsv</string>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0" colspan="3">
                <widget class="QCheckBox" name="show_rgb_cbox">
                 <property name="minimumSize">
                  <size>
@@ -1268,6 +1246,28 @@
                 </property>
                 <property name="text">
                  <string>show rgb</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0" colspan="3">
+               <widget class="QCheckBox" name="show_hsv_cbox">
+                <property name="minimumSize">
+                 <size>
+                  <width>300</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>show hsv</string>
                 </property>
                 <property name="checked">
                  <bool>false</bool>
@@ -1384,6 +1384,44 @@
                 </property>
                 <property name="value">
                  <number>1</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="3">
+               <widget class="QWidget" name="color_image_inner_space" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="3">
+               <widget class="QCheckBox" name="rev_direct_cbox">
+                <property name="minimumSize">
+                 <size>
+                  <width>300</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>rev_direct</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>

@@ -554,6 +554,9 @@ class Image3C(QThread):
             values (tuple or list): (region, separation, factor, reserve)
         """
 
+        if not isinstance(self._ori_display_data, np.ndarray):
+            return
+
         reg, separ, fact, res = values
 
         if res and isinstance(self._res_display_data, np.ndarray):
@@ -587,6 +590,8 @@ class Image3C(QThread):
         else:
             self._res_display_data = None
 
+        self._rev_display_data = None
+
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
 
@@ -598,14 +603,19 @@ class Image3C(QThread):
             values (tuple or list): (region, separation, factor, reserve)
         """
 
+        if not isinstance(self._ori_display_data, np.ndarray):
+            return
+
         reg, separ, fact, res = values
 
         if res and isinstance(self._rev_display_data, np.ndarray):
             display_data = self._rev_display_data
 
+        elif res and isinstance(self._res_display_data, np.ndarray):
+            display_data = Color.rgb2hsv_array(self._res_display_data)
+
         else:
-            display_data = np.array(self._ori_display_data, dtype=np.uint8)
-            display_data = Color.rgb2hsv_array(display_data)
+            display_data = Color.rgb2hsv_array(self._ori_display_data)
 
         if isinstance(separ, (int, float)) and isinstance(fact, (int, float)):
             separ = float(separ * 1.001)
@@ -620,22 +630,99 @@ class Image3C(QThread):
 
         for k in reg:
             if k == 0:
-                display_data[:, :, 0] = display_data[:, :, 0] + fact[k] * 360
+                display_data[:, :, 0] = display_data[:, :, 0] + fact[k] * 360.0
 
             else:
                 selection = np.where(display_data[:, :, k] >= separ[k])
                 addi = np.array([0.0, 0.0, 0.0], dtype=np.float32)
                 addi[k] = fact[k]
 
-                display_data[:, :, k] = display_data[:, :, k] * (1 - fact[k])
+                display_data[:, :, k] = display_data[:, :, k] * (1.0 - fact[k])
                 display_data[selection] += addi
 
         if res:
             self._rev_display_data = display_data
 
         else:
-            self._rev_display_data = None
             self._res_display_data = None
+            self._rev_display_data = None
+
+        display_data = Color.hsv2rgb_array(display_data)
+
+        if res:
+            self._res_display_data = display_data
+
+        self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
+        self.ps_enhanced.emit(1)
+
+    def run_inverse_rgb(self, process_scope, values):
+        """
+        Inverse rgb display. Modify r, g or (and) b values to inverse the contrast of image.
+
+        Args:
+            values (tuple or list): (region, reserve)
+        """
+
+        if not isinstance(self._ori_display_data, np.ndarray):
+            return
+
+        reg, res = values
+
+        if res and isinstance(self._res_display_data, np.ndarray):
+            display_data = self._res_display_data
+
+        else:
+            display_data = np.array(self._ori_display_data, dtype=np.uint8)
+
+        for k in reg:
+            display_data[:, :, k] = 255 - display_data[:, :, k]
+
+        if res:
+            self._res_display_data = display_data
+
+        else:
+            self._res_display_data = None
+
+        self._rev_display_data = None
+
+        self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
+        self.ps_enhanced.emit(1)
+
+    def run_inverse_hsv(self, process_scope, values):
+        """
+        Inverse hsv display. Modify h, s or (and) v values to inverse the contrast of image.
+
+        Args:
+            values (tuple or list): (region, reserve)
+        """
+
+        if not isinstance(self._ori_display_data, np.ndarray):
+            return
+
+        reg, res = values
+
+        if res and isinstance(self._rev_display_data, np.ndarray):
+            display_data = self._rev_display_data
+
+        elif res and isinstance(self._res_display_data, np.ndarray):
+            display_data = Color.rgb2hsv_array(self._res_display_data)
+
+        else:
+            display_data = Color.rgb2hsv_array(self._ori_display_data)
+
+        for k in reg:
+            if k == 0:
+                display_data[:, :, 0] = display_data[:, :, 0] + 180.0
+
+            else:
+                display_data[:, :, k] = 1.0 - display_data[:, :, k]
+
+        if res:
+            self._rev_display_data = display_data
+
+        else:
+            self._res_display_data = None
+            self._rev_display_data = None
 
         display_data = Color.hsv2rgb_array(display_data)
 
