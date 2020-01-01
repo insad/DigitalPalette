@@ -706,6 +706,10 @@ class Image(QWidget):
         self.overlabel_display.locations = [None, None, None, None, None]
         self._image3c.display = None
 
+        self._image3c.ori_display_data = None
+        self._image3c.res_display_data = None
+        self._image3c.rev_display_data = None
+
         self._image3c.rgb_data = None
         self._image3c.hsv_data = None
 
@@ -750,6 +754,10 @@ class Image(QWidget):
 
         self._image3c.display = None
 
+        self._image3c.ori_display_data = None
+        self._image3c.res_display_data = None
+        self._image3c.rev_display_data = None
+
         if self._args.sys_category * 10 + self._args.sys_channel not in self._categories:
             self._image3c.run_category = self._args.sys_category
             self._image3c.start()
@@ -767,6 +775,18 @@ class Image(QWidget):
         if self._image3c.isRunning():
             self.warning(self._image_errs[1])
             return
+
+        if values[0][:5] == "cover":
+            cb_filter = "{} (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; {} (*.png);; {} (*.bmp);; {} (*.jpg *.jpeg);; {} (*.tif *.tiff)".format(*self._extend_descs)
+            cb_file = QFileDialog.getOpenFileName(None, self._action_descs[1], self._args.usr_image, filter=cb_filter)
+
+            if cb_file[0]:
+                self._args.usr_image = os.path.dirname(os.path.abspath(cb_file[0]))
+                values = list(values) + [os.path.abspath(cb_file[0])]
+
+            else:
+                # closed without open a file.
+                return
 
         self._enhance_lock = True
 
@@ -818,7 +838,7 @@ class Image(QWidget):
         if self.overlabel_display.croping:
             return
 
-        if value:
+        if value[0]:
             if isinstance(self.overlabel_display.locating, tuple):
                 shape = self._image3c.rgb_data.shape
 
@@ -826,41 +846,41 @@ class Image(QWidget):
                 separ = []
                 fact = []
 
-                if value == 1:
+                if value[0] == 1:
                     for i in range(3):
                         if self._args.sys_color_set[self._args.sys_activated_idx].rgb[i] > rgb[i]:
-                            separ.append(0)
+                            separ.append(rgb[i] - rgb[i] * value[3])
                             fact.append((self._args.sys_color_set[self._args.sys_activated_idx].rgb[i] - rgb[i]) / (255 - rgb[i]))
 
                         else:
-                            separ.append(256)
+                            separ.append(rgb[i] + 0.00001 + (255.0 - rgb[i]) * value[3])
                             fact.append((rgb[i] - self._args.sys_color_set[self._args.sys_activated_idx].rgb[i]) / rgb[i])
 
-                    self._image3c.run_args = ((0, 1, 2), tuple(separ), tuple(fact), False)
+                    self._image3c.run_args = ((0, 1, 2), tuple(separ), tuple(fact), value[1], value[2])
                     self._image3c.run_category = "enhance_rgb"
 
-                elif value == 2:
+                elif value[0] == 2:
                     hsv = Color.rgb2hsv(rgb)
-                    separ.append(0)
+                    separ.append((hsv[0] + 360.0 * value[3]) % 360.0)
                     fact.append((self._args.sys_color_set[self._args.sys_activated_idx].hsv[0] - hsv[0]) / 360)
 
                     if self._args.sys_color_set[self._args.sys_activated_idx].hsv[1] > hsv[1]:
-                        separ.append(0)
+                        separ.append(hsv[1] - hsv[1] * value[3])
                         fact.append((self._args.sys_color_set[self._args.sys_activated_idx].hsv[1] - hsv[1]) / (1.0 - hsv[1]))
 
                     else:
-                        separ.append(1.00001)
+                        separ.append(hsv[1] + 0.00001 + (1.0 - hsv[1]) * value[3])
                         fact.append((hsv[1] - self._args.sys_color_set[self._args.sys_activated_idx].hsv[1]) / hsv[1])
 
                     if self._args.sys_color_set[self._args.sys_activated_idx].hsv[2] > hsv[2]:
-                        separ.append(0)
+                        separ.append(hsv[2] - hsv[2] * value[3])
                         fact.append((self._args.sys_color_set[self._args.sys_activated_idx].hsv[2] - hsv[2]) / (1.0 - hsv[2]))
 
                     else:
-                        separ.append(1.00001)
+                        separ.append(hsv[2] + 0.00001 + (1.0 - hsv[1]) * value[3])
                         fact.append((hsv[2] - self._args.sys_color_set[self._args.sys_activated_idx].hsv[2]) / hsv[2])
 
-                    self._image3c.run_args = ((0, 1, 2), tuple(separ), tuple(fact), False)
+                    self._image3c.run_args = ((0, 1, 2), tuple(separ), tuple(fact), value[1], value[2])
                     self._image3c.run_category = "enhance_hsv"
 
                 self._image3c.start()
@@ -911,9 +931,13 @@ class Image(QWidget):
         Enhance finished.
         """
 
-        if idx == 1:
-            self._enhance_lock = False
+        if idx == 2:
+            self.warning(self._image_errs[6])
 
+        if idx == 3:
+            self.warning(self._image_errs[7])
+
+        self._enhance_lock = False
         self._resizing_image = True
         self.overlabel_display.locating = False
 
@@ -1064,6 +1088,8 @@ class Image(QWidget):
             _translate("Image", "OK"),
             _translate("Image", "Could not open image. This image is broken."),
             _translate("Image", "Could not process image. Translation is not completed."),
+            _translate("Image", "Could not process image. The size of image is not suitable."),
+            _translate("Image", "Could not process image. This image is invalid."),
         )
 
         self._image_descs = (

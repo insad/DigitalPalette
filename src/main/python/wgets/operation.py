@@ -193,7 +193,7 @@ class Operation(QWidget):
                         hsv_set.append(tuple(Color.fmt_hsv(color["color_{}".format(i)]["hsv"]).tolist()))
 
                     if color["rule"] in self._args.global_hm_rules:
-                        color_list.append((tuple(hsv_set), color["rule"], str(color["desc"])))
+                        color_list.append((tuple(hsv_set), color["rule"], str(color["name"]), str(color["desc"])))
 
                     else:
                         finished_errs.append("unknown rule: {}.".format(color["rule"]))
@@ -244,7 +244,7 @@ class Operation(QWidget):
 
         for unit_cell in self._args.stab_ucells[:-1]:
             if unit_cell != None:
-                color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.desc))
+                color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.name, unit_cell.desc))
 
         # process start.
         if depot_file.split(".")[-1].lower() == "dpc":

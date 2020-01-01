@@ -52,15 +52,16 @@ class Image3C(QThread):
         self.run_args = None
         self.run_category = None
 
+        self.ori_display_data = None
+        self.res_display_data = None
+        self.rev_display_data = None
+
         self._rgb_ext_data = None
         self._hsv_ext_data = None
         self._rgb_vtl_data = None
         self._rgb_hrz_data = None
         self._hsv_vtl_data = None
         self._hsv_hrz_data = None
-        self._ori_display_data = None
-        self._res_display_data = None
-        self._rev_display_data = None
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
@@ -539,9 +540,13 @@ class Image3C(QThread):
             img_path = os.sep.join((self._temp_dir.path(), "{}_{}.png".format(category, channel)))
 
         if os.path.isfile(img_path):
-            img_data = Image.open(img_path).convert("RGB")
-            self._ori_display_data = np.array(img_data, dtype=np.uint8)
-            self.display = QImage(self._ori_display_data, self._ori_display_data.shape[1], self._ori_display_data.shape[0], self._ori_display_data.shape[1] * 3, QImage.Format_RGB888)
+            try:
+                img_data = Image.open(img_path).convert("RGB")
+                self.ori_display_data = np.array(img_data, dtype=np.uint8)
+                self.display = QImage(self.ori_display_data, self.ori_display_data.shape[1], self.ori_display_data.shape[0], self.ori_display_data.shape[1] * 3, QImage.Format_RGB888)
+
+            except:
+                self.display = None
 
         else:
             self.display = None
@@ -554,43 +559,62 @@ class Image3C(QThread):
             values (tuple or list): (region, separation, factor, reserve)
         """
 
-        if not isinstance(self._ori_display_data, np.ndarray):
+        if not isinstance(self.ori_display_data, np.ndarray):
             return
 
-        reg, separ, fact, res = values
+        reg, separ, fact, res, sigma = values
 
-        if res and isinstance(self._res_display_data, np.ndarray):
-            display_data = self._res_display_data
+        if res and isinstance(self.res_display_data, np.ndarray):
+            display_data = self.res_display_data
 
         else:
-            display_data = np.array(self._ori_display_data, dtype=np.uint8)
+            display_data = np.array(self.ori_display_data, dtype=np.uint8)
 
-        if isinstance(separ, (int, float)) and isinstance(fact, (int, float)):
-            separ = int(separ * 256)
+        if isinstance(separ, (int, float)):
+            separ = float(separ * 255.00001)
             separ = 0 if separ < 0 else separ
-            separ = 256 if separ > 256 else separ
+            separ = 255.00001 if separ > 255.00001 else separ
             separ = (separ, separ, separ)
 
+        if isinstance(fact, (int, float)):
             fact = float(fact)
             fact = 0.0 if fact < 0.0 else fact
             fact = 1.0 if fact > 1.0 else fact
             fact = (fact, fact, fact)
 
-        for k in reg:
-            selection = np.where(display_data[:, :, k] >= separ[k])
-            addi = np.array([0, 0, 0], dtype=np.uint8)
-            addi[k] = 255 * fact[k]
+        if isinstance(sigma, (int, float)):
+            sigma = float(sigma)
+            sigma = 0.0 if sigma < 0.0 else sigma
+            sigma = 1.0 if sigma > 1.0 else sigma
+            sigma = (sigma, sigma, sigma)
 
-            display_data[:, :, k] = display_data[:, :, k] * (1 - fact[k])
-            display_data[selection] += addi
+        for k in reg:
+            data = display_data[:, :, k]
+            selection = np.where(data >= separ[k])
+
+            if sigma[k] == 0.0:
+                expd = np.zeros(data.shape)
+                expd[np.where(data == int(separ[k]))] = fact[k]
+
+            elif sigma[k] == 1.0:
+                expd = np.ones(data.shape) * fact[k]
+
+            else:
+                expd = 0.05 * (10 ** (10 * sigma[k])) * -1
+                expd = np.exp((data - int(separ[k])) ** 2 / expd) * fact[k]
+
+            data = data * (1 - expd)
+            data[selection] = data[selection] + expd[selection] * 255
+
+            display_data[:, :, k] = data
 
         if res:
-            self._res_display_data = display_data
+            self.res_display_data = display_data
 
         else:
-            self._res_display_data = None
+            self.res_display_data = None
 
-        self._rev_display_data = None
+        self.rev_display_data = None
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
@@ -603,54 +627,74 @@ class Image3C(QThread):
             values (tuple or list): (region, separation, factor, reserve)
         """
 
-        if not isinstance(self._ori_display_data, np.ndarray):
+        if not isinstance(self.ori_display_data, np.ndarray):
             return
 
-        reg, separ, fact, res = values
+        reg, separ, fact, res, sigma = values
 
-        if res and isinstance(self._rev_display_data, np.ndarray):
-            display_data = self._rev_display_data
+        if res and isinstance(self.rev_display_data, np.ndarray):
+            display_data = self.rev_display_data
 
-        elif res and isinstance(self._res_display_data, np.ndarray):
-            display_data = Color.rgb2hsv_array(self._res_display_data)
+        elif res and isinstance(self.res_display_data, np.ndarray):
+            display_data = Color.rgb2hsv_array(self.res_display_data)
 
         else:
-            display_data = Color.rgb2hsv_array(self._ori_display_data)
+            display_data = Color.rgb2hsv_array(self.ori_display_data)
 
-        if isinstance(separ, (int, float)) and isinstance(fact, (int, float)):
+        if isinstance(separ, (int, float)):
             separ = float(separ * 1.001)
             separ = 0.0 if separ < 0.0 else separ
             separ = 1.001 if separ > 1.001 else separ
             separ = (separ, separ, separ)
 
+        if isinstance(fact, (int, float)):
             fact = float(fact)
             fact = 0.0 if fact < 0.0 else fact
             fact = 1.0 if fact > 1.0 else fact
             fact = (fact, fact, fact)
 
+        if isinstance(sigma, (int, float)):
+            sigma = float(sigma)
+            sigma = 0.0 if sigma < 0.0 else sigma
+            sigma = 1.0 if sigma > 1.0 else sigma
+            sigma = (sigma, sigma, sigma)
+
         for k in reg:
-            if k == 0:
-                display_data[:, :, 0] = display_data[:, :, 0] + fact[k] * 360.0
+            data = display_data[:, :, k]
+
+            if sigma[k] == 0.0:
+                expd = np.zeros(data.shape)
+                expd[np.where((data < float(separ[k] + 1e-5)) & (data > float(separ[k] - 1e-5)))] = fact[k]
+
+            elif sigma[k] == 1.0:
+                expd = np.ones(data.shape) * fact[k]
 
             else:
-                selection = np.where(display_data[:, :, k] >= separ[k])
-                addi = np.array([0.0, 0.0, 0.0], dtype=np.float32)
-                addi[k] = fact[k]
+                expd = 0.05 * (10 ** (10 * sigma[k])) * -1
+                expd = np.exp((data - float(separ[k])) ** 2 / expd) * fact[k]
 
-                display_data[:, :, k] = display_data[:, :, k] * (1.0 - fact[k])
-                display_data[selection] += addi
+            if k == 0:
+                data = data + expd * 360.0
+
+            else:
+                selection = np.where(data >= separ[k])
+
+                data = data * (1 - expd)
+                data[selection] = data[selection] + expd[selection]
+
+            display_data[:, :, k] = data
 
         if res:
-            self._rev_display_data = display_data
+            self.rev_display_data = display_data
 
         else:
-            self._res_display_data = None
-            self._rev_display_data = None
+            self.res_display_data = None
+            self.rev_display_data = None
 
         display_data = Color.hsv2rgb_array(display_data)
 
         if res:
-            self._res_display_data = display_data
+            self.res_display_data = display_data
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
@@ -663,27 +707,27 @@ class Image3C(QThread):
             values (tuple or list): (region, reserve)
         """
 
-        if not isinstance(self._ori_display_data, np.ndarray):
+        if not isinstance(self.ori_display_data, np.ndarray):
             return
 
         reg, res = values
 
-        if res and isinstance(self._res_display_data, np.ndarray):
-            display_data = self._res_display_data
+        if res and isinstance(self.res_display_data, np.ndarray):
+            display_data = self.res_display_data
 
         else:
-            display_data = np.array(self._ori_display_data, dtype=np.uint8)
+            display_data = np.array(self.ori_display_data, dtype=np.uint8)
 
         for k in reg:
             display_data[:, :, k] = 255 - display_data[:, :, k]
 
         if res:
-            self._res_display_data = display_data
+            self.res_display_data = display_data
 
         else:
-            self._res_display_data = None
+            self.res_display_data = None
 
-        self._rev_display_data = None
+        self.rev_display_data = None
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
@@ -696,19 +740,19 @@ class Image3C(QThread):
             values (tuple or list): (region, reserve)
         """
 
-        if not isinstance(self._ori_display_data, np.ndarray):
+        if not isinstance(self.ori_display_data, np.ndarray):
             return
 
         reg, res = values
 
-        if res and isinstance(self._rev_display_data, np.ndarray):
-            display_data = self._rev_display_data
+        if res and isinstance(self.rev_display_data, np.ndarray):
+            display_data = self.rev_display_data
 
-        elif res and isinstance(self._res_display_data, np.ndarray):
-            display_data = Color.rgb2hsv_array(self._res_display_data)
+        elif res and isinstance(self.res_display_data, np.ndarray):
+            display_data = Color.rgb2hsv_array(self.res_display_data)
 
         else:
-            display_data = Color.rgb2hsv_array(self._ori_display_data)
+            display_data = Color.rgb2hsv_array(self.ori_display_data)
 
         for k in reg:
             if k == 0:
@@ -718,16 +762,121 @@ class Image3C(QThread):
                 display_data[:, :, k] = 1.0 - display_data[:, :, k]
 
         if res:
-            self._rev_display_data = display_data
+            self.rev_display_data = display_data
 
         else:
-            self._res_display_data = None
-            self._rev_display_data = None
+            self.res_display_data = None
+            self.rev_display_data = None
 
         display_data = Color.hsv2rgb_array(display_data)
 
         if res:
-            self._res_display_data = display_data
+            self.res_display_data = display_data
+
+        self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
+        self.ps_enhanced.emit(1)
+
+    def run_cover_rgb(self, process_scope, values):
+        """
+        Cover rgb display. Modify r, g or (and) b values to cover the channel of image.
+
+        Args:
+            values (tuple or list): (region, reserve, path)
+        """
+
+        if not isinstance(self.ori_display_data, np.ndarray):
+            return
+
+        reg, res, path = values
+
+        if res and isinstance(self.res_display_data, np.ndarray):
+            display_data = self.res_display_data
+
+        else:
+            display_data = np.array(self.ori_display_data, dtype=np.uint8)
+
+        if os.path.isfile(path):
+            try:
+                data = Image.open(path).convert("RGB")
+                data = np.array(data, dtype=np.uint8)
+
+                if data.shape == display_data.shape:
+                    for k in reg:
+                        display_data[:, :, k] = data[:, :, k]
+
+                else:
+                    self.ps_enhanced.emit(2)
+
+            except:
+                self.ps_enhanced.emit(3)
+
+        else:
+            self.ps_enhanced.emit(3)
+
+        if res:
+            self.res_display_data = display_data
+
+        else:
+            self.res_display_data = None
+
+        self.rev_display_data = None
+
+        self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
+        self.ps_enhanced.emit(1)
+
+    def run_cover_hsv(self, process_scope, values):
+        """
+        Cover hsv display. Modify h, s or (and) v values to cover the channel of image.
+
+        Args:
+            values (tuple or list): (region, reserve, path)
+        """
+
+        if not isinstance(self.ori_display_data, np.ndarray):
+            return
+
+        reg, res, path = values
+
+        if res and isinstance(self.rev_display_data, np.ndarray):
+            display_data = self.rev_display_data
+
+        elif res and isinstance(self.res_display_data, np.ndarray):
+            display_data = Color.rgb2hsv_array(self.res_display_data)
+
+        else:
+            display_data = Color.rgb2hsv_array(self.ori_display_data)
+
+        if os.path.isfile(path):
+            try:
+                data = Image.open(path).convert("RGB")
+                data = np.array(data, dtype=np.uint8)
+
+                if data.shape == display_data.shape:
+                    data = Color.rgb2hsv_array(data)
+
+                    for k in reg:
+                        display_data[:, :, k] = data[:, :, k]
+
+                else:
+                    self.ps_enhanced.emit(2)
+
+            except:
+                self.ps_enhanced.emit(3)
+
+        else:
+            self.ps_enhanced.emit(3)
+
+        if res:
+            self.rev_display_data = display_data
+
+        else:
+            self.res_display_data = None
+            self.rev_display_data = None
+
+        display_data = Color.hsv2rgb_array(display_data)
+
+        if res:
+            self.res_display_data = display_data
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)

@@ -38,7 +38,7 @@ class Info(QDialog, Ui_InfoDialog):
         self.setWindowIcon(app_icon)
 
         self._clone = None
-        self._unit_cell = UnitCell(self.colors, self._args, [None, None, None, None, None], "", "")
+        self._unit_cell = UnitCell(self.colors, self._args, [None, None, None, None, None], "", "", "")
 
         color_grid_layout = QGridLayout(self.colors)
         color_grid_layout.setContentsMargins(1, 1, 1, 1)
@@ -64,28 +64,20 @@ class Info(QDialog, Ui_InfoDialog):
 
         self._unit_cell.color_set = unit_cell.color_set
         self._unit_cell.hm_rule = unit_cell.hm_rule
-        context = unit_cell.desc.split("#")
 
-        name = self._cell_desc[0]
-        desc = ""
+        if unit_cell.name:
+            self.name_ledit.setText(unit_cell.name)
 
-        for line in context:
-            rline = line.lstrip()
+        else:
+            self.name_ledit.setText(self._cell_desc[0])
 
-            if rline[:6] == "Name: ":
-                name = re.split(r"[\n\r\t\v\a\f]", rline[6:])[0]
-                name = name.lstrip().rstrip()
-
-            elif rline[:6] == "Desc: ":
-                desc = re.split(r"[\v\a\f]", rline[6:])[0]
-                desc = desc.lstrip().rstrip()
-
-        self.name_ledit.setText(name)
-        self.desc_tedit.setText(desc)
+        self.desc_tedit.setText(unit_cell.desc)
         self.hm_rule_label.setText(self._rule_descs[self._args.global_hm_rules.index(unit_cell.hm_rule)])
 
     def application(self):
-        self._clone.desc = "#Name: {} #Desc: {}".format(self.name_ledit.text(), self.desc_tedit.toPlainText())
+        self._clone.name = re.split(r"[\v\a\f\n\r\t]", str(self.name_ledit.text()))[0].lstrip().rstrip()
+        self._clone.desc = re.split(r"[\v\a\f]", str(self.desc_tedit.toPlainText()))[0].lstrip().rstrip()
+        self._clone.update_text()
         self._clone = None
 
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
@@ -127,7 +119,7 @@ class UnitCell(QWidget):
     UnitCell objet based on QWidget. Init an unit cell in depot.
     """
 
-    def __init__(self, wget, args, hsv_set, hm_rule, desc):
+    def __init__(self, wget, args, hsv_set, hm_rule, name, desc):
         """
         Init empty unit cell.
         """
@@ -149,7 +141,8 @@ class UnitCell(QWidget):
 
         self.color_set = tuple(self.color_set)
         self.hm_rule = str(hm_rule)
-        self.desc = str(desc)
+        self.name = re.split(r"[\v\a\f\n\r\t]", str(name))[0].lstrip().rstrip()
+        self.desc = re.split(r"[\v\a\f]", str(desc))[0].lstrip().rstrip()
 
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
@@ -191,6 +184,22 @@ class UnitCell(QWidget):
             painter.drawRoundedRect(*cs_boxes[idx], cs_wid / 9, cs_wid / 9)
 
         painter.end()
+
+    # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
+
+    def update_text(self):
+        if self.name:
+            self.setToolTip(self.name)
+
+        else:
+            self.setToolTip(self._cell_desc[0])
+
+    def _func_tr_(self):
+        _translate = QCoreApplication.translate
+
+        self._cell_desc = (
+            _translate("Info", "DigiPale Color Set"),
+        )
 
 
 class Depot(QWidget):
@@ -471,19 +480,23 @@ class Depot(QWidget):
         unit_cells = []
 
         for cset in self._args.stab_ucells:
-            unit_cell = UnitCell(self._scroll_contents, self._args, cset[0], cset[1], cset[2])
+            unit_cell = UnitCell(self._scroll_contents, self._args, cset[0], cset[1], cset[2], cset[3])
             unit_cells.append(unit_cell)
 
             self._scroll_grid_layout.addWidget(unit_cell)
 
-        empty_cell = UnitCell(self._scroll_contents, self._args, [None, None, None, None, None], "", "")
+        empty_cell = UnitCell(self._scroll_contents, self._args, [None, None, None, None, None], "", "", "")
         unit_cells.append(empty_cell)
 
         self._scroll_grid_layout.addWidget(empty_cell)
 
         self._args.stab_ucells = unit_cells
-
         self._current_idx = None
+
+        for unit_cell in self._args.stab_ucells:
+            if isinstance(unit_cell, UnitCell):
+                unit_cell._func_tr_()
+                unit_cell.update_text()
 
     def create_menu(self):
         """
@@ -711,8 +724,11 @@ class Depot(QWidget):
 
         hsv_set = (self._args.sys_color_set[0].hsv, self._args.sys_color_set[1].hsv, self._args.sys_color_set[2].hsv, self._args.sys_color_set[3].hsv, self._args.sys_color_set[4].hsv)
 
-        unit_cell = UnitCell(self._scroll_contents, self._args, hsv_set, self._args.hm_rule, "")
+        unit_cell = UnitCell(self._scroll_contents, self._args, hsv_set, self._args.hm_rule, "", "")
         self._scroll_grid_layout.addWidget(unit_cell)
+
+        unit_cell._func_tr_()
+        unit_cell.update_text()
 
         empty_cell = self._args.stab_ucells[len(self._args.stab_ucells) - 1]
         empty_cell.activated = False
@@ -843,7 +859,7 @@ class Depot(QWidget):
                     unit_cell.color_set[4].hsv,
                 )
 
-                stab_ucells.append((hsv_set, unit_cell.hm_rule, unit_cell.desc))
+                stab_ucells.append((hsv_set, unit_cell.hm_rule, unit_cell.name, unit_cell.desc))
 
         self._args.stab_ucells = tuple(stab_ucells)
 
@@ -858,6 +874,11 @@ class Depot(QWidget):
 
         self._info._func_tr_()
         self._info.update_text()
+
+        for unit_cell in self._args.stab_ucells:
+            if isinstance(unit_cell, UnitCell):
+                unit_cell._func_tr_()
+                unit_cell.update_text()
 
     def _func_tr_(self):
         _translate = QCoreApplication.translate

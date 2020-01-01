@@ -9,7 +9,7 @@ License for more details.
 """
 
 __COPYRIGHT__ = """
-Copyright © 2019. All Rights Reserved.
+Copyright © 2019-2020. All Rights Reserved.
 """
 
 __WEBSITE__ = """
@@ -25,7 +25,7 @@ Eigenmiao
 """
 
 __DATE__ = """
-Dec. 29th, 2019
+Jan. 1st, 2020
 """
 
 import os

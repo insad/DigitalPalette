@@ -106,7 +106,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._zoom_gbox, 2, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._zoom_gbox, 3, 1, 1, 1)
 
         self.lab_zoom = QLabel(self._zoom_gbox)
         gbox_grid_layout.addWidget(self.lab_zoom, 0, 1, 1, 1)
@@ -139,7 +139,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._crop_gbox, 1, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._crop_gbox, 2, 1, 1, 1)
 
         self.btn_crop = QPushButton(self._crop_gbox)
         gbox_grid_layout.addWidget(self.btn_crop, 0, 1, 1, 1)
@@ -162,7 +162,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._snap_gbox, 3, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._snap_gbox, 1, 1, 1, 1)
 
         self.btn_freeze = QPushButton(self._snap_gbox)
         gbox_grid_layout.addWidget(self.btn_freeze, 0, 1, 1, 1)

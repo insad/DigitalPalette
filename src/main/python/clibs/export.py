@@ -8,7 +8,7 @@ def export_swatch(color_list):
     Export color set list in swatch type (for Adobe and GIMP exchange).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
 
     Returns:
         Binary strings.
@@ -42,7 +42,7 @@ def export_text(color_list):
     Export color set list in plain text (for directly reading).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
 
     Returns:
         Plain text strings.
@@ -70,7 +70,7 @@ def export_list(color_list):
     Export color set list in list type (for DigitalPalette output).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
 
     Returns:
         Json List.
@@ -79,7 +79,7 @@ def export_list(color_list):
     expt_list = []
 
     for color in color_list:
-        color_dict = {"rule": color[1], "desc": color[2]}
+        color_dict = {"rule": color[1], "name": color[2], "desc": color[3]}
 
         for i in (2, 1, 0, 3, 4):
             color_dict["color_{}".format(i)] = color[0][i].export()

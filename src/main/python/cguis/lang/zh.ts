@@ -107,27 +107,27 @@
 <context>
     <name>Depot</name>
     <message>
-        <location filename="../../wgets/depot.py" line="865"/>
+        <location filename="../../wgets/depot.py" line="886"/>
         <source>Import</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="865"/>
+        <location filename="../../wgets/depot.py" line="886"/>
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="865"/>
+        <location filename="../../wgets/depot.py" line="886"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="865"/>
+        <location filename="../../wgets/depot.py" line="886"/>
         <source>Detail</source>
         <translation>详情</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="865"/>
+        <location filename="../../wgets/depot.py" line="886"/>
         <source>Attach</source>
         <translation>添加</translation>
     </message>
@@ -227,7 +227,7 @@
     <message>
         <location filename="../../main.py" line="618"/>
         <source>All Rights Reserved.</source>
-        <translation>版权 © 2019。版权所有。</translation>
+        <translation>版权 © 2019-2020。版权所有。</translation>
     </message>
     <message>
         <location filename="../../main.py" line="629"/>
@@ -248,7 +248,7 @@
 <context>
     <name>Image</name>
     <message>
-        <location filename="../../wgets/image.py" line="1044"/>
+        <location filename="../../wgets/image.py" line="1070"/>
         <source>Double click here to open an image.</source>
         <translation>双击此处打开一张图片。</translation>
     </message>
@@ -258,7 +258,7 @@
         <translation type="obsolete">打开</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1050"/>
+        <location filename="../../wgets/image.py" line="1076"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -268,7 +268,7 @@
         <translation type="obsolete">无法打开图片。有一张图片的处理还未结束。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1050"/>
+        <location filename="../../wgets/image.py" line="1076"/>
         <source>Could not create temporary dir. Dir is not created.</source>
         <translation>无法创建临时文件夹。文件夹未被创建。</translation>
     </message>
@@ -278,97 +278,97 @@
         <translation type="obsolete">无法处理图片。类目不匹配。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Finishing.</source>
         <translation>正在完成。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading RGB data.</source>
         <translation>正在加载 RGB 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving RGB data.</source>
         <translation>正在保存 RGB 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading HSV data.</source>
         <translation>正在加载 HSV 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving HSV data.</source>
         <translation>正在保存 HSV 数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading RGB vertical edge data.</source>
         <translation>正在加载 RGB 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving RGB vertical edge data.</source>
         <translation>正在保存 RGB 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading RGB horizontal edge data.</source>
         <translation>正在加载 RGB 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving RGB horizontal edge data.</source>
         <translation>正在保存 RGB 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading RGB final edge data.</source>
         <translation>正在加载 RGB 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving RGB final edge data.</source>
         <translation>正在保存 RGB 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading HSV vertical edge data.</source>
         <translation>正在加载 HSV 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving HSV vertical edge data.</source>
         <translation>正在保存 HSV 空间的垂直边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading HSV horizontal edge data.</source>
         <translation>正在加载 HSV 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving HSV horizontal edge data.</source>
         <translation>正在保存 HSV 空间的水平边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Loading HSV final edge data.</source>
         <translation>正在加载 HSV 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Saving HSV final edge data.</source>
         <translation>正在保存 HSV 空间的综合边缘数据。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1044"/>
+        <location filename="../../wgets/image.py" line="1070"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1050"/>
+        <location filename="../../wgets/image.py" line="1076"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
@@ -383,12 +383,12 @@
         <translation type="obsolete">无法处理图像。有一张图像的处理还未结束。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1059"/>
+        <location filename="../../wgets/image.py" line="1087"/>
         <source>Applying filter to image data.</source>
         <translation>正在预处理图像。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1050"/>
+        <location filename="../../wgets/image.py" line="1076"/>
         <source>Could not process image. There is a process of image not finished.</source>
         <translation>无法处理图像。有一张图像的处理还未结束。</translation>
     </message>
@@ -398,65 +398,75 @@
         <translation type="obsolete">图像尺寸：{} × {}。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1050"/>
+        <location filename="../../wgets/image.py" line="1076"/>
         <source>Could not open image. This image is broken.</source>
         <translation>无法打开图像。此图像已损坏。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1044"/>
+        <location filename="../../wgets/image.py" line="1070"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1050"/>
+        <location filename="../../wgets/image.py" line="1076"/>
         <source>Could not process image. Translation is not completed.</source>
         <translation>无法处理图像。转换未完成。</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1080"/>
+        <location filename="../../wgets/transformation.py" line="717"/>
         <source>All Images</source>
         <translation>所有图像</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1080"/>
+        <location filename="../../wgets/transformation.py" line="717"/>
         <source>PNG Image</source>
         <translation>PNG 图像</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1080"/>
+        <location filename="../../wgets/transformation.py" line="717"/>
         <source>BMP Image</source>
         <translation>BMP 图像</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1080"/>
+        <location filename="../../wgets/transformation.py" line="717"/>
         <source>JPG Image</source>
         <translation>JPG 图像</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1080"/>
+        <location filename="../../wgets/transformation.py" line="717"/>
         <source>TIF Image</source>
         <translation>TIF 图像</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/image.py" line="1076"/>
+        <source>Could not process image. The size of image is not suitable.</source>
+        <translation>无法处理图像。图像尺寸不合适。</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/image.py" line="1076"/>
+        <source>Could not process image. This image is invalid.</source>
+        <translation>无法处理图像。此图像无效。</translation>
     </message>
 </context>
 <context>
     <name>Info</name>
     <message>
-        <location filename="../../wgets/depot.py" line="103"/>
+        <location filename="../../wgets/depot.py" line="95"/>
         <source>Information</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="103"/>
+        <location filename="../../wgets/depot.py" line="95"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="103"/>
+        <location filename="../../wgets/depot.py" line="95"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="109"/>
+        <location filename="../../wgets/depot.py" line="200"/>
         <source>DigiPale Color Set</source>
         <translation>DigiPale 色彩组</translation>
     </message>
@@ -719,7 +729,7 @@
     <message>
         <location filename="../design/main_window.py" line="240"/>
         <source>Script.</source>
-        <translation>对图像进行滤波、裁剪、缩放、替换和增强处理。</translation>
+        <translation>对图像进行滤波、裁剪、缩放和快照处理。</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="242"/>
@@ -734,7 +744,7 @@
     <message>
         <location filename="../design/main_window.py" line="246"/>
         <source>Transformation.</source>
-        <translation>对图像和色彩组进行位置和尺寸调整。</translation>
+        <translation>对图像和色彩组进行位置、尺寸和色彩调整。</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="270"/>
@@ -921,42 +931,42 @@
 <context>
     <name>Rule</name>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Analogous</source>
         <translation>相似组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Monochromatic</source>
         <translation>单色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Triad</source>
         <translation>三色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Tetrad</source>
         <translation>四色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Pentad</source>
         <translation>五色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Complementary</source>
         <translation>补色组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Shades</source>
         <translation>浓度组</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="113"/>
+        <location filename="../../wgets/depot.py" line="105"/>
         <source>Custom</source>
         <translation>自定组</translation>
     </message>
@@ -1843,64 +1853,89 @@
 <context>
     <name>Transformation</name>
     <message>
-        <location filename="../../wgets/transformation.py" line="534"/>
+        <location filename="../../wgets/transformation.py" line="690"/>
         <source>Move</source>
         <translation>平移</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="534"/>
+        <location filename="../../wgets/transformation.py" line="690"/>
         <source>Zoom</source>
         <translation>缩放</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="534"/>
+        <location filename="../../wgets/transformation.py" line="690"/>
         <source>Replace</source>
         <translation>替换</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="548"/>
+        <location filename="../../wgets/transformation.py" line="705"/>
         <source>Enhance</source>
         <translation>增强</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="542"/>
+        <location filename="../../wgets/transformation.py" line="699"/>
         <source>Replace RGB</source>
         <translation>替换 RGB</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="542"/>
+        <location filename="../../wgets/transformation.py" line="699"/>
         <source>Replace HSV</source>
         <translation>替换 HSV</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="542"/>
+        <location filename="../../wgets/transformation.py" line="699"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="548"/>
+        <location filename="../../wgets/transformation.py" line="705"/>
         <source>Link</source>
         <translation>关联</translation>
     </message>
     <message>
         <location filename="../../wgets/transformation.py" line="548"/>
         <source>Border - {:.1f}%</source>
-        <translation>界线 - {:.1f}%</translation>
+        <translation type="obsolete">界线 - {:.1f}%</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="548"/>
+        <location filename="../../wgets/transformation.py" line="705"/>
         <source>Factor - {:.1f}%</source>
         <translation>系数 - {:.1f}%</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="548"/>
+        <location filename="../../wgets/transformation.py" line="705"/>
         <source>Reserve Result</source>
         <translation>保留结果</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="548"/>
+        <location filename="../../wgets/transformation.py" line="705"/>
         <source>Inverse</source>
         <translation>反相</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/transformation.py" line="705"/>
+        <source>Space - {:.1f}%</source>
+        <translation>分隔 - {:.1f}%</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/transformation.py" line="564"/>
+        <source>Sigma - {:.1f}%</source>
+        <translation type="obsolete">展宽 - {:.1f}%</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/transformation.py" line="705"/>
+        <source>Width - {:.1f}%</source>
+        <translation>展宽 - {:.1f}%</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/transformation.py" line="705"/>
+        <source>Spread - {:.1f}%</source>
+        <translation>扩展 - {:.1f}%</translation>
+    </message>
+    <message>
+        <location filename="../../wgets/transformation.py" line="705"/>
+        <source>Cover</source>
+        <translation>覆盖</translation>
     </message>
 </context>
 </TS>

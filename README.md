@@ -9,8 +9,11 @@ DigitalPalette is a free software for generating harmonious colors from color wh
 # Author
 Eigenmiao
 
+# Copyright
+Copyright © 2019-2020. All Rights Reserved.
+
 # License
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
 
 # Updates
-* 2019.12.29 (v2.2.2-dev): Add inverse method.
+* 2020.1.1 (v2.2.3-dev): Add cover method.

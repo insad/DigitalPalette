@@ -85,8 +85,8 @@ class Args(object):
         self.info_version_en = "v2.2.3-dev"
         self.info_author_zh = "本征喵"
         self.info_author_en = "Eigenmiao"
-        self.info_date_zh = "2019年12月29日"
-        self.info_date_en = "Dec. 29th, 2019"
+        self.info_date_zh = "2020年1月1日"
+        self.info_date_en = "Jan. 1st, 2020"
 
         # special system settings.
         self.sys_activated_idx = 0
@@ -206,7 +206,7 @@ class Args(object):
             for i in range(5):
                 colors.append([float(x) for x in cslst[0][i]])
 
-            stab_ucells.append([colors, str(cslst[1]), str(cslst[2])])
+            stab_ucells.append([colors, str(cslst[1]), str(cslst[2]), str(cslst[3])])
 
         settings["stab_ucells"] = stab_ucells
 
@@ -419,7 +419,9 @@ class Args(object):
                     hm_rule = ""
 
                 if len(colors) == 5 and hm_rule:
-                    stab_ucells.append((tuple(colors), hm_rule, str(cslst[2])))
+                    name = "" if len(cslst) < 3 else str(cslst[2])
+                    desc = "" if len(cslst) < 4 else str(cslst[3])
+                    stab_ucells.append((tuple(colors), hm_rule, name, desc))
 
         except Exception as err:
             if self.global_log:
