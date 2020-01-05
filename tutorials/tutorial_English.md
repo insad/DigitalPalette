@@ -186,7 +186,7 @@ File in this format contains all color values and can be imported into image pro
 Eigenmiao
 
 # Copyright
-Copyright © 2019. All Rights Reserved.
+Copyright © 2019-2020. All Rights Reserved.
 
 # License
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.

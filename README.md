@@ -19,7 +19,7 @@ Get started with DigitalPalette in few minutes through these tutorials.
 Eigenmiao
 
 # Copyright
-Copyright © 2019. All Rights Reserved.
+Copyright © 2019-2020. All Rights Reserved.
 
 # License
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
