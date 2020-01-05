@@ -6,8 +6,7 @@ pefile         == 2019.4.18
 Pillow         == 6.2.1    
 pip            == 19.3.1   
 PyInstaller    == 3.5      
-pypiwin32      == 223      
-PyQt5          == 5.12     
+PyQt5          == 5.12.1   
 PyQt5-sip      == 4.19.19  
 pywin32        == 227      
 pywin32-ctypes == 0.2.0    

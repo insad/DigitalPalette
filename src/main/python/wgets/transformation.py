@@ -451,51 +451,35 @@ class Transformation(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(185, 90)
+        return QSize(185, 60)
 
     def move_up(self):
         """
         Move image up.
         """
 
-        if self._args.rev_direct:
-            self.ps_move.emit((0, self._args.move_step))
-
-        else:
-            self.ps_move.emit((0, self._args.move_step * -1))
+        self.ps_move.emit((0, self._args.move_step * -1))
 
     def move_down(self):
         """
         Move image down.
         """
 
-        if self._args.rev_direct:
-            self.ps_move.emit((0, self._args.move_step * -1))
-
-        else:
-            self.ps_move.emit((0, self._args.move_step))
+        self.ps_move.emit((0, self._args.move_step))
 
     def move_left(self):
         """
         Move image left.
         """
 
-        if self._args.rev_direct:
-            self.ps_move.emit((self._args.move_step, 0))
-
-        else:
-            self.ps_move.emit((self._args.move_step * -1, 0))
+        self.ps_move.emit((self._args.move_step * -1, 0))
 
     def move_right(self):
         """
         Move image right.
         """
 
-        if self._args.rev_direct:
-            self.ps_move.emit((self._args.move_step * -1, 0))
-
-        else:
-            self.ps_move.emit((self._args.move_step, 0))
+        self.ps_move.emit((self._args.move_step, 0))
 
     def uncheck_rgb(self, name):
         """

@@ -25,7 +25,7 @@ Eigenmiao
 """
 
 __DATE__ = """
-Jan. 1st, 2020
+Jan. 5th, 2020
 """
 
 import os
@@ -191,6 +191,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._app = QApplication.instance()
         self._install_translator()
 
+        # focus on wheel.
+        self._wget_wheel.setFocus()
+
         if len(sys_argv) > 1:
             try:
                 if sys_argv[1].split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff"):
@@ -209,7 +212,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                             elif color_dict["type"] == "set":
                                 self._wget_operation.dp_import(sys_argv[1])
 
-            except:
+            except Exception as err:
                 pass
 
         # install stylesheet.
@@ -395,6 +398,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 if self._args.press_act and act:
                     self._wget_cube_table.create_set()
 
+            self._wget_wheel.setFocus()
+
         return _func_
 
     def _inner_locate(self, act):
@@ -415,6 +420,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
                 if self._args.press_act and act:
                     self._wget_image.open_image_dialog()
 
+            self._wget_image.setFocus()
+
         return _func_
 
     def _inner_attach(self, act):
@@ -434,6 +441,8 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
 
                 if self._args.press_act and act:
                     self._wget_depot.attach_set()
+
+            self._wget_depot.setFocus()
 
         return _func_
 
@@ -604,9 +613,9 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         Actions before close DigitalPalette.
         """
 
-        self._wget_image.close()
         self._wget_depot.close()
         self._args.save_settings()
+        self._args.remove_temp_dir()
 
         event.accept()
 

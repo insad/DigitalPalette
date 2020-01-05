@@ -6,11 +6,12 @@ import sys
 import json
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QGridLayout, QScrollArea, QFrame, QShortcut, QMenu, QAction, QDialog, QDialogButtonBox, QPushButton, QApplication
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QMimeData
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QCursor, QKeySequence, QPixmap, QImage, QIcon
+from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QMimeData, QPoint, QUrl
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QCursor, QKeySequence, QPixmap, QImage, QIcon, QDrag
 from cguis.design.info_dialog import Ui_InfoDialog
 from cguis.resource import view_rc
 from clibs.color import FakeColor, Color
+from clibs.export import export_list
 
 
 class Info(QDialog, Ui_InfoDialog):
@@ -220,21 +221,24 @@ class Depot(QWidget):
         super().__init__(wget)
 
         # load args.
-        self.setAcceptDrops(True)
-
         self._args = args
         self._drop_file = None
 
         self._left_click = False
+        self._drag_file = False
         self._start_hig = None
         self._start_pt = None
         self._current_idx = None
         self._fetched_cell = None
+        self._press_key = None
  
         # load translations.
         self._func_tr_()
 
         # init qt args.
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setAcceptDrops(True)
+
         grid_layout = QGridLayout(self)
         grid_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -281,6 +285,15 @@ class Depot(QWidget):
         shortcut = QShortcut(QKeySequence("Ctrl+V"), self)
         shortcut.activated.connect(self.clipboard_in)
 
+        shortcut = QShortcut(QKeySequence("PgUp"), self)
+        shortcut.activated.connect(self.page_up)
+
+        shortcut = QShortcut(QKeySequence("PgDown"), self)
+        shortcut.activated.connect(self.page_down)
+
+        shortcut = QShortcut(QKeySequence("End"), self)
+        shortcut.activated.connect(self.page_end)
+
     # ---------- ---------- ---------- Paint Funcs ---------- ---------- ---------- #
 
     def paintEvent(self, event):
@@ -312,13 +325,58 @@ class Depot(QWidget):
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Shift:
+            self._press_key = 1
+            event.accept()
+
+        elif event.key() == Qt.Key_Control:
+            self._press_key = 2
+            event.accept()
+
+        else:
+            self._press_key = 0
+            event.ignore()
+
+    def keyReleaseEvent(self, event):
+        self._press_key = 0
+        event.ignore()
+
     def mousePressEvent(self, event):
         point = np.array((event.x() - self._scroll_contents.x(), event.y() - self._scroll_contents.y()))
 
         col = point[0] // self._pl_wid
         row = point[1] // self._pl_wid
 
-        if col <= self._args.stab_column:
+        if self._press_key == 2 and event.button() == Qt.LeftButton:
+            color_list = []
+
+            for unit_cell in self._args.stab_ucells[:-1]:
+                if isinstance(unit_cell, UnitCell):
+                    color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.name, unit_cell.desc))
+
+            color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "depot"}
+            color_dict["palettes"] = export_list(color_list)
+            color_path = os.sep.join((self._args.global_temp_dir.path(), "DigiPale_Depot_{}.dpc".format(abs(hash(str(color_dict))))))
+
+            with open(color_path, "w", encoding='utf-8') as f:
+                json.dump(color_dict, f, indent=4)
+
+            self._drag_file = True
+
+            drag = QDrag(self)
+            mimedata = QMimeData()
+            mimedata.setUrls([QUrl.fromLocalFile(color_path)])
+            drag.setMimeData(mimedata)
+            pixmap = QPixmap(":/images/images/file_depot_128.png")
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+            drag.exec_(Qt.CopyAction | Qt.MoveAction)
+
+            self._drag_file = False
+            self._press_key = 0
+
+        elif col <= self._args.stab_column:
             idx = self._args.stab_column * row + col
 
             if event.button() == Qt.MidButton:
@@ -337,9 +395,8 @@ class Depot(QWidget):
 
                     self._fetched_cell.raise_()
 
-                elif event.button() == Qt.RightButton:
-                    if idx < len(self._args.stab_ucells) - 1:
-                        self._info.clone_cell(self._args.stab_ucells[idx])
+                elif event.button() == Qt.RightButton and idx < len(self._args.stab_ucells) - 1:
+                    self._info.clone_cell(self._args.stab_ucells[idx])
 
             else:
                 self.activate_idx(None)
@@ -350,7 +407,38 @@ class Depot(QWidget):
         event.accept()
 
     def mouseMoveEvent(self, event):
-        if self._left_click:
+        if self._press_key == 1 and self._left_click:
+            color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "set"}
+            color_dict["palettes"] = export_list([(self._fetched_cell.color_set, self._fetched_cell.hm_rule, self._fetched_cell.name, self._fetched_cell.desc),])
+            color_path = os.sep.join((self._args.global_temp_dir.path(), "DigiPale_Set_{}.dps".format(abs(hash(str(color_dict))))))
+
+            with open(color_path, "w", encoding='utf-8') as f:
+                json.dump(color_dict, f, indent=4)
+
+            self._drag_file = True
+
+            drag = QDrag(self)
+            mimedata = QMimeData()
+            mimedata.setUrls([QUrl.fromLocalFile(color_path)])
+            drag.setMimeData(mimedata)
+            pixmap = QPixmap(":/images/images/file_set_128.png")
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+            drag.exec_(Qt.CopyAction | Qt.MoveAction)
+
+            self._args.stab_ucells[self._current_idx] = self._fetched_cell
+            self._fetched_cell = None
+
+            self._left_click = False
+            self._start_pt = None
+
+            self._drag_file = False
+            self._press_key = 0
+
+            self.update()
+            event.accept()
+
+        elif self._left_click:
             if isinstance(self._start_pt, np.ndarray) and np.linalg.norm(self._start_pt - np.array((event.x(), event.y()))) < self._pl_wid / 5:
                 # fixed icon in small region.
                 event.ignore()
@@ -441,20 +529,20 @@ class Depot(QWidget):
             event.ignore()
 
     def dragEnterEvent(self, event):
-        depot_file = event.mimeData().text()
+        # drag file out from depot.
+        if self._drag_file:
+            event.ignore()
+            return
 
-        # ubuntu would add \r\n at end.
-        depot_file = depot_file[:-1] if depot_file[-1:] == "\n" else depot_file
-        depot_file = depot_file[:-1] if depot_file[-1:] == "\r" else depot_file
+        try:
+            depot_file = event.mimeData().urls()[0].toLocalFile()
 
-        if depot_file[:4] == "file" and depot_file.split(".")[-1].lower() in ("dpc", "json"):
-            # ubuntu need / at start.
-            if sys.platform[:3].lower() == "win":
-                self._drop_file = depot_file[8:]
+        except Exception as err:
+            event.ignore()
+            return
 
-            else:
-                self._drop_file = depot_file[7:]
-
+        if depot_file.split(".")[-1].lower() in ("dpc", "json"):
+            self._drop_file = depot_file
             event.accept()
 
         else:
@@ -646,7 +734,36 @@ class Depot(QWidget):
         if not self.isVisible():
             return
 
-        self.activate_idx(self._current_idx)
+        if self._current_idx == None:
+            self._scroll_bar.setValue(0)
+            self.update()
+
+        else:
+            self.activate_idx(self._current_idx)
+
+    def page_up(self):
+        """
+        Up scroll page.
+        """
+
+        self._scroll_bar.setValue(self._scroll_bar.value() - self._scroll_area.height())
+        self.update()
+
+    def page_down(self):
+        """
+        Down scroll page.
+        """
+
+        self._scroll_bar.setValue(self._scroll_bar.value() + self._scroll_area.height())
+        self.update()
+
+    def page_end(self):
+        """
+        End scroll page.
+        """
+
+        self._scroll_bar.setValue(self._scroll_contents.height())
+        self.update()
 
     def insert_set(self):
         """
@@ -759,31 +876,23 @@ class Depot(QWidget):
         Load depot from clipboard.
         """
 
-        clipboard = QApplication.clipboard()
-        depot_file = clipboard.text()
+        clipboard = QApplication.clipboard().mimeData()
 
-        # ubuntu would add \r\n at end.
-        depot_file = depot_file[:-1] if depot_file[-1:] == "\n" else depot_file
-        depot_file = depot_file[:-1] if depot_file[-1:] == "\r" else depot_file
+        if clipboard.hasUrls():
+            try:
+                depot_file = clipboard.urls()[0].toLocalFile()
 
-        if depot_file[:4] == "file" and depot_file.split(".")[-1].lower() in ("dps", "json"):
-            # ubuntu need / at start.
-            if sys.platform[:3].lower() == "win":
-                depot_file = depot_file[8:]
+            except Exception as err:
+                return
 
-            else:
-                depot_file = depot_file[7:]
-
-            if os.path.isfile(depot_file):
-                self.ps_dropped.emit((depot_file, False))
+            if depot_file.split(".")[-1].lower() in ("dpc", "json") and os.path.isfile(depot_file):
+                    self.ps_dropped.emit((depot_file, False))
 
         else:
-            color_dict = {}
-
             try:
-                color_dict = json.loads(depot_file)
+                color_dict = json.loads(clipboard.text())
 
-            except:
+            except Exception as err:
                 return
 
             if isinstance(color_dict, dict) and "type" in color_dict and "palettes" in color_dict:

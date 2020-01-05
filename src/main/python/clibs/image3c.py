@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import QThread, pyqtSignal, QTemporaryDir
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QImage
 from PIL import Image, ImageFilter
 from clibs.color import Color
@@ -34,7 +34,7 @@ class Image3C(QThread):
     ps_finished = pyqtSignal(int)
     ps_enhanced = pyqtSignal(int)
 
-    def __init__(self):
+    def __init__(self, temp_dir):
         """
         Init image3c with default temp dir.
         """
@@ -42,7 +42,7 @@ class Image3C(QThread):
         super().__init__()
 
         # load args.
-        self._temp_dir = QTemporaryDir()
+        self._temp_dir = temp_dir
 
         self.img_data = None
         self.display = None
@@ -64,20 +64,6 @@ class Image3C(QThread):
         self._hsv_hrz_data = None
 
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
-
-    def check_temp_dir(self):
-        """
-        Check if temporary directory valid.
-        """
-
-        return self._temp_dir.isValid() and os.path.isdir(self._temp_dir.path())
-
-    def remove_temp_dir(self):
-        """
-        Remove temporary directory.
-        """
-
-        self._temp_dir.remove()
 
     def run(self):
         """
@@ -545,7 +531,7 @@ class Image3C(QThread):
                 self.ori_display_data = np.array(img_data, dtype=np.uint8)
                 self.display = QImage(self.ori_display_data, self.ori_display_data.shape[1], self.ori_display_data.shape[0], self.ori_display_data.shape[1] * 3, QImage.Format_RGB888)
 
-            except:
+            except Exception as err:
                 self.display = None
 
         else:
@@ -807,7 +793,7 @@ class Image3C(QThread):
                 else:
                     self.ps_enhanced.emit(2)
 
-            except:
+            except Exception as err:
                 self.ps_enhanced.emit(3)
 
         else:
@@ -860,7 +846,7 @@ class Image3C(QThread):
                 else:
                     self.ps_enhanced.emit(2)
 
-            except:
+            except Exception as err:
                 self.ps_enhanced.emit(3)
 
         else:

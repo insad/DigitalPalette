@@ -5,10 +5,12 @@ import sys
 import json
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QShortcut, QApplication
-from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QSize, pyqtSignal
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient, QKeySequence
+from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QSize, pyqtSignal, QMimeData, QPoint, QUrl
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QConicalGradient, QRadialGradient, QLinearGradient, QKeySequence, QDrag, QPixmap
+from cguis.resource import view_rc
 from clibs.transpt import get_outer_box, rotate_point_center, get_theta_center
 from clibs.color import Color
+from clibs.export import export_list
 
 
 class Wheel(QWidget):
@@ -28,11 +30,11 @@ class Wheel(QWidget):
         super().__init__(wget)
 
         # load args.
-        self.setAcceptDrops(True)
-
         self._args = args
         self._backup = self._args.sys_color_set.backup()
+        self._drag_file = False
         self._drop_file = None
+        self._press_key = None
 
         # init global args.
         self._pressed_in_wheel = False
@@ -40,6 +42,9 @@ class Wheel(QWidget):
         self._pressed_in_bar_2 = False
 
         # init qt args.
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setAcceptDrops(True)
+
         self.setMinimumSize(QSize(300, 200))
 
         shortcut = QShortcut(QKeySequence("Ctrl+V"), self)
@@ -124,12 +129,12 @@ class Wheel(QWidget):
         idx_seq = list(range(5))
         idx_seq = idx_seq[self._args.sys_activated_idx + 1: ] + idx_seq[: self._args.sys_activated_idx + 1]
 
+        # lines.
         for idx in idx_seq:
             color_center = np.array([self._args.sys_color_set[idx].s * self._radius, 0]) + self._center
             color_center = rotate_point_center(self._center, color_center, self._args.sys_color_set[idx].h)
             self._tag_center[idx] = color_center
 
-            color_box = get_outer_box(color_center, self._tag_radius)
             if idx == self._args.sys_activated_idx:
                 painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
 
@@ -137,6 +142,23 @@ class Wheel(QWidget):
                 painter.setPen(QPen(QColor(*self._args.negative_color), self._args.negative_wid))
 
             painter.drawLine(QPoint(*self._center), QPoint(*color_center))
+
+        # dot.
+        dot_box = get_outer_box(self._center, self._args.positive_wid)
+        painter.setPen(QPen(Qt.NoPen))
+        painter.setBrush(QBrush(QColor(*self._args.positive_color)))
+        painter.drawEllipse(*dot_box)
+
+        # circles.
+        for idx in idx_seq:
+            color_box = get_outer_box(self._tag_center[idx], self._tag_radius)
+
+            if idx == self._args.sys_activated_idx:
+                painter.setPen(QPen(QColor(*self._args.positive_color), self._args.positive_wid))
+
+            else:
+                painter.setPen(QPen(QColor(*self._args.negative_color), self._args.negative_wid))
+
             painter.setBrush(QColor(*self._args.sys_color_set[idx].rgb))
             painter.drawEllipse(*color_box)
 
@@ -144,8 +166,45 @@ class Wheel(QWidget):
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Shift:
+            self._press_key = 1
+            event.accept()
+
+        else:
+            self._press_key = 0
+            event.ignore()
+
+    def keyReleaseEvent(self, event):
+        self._press_key = 0
+        event.ignore()
+
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if self._press_key == 1 and event.button() == Qt.LeftButton:
+            color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "set"}
+            color_dict["palettes"] = export_list([(self._args.sys_color_set, self._args.hm_rule, "", ""),])
+            color_path = os.sep.join((self._args.global_temp_dir.path(), "DigiPale_Set_{}.dps".format(abs(hash(str(color_dict))))))
+
+            with open(color_path, "w", encoding='utf-8') as f:
+                json.dump(color_dict, f, indent=4)
+
+            self._drag_file = True
+
+            drag = QDrag(self)
+            mimedata = QMimeData()
+            mimedata.setUrls([QUrl.fromLocalFile(color_path)])
+            drag.setMimeData(mimedata)
+            pixmap = QPixmap(":/images/images/file_set_128.png")
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+            drag.exec_(Qt.CopyAction | Qt.MoveAction)
+
+            self._drag_file = False
+            self._press_key = 0
+
+            event.accept()
+
+        elif event.button() == Qt.LeftButton:
             point = np.array((event.x(), event.y()))
             self._backup = self._args.sys_color_set.backup()
 
@@ -269,20 +328,20 @@ class Wheel(QWidget):
         event.ignore()
 
     def dragEnterEvent(self, event):
-        set_file = event.mimeData().text()
+        # drag file out from depot.
+        if self._drag_file:
+            event.ignore()
+            return
 
-        # ubuntu would add \r\n at end.
-        set_file = set_file[:-1] if set_file[-1:] == "\n" else set_file
-        set_file = set_file[:-1] if set_file[-1:] == "\r" else set_file
+        try:
+            set_file = event.mimeData().urls()[0].toLocalFile()
 
-        if set_file[:4] == "file" and set_file.split(".")[-1].lower() in ("dps", "json"):
-            # ubuntu need / at start.
-            if sys.platform[:3].lower() == "win":
-                self._drop_file = set_file[8:]
+        except Exception as err:
+            event.ignore()
+            return
 
-            else:
-                self._drop_file = set_file[7:]
-
+        if set_file.split(".")[-1].lower() in ("dps", "json"):
+            self._drop_file = set_file
             event.accept()
 
         else:
@@ -305,31 +364,23 @@ class Wheel(QWidget):
         Load set from clipboard.
         """
 
-        clipboard = QApplication.clipboard()
-        set_file = clipboard.text()
+        clipboard = QApplication.clipboard().mimeData()
 
-        # ubuntu would add \r\n at end.
-        set_file = set_file[:-1] if set_file[-1:] == "\n" else set_file
-        set_file = set_file[:-1] if set_file[-1:] == "\r" else set_file
+        if clipboard.hasUrls():
+            try:
+                set_file = clipboard.urls()[0].toLocalFile()
 
-        if set_file[:4] == "file" and set_file.split(".")[-1].lower() in ("dps", "json"):
-            # ubuntu need / at start.
-            if sys.platform[:3].lower() == "win":
-                set_file = set_file[8:]
+            except Exception as err:
+                return
 
-            else:
-                set_file = set_file[7:]
-
-            if os.path.isfile(set_file):
+            if set_file.split(".")[-1].lower() in ("dps", "json") and os.path.isfile(set_file):
                 self.ps_dropped.emit((set_file, False))
 
         else:
-            color_dict = {}
-
             try:
-                color_dict = json.loads(set_file)
+                color_dict = json.loads(clipboard.text())
 
-            except:
+            except Exception as err:
                 return
 
             if isinstance(color_dict, dict) and "type" in color_dict and "palettes" in color_dict:

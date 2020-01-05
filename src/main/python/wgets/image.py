@@ -259,7 +259,7 @@ class Image(QWidget):
         # load args.
         self._args = args
         self._categories = set()
-        self._drag_image = None
+        self._drop_image = None
         self._move_pos = None
         self._start_pt = None
         self._is_croping = False
@@ -270,7 +270,8 @@ class Image(QWidget):
         # load translations.
         self._func_tr_()
 
-        # qt args.
+        # init qt args.
+        self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
 
         self._tip_label = QLabel(self)
@@ -283,7 +284,7 @@ class Image(QWidget):
         self._ico = QImage(":/images/images/icon_grey_1024.png")
         self._ico_label = QLabel(self)
 
-        self._image3c = Image3C()
+        self._image3c = Image3C(self._args.global_temp_dir)
         self._image3c.ps_describe.connect(self.update_loading_label)
         self._image3c.ps_proceses.connect(self.update_loading_bar)
         self._image3c.ps_finished.connect(self.loading_finished)
@@ -428,29 +429,24 @@ class Image(QWidget):
                 event.ignore()
 
     def dragEnterEvent(self, event):
-        image = event.mimeData().text()
+        try:
+            image = event.mimeData().urls()[0].toLocalFile()
 
-        # ubuntu would add \r\n at end.
-        image = image[:-1] if image[-1:] == "\n" else image
-        image = image[:-1] if image[-1:] == "\r" else image
+        except Exception as err:
+            event.ignore()
+            return
 
-        if image[:4] == "file" and image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff"):
-            # ubuntu need / at start.
-            if sys.platform[:3].lower() == "win":
-                self._drag_image = image[8:]
-
-            else:
-                self._drag_image = image[7:]
-
+        if image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff"):
+            self._drop_image = image
             event.accept()
 
         else:
             event.ignore()
 
     def dropEvent(self, event):
-        if self._drag_image:
-            self.open_image(self._drag_image)
-            self._drag_image = None
+        if self._drop_image:
+            self.open_image(self._drop_image)
+            self._drop_image = None
 
             event.accept()
 
@@ -532,7 +528,12 @@ class Image(QWidget):
         if self._start_pt:
             point = (event.x(), event.y())
 
-            self.move(point[0] - self._start_pt[0], point[1] - self._start_pt[1])
+            if self._args.rev_direct:
+                self.move(self._start_pt[0] - point[0], self._start_pt[1] - point[1])
+
+            else:
+                self.move(point[0] - self._start_pt[0], point[1] - self._start_pt[1])
+
             self._start_pt = point
 
             event.accept()
@@ -619,8 +620,13 @@ class Image(QWidget):
         wid = self.overlabel_display.width()
         hig = self.overlabel_display.height()
 
-        x = x + shift_x
-        y = y + shift_y
+        if self._args.rev_direct:
+            x = x - shift_x
+            y = y - shift_y
+
+        else:
+            x = x + shift_x
+            y = y + shift_y
 
         self._move_pos = [x, y, wid, hig]
         self._resizing_image = False
@@ -683,7 +689,7 @@ class Image(QWidget):
             self.warning(self._image_errs[1])
             return
 
-        if not self._image3c.check_temp_dir():
+        if not self._args.check_temp_dir():
             self.warning(self._image_errs[2])
             return
 
@@ -691,7 +697,7 @@ class Image(QWidget):
             try:
                 img_data = PImage.open(image)
 
-            except:
+            except Exception as err:
                 self.warning(self._image_errs[4])
                 return
 
@@ -742,7 +748,7 @@ class Image(QWidget):
         if not self._image3c.img_data:
             return
 
-        if not self._image3c.check_temp_dir():
+        if not self._args.check_temp_dir():
             self.ps_recover_channel.emit(True)
             self.warning(self._image_errs[2])
             return
@@ -778,7 +784,7 @@ class Image(QWidget):
 
         if values[0][:5] == "cover":
             cb_filter = "{} (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);; {} (*.png);; {} (*.bmp);; {} (*.jpg *.jpeg);; {} (*.tif *.tiff)".format(*self._extend_descs)
-            cb_file = QFileDialog.getOpenFileName(None, self._action_descs[1], self._args.usr_image, filter=cb_filter)
+            cb_file = QFileDialog.getOpenFileName(None, self._action_descs[3], self._args.usr_image, filter=cb_filter)
 
             if cb_file[0]:
                 self._args.usr_image = os.path.dirname(os.path.abspath(cb_file[0]))
@@ -1026,29 +1032,23 @@ class Image(QWidget):
         Load image from clipboard.
         """
 
-        clipboard = QApplication.clipboard()
-        load_image = self._image3c.save_load_data(clipboard.pixmap())
+        clipboard = QApplication.clipboard().mimeData()
 
-        if load_image:
-            self.open_image(load_image)
+        if clipboard.hasUrls():
+            try:
+                image = clipboard.urls()[0].toLocalFile()
 
-        else:
-            image = clipboard.text()
+            except Exception as err:
+                return
 
-            # ubuntu would add \r\n at end.
-            image = image[:-1] if image[-1:] == "\n" else image
-            image = image[:-1] if image[-1:] == "\r" else image
+            if image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff") and os.path.isfile(image):
+                self.open_image(image)
 
-            if image[:4] == "file" and image.split(".")[-1].lower() in ("png", "bmp", "jpg", "jpeg", "tif", "tiff"):
-                # ubuntu need / at start.
-                if sys.platform[:3].lower() == "win":
-                    image = image[8:]
+        elif clipboard.hasImage():
+            load_image = self._image3c.save_load_data(clipboard.imageData())
 
-                else:
-                    image = image[7:]
-
-                if os.path.isfile(image):
-                    self.open_image(image)
+            if load_image:
+                self.open_image(load_image)
 
     def update_all(self):
         self.overlabel_display.update()
@@ -1063,13 +1063,6 @@ class Image(QWidget):
 
         box.exec_()
 
-    def closeEvent(self, event):
-        """
-        Actions before close Image.
-        """
-
-        self._image3c.remove_temp_dir()
-
     # ---------- ---------- ---------- Translations ---------- ---------- ---------- #
 
     def _func_tr_(self):
@@ -1079,6 +1072,7 @@ class Image(QWidget):
             _translate("Image", "Double click here to open an image."),
             _translate("Image", "Open"),
             _translate("Image", "Print"),
+            _translate("Image", "Cover"),
         )
 
         self._image_errs = (

@@ -5,7 +5,7 @@ import time
 import json
 from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QScrollArea, QFrame, QGroupBox, QSpacerItem, QSizePolicy, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
-from clibs.export import export_list, export_text, export_swatch
+from clibs.export import export_list, export_text, export_swatch, export_gpl, export_xml
 from clibs.color import Color
 
 
@@ -114,7 +114,7 @@ class Operation(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(185, 230)
+        return QSize(185, 145)
 
     def exec_open(self, value):
         """
@@ -222,7 +222,7 @@ class Operation(QWidget):
 
         name = "{}".format(time.strftime("DigiPale_Depot_%Y_%m_%d.dpc", time.localtime()))
 
-        cb_filter = "{} (*.dpc);; {} (*.txt);; {} (*.aco)".format(self._file_descs[4], self._file_descs[1], self._file_descs[2])
+        cb_filter = "{} (*.dpc);; {} (*.txt);; {} (*.aco);; {} (*.gpl);; {} (*.xml)".format(self._file_descs[4], self._file_descs[1], self._file_descs[2], self._file_descs[5], self._file_descs[6])
         cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[6], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
@@ -263,6 +263,14 @@ class Operation(QWidget):
         elif depot_file.split(".")[-1].lower() == "aco":
             with open(depot_file, "wb") as f:
                 f.write(export_swatch(color_list))
+
+        elif depot_file.split(".")[-1].lower() == "gpl":
+            with open(depot_file, "w") as f:
+                f.write(export_gpl(color_list))
+
+        elif depot_file.split(".")[-1].lower() == "xml":
+            with open(depot_file, "w") as f:
+                f.write(export_xml(color_list))
 
         else:
             self.warning(self._operation_errs[10])
@@ -375,7 +383,7 @@ class Operation(QWidget):
 
         name = "{}".format(time.strftime("DigiPale_Set_%Y_%m_%d.dps", time.localtime()))
 
-        cb_filter = "{} (*.dps);; {} (*.txt);; {} (*.aco)".format(self._file_descs[3], self._file_descs[1], self._file_descs[2])
+        cb_filter = "{} (*.dps);; {} (*.txt);; {} (*.aco);; {} (*.gpl);; {} (*.xml)".format(self._file_descs[3], self._file_descs[1], self._file_descs[2], self._file_descs[5], self._file_descs[6])
         cb_file = QFileDialog.getSaveFileName(None, self._operation_descs[1], os.sep.join((self._args.usr_color, name)), filter=cb_filter)
 
         if cb_file[0]:
@@ -400,17 +408,19 @@ class Operation(QWidget):
         if isinstance(value, bool):
             color_set = self._args.sys_color_set
             hm_rule = self._args.hm_rule
-            desc = "#Name: DigiPale Color Set"
+            name = ""
+            desc = ""
 
         else:
             color_set = self._args.stab_ucells[value].color_set
             hm_rule = self._args.stab_ucells[value].hm_rule
+            name = self._args.stab_ucells[value].name
             desc = self._args.stab_ucells[value].desc
 
         # process start.
         if set_file.split(".")[-1].lower() == "dps":
-            color_dict = {"version": self._args.info_version_en,"site": self._args.info_main_site, "type": "set"}
-            color_dict["palettes"] = export_list([(color_set, hm_rule, desc),])
+            color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "set"}
+            color_dict["palettes"] = export_list([(color_set, hm_rule, name, desc),])
 
             with open(set_file, "w", encoding='utf-8') as f:
                 json.dump(color_dict, f, indent=4)
@@ -419,11 +429,19 @@ class Operation(QWidget):
             with open(set_file, "w") as f:
                 f.write("# DigitalPalette Color Set Export\n")
                 f.write("# Version: {}\n\n".format(self._args.info_version_en))
-                f.write(export_text([(color_set, hm_rule, desc),]))
+                f.write(export_text([(color_set, hm_rule, name, desc),]))
 
         elif set_file.split(".")[-1].lower() == "aco":
             with open(set_file, "wb") as f:
-                f.write(export_swatch([(color_set, hm_rule, desc),]))
+                f.write(export_swatch([(color_set, hm_rule, name, desc),]))
+
+        elif set_file.split(".")[-1].lower() == "gpl":
+            with open(set_file, "w") as f:
+                f.write(export_gpl([(color_set, hm_rule, name, desc),]))
+
+        elif set_file.split(".")[-1].lower() == "xml":
+            with open(set_file, "w") as f:
+                f.write(export_xml([(color_set, hm_rule, name, desc),]))
 
         else:
             self.warning(self._operation_errs[10])
@@ -496,6 +514,8 @@ class Operation(QWidget):
             _translate("Operation", "Adobe Swatch File"),
             _translate("Operation", "DigiPale Set File"),
             _translate("Operation", "DigiPale Depot File"),
+            _translate("Operation", "GIMP Palette File"),
+            _translate("Operation", "Pencil Palette File"),
         )
 
         self._operation_errs = (

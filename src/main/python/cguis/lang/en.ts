@@ -107,27 +107,27 @@
 <context>
     <name>Depot</name>
     <message>
-        <location filename="../../wgets/depot.py" line="886"/>
+        <location filename="../../wgets/depot.py" line="995"/>
         <source>Import</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="886"/>
+        <location filename="../../wgets/depot.py" line="995"/>
         <source>Export</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="886"/>
+        <location filename="../../wgets/depot.py" line="995"/>
         <source>Delete</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="886"/>
+        <location filename="../../wgets/depot.py" line="995"/>
         <source>Detail</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="886"/>
+        <location filename="../../wgets/depot.py" line="995"/>
         <source>Attach</source>
         <translation></translation>
     </message>
@@ -135,62 +135,62 @@
 <context>
     <name>DigitalPalette</name>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>DigitalPalette is a free software, which is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="629"/>
+        <location filename="../../main.py" line="638"/>
         <source>Ready.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>Visit Website</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>Version: {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>Author: {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>Update: {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../main.py" line="618"/>
+        <location filename="../../main.py" line="627"/>
         <source>All Rights Reserved.</source>
         <translation>Copyright © 2019-2020. All Rights Reserved.</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="629"/>
+        <location filename="../../main.py" line="638"/>
         <source>Image Size: {} x {}.</source>
         <translation>Image Size: {} × {}.</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="629"/>
+        <location filename="../../main.py" line="638"/>
         <source>Image Size: {} x {}. Position: {} %, {} %.</source>
         <translation>Image Size: {} × {}. Position: {}% × {}%.</translation>
     </message>
     <message>
-        <location filename="../../main.py" line="629"/>
+        <location filename="../../main.py" line="638"/>
         <source>Depot Volume: Row {}, Col {}; Total {}, Index {}.</source>
         <translation>Depot Volume: Row {}, Col {}; Total {}, Index {}.</translation>
     </message>
@@ -198,122 +198,122 @@
 <context>
     <name>Image</name>
     <message>
-        <location filename="../../wgets/image.py" line="1070"/>
+        <location filename="../../wgets/image.py" line="1071"/>
         <source>Double click here to open an image.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Could not create temporary dir. Dir is not created.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Finishing.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading RGB data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving RGB data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading HSV data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving HSV data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading RGB vertical edge data.</source>
         <translation>Loading RGB space vertical edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving RGB vertical edge data.</source>
         <translation>Saving RGB space vertical edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading RGB horizontal edge data.</source>
         <translation>Loading RGB space horizontal edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving RGB horizontal edge data.</source>
         <translation>Saving RGB space horizontal edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading RGB final edge data.</source>
         <translation>Loading RGB space compositive edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving RGB final edge data.</source>
         <translation>Saving RGB space compositive edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading HSV vertical edge data.</source>
         <translation>Loading HSV space vertical edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving HSV vertical edge data.</source>
         <translation>Saving HSV space vertical edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading HSV horizontal edge data.</source>
         <translation>Loading HSV space horizontal edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving HSV horizontal edge data.</source>
         <translation>Saving HSV space horizontal edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Loading HSV final edge data.</source>
         <translation>Loading HSV space compositive edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Saving HSV final edge data.</source>
         <translation>Saving HSV space compositive edge data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1070"/>
+        <location filename="../../wgets/image.py" line="1071"/>
         <source>Open</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1087"/>
+        <location filename="../../wgets/image.py" line="1089"/>
         <source>Applying filter to image data.</source>
         <translation>Pre-processing image data.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Could not process image. There is a process of image not finished.</source>
         <translation></translation>
     </message>
@@ -323,75 +323,80 @@
         <translation type="obsolete">Image Size: {} × {}.</translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Could not open image. This image is broken.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1070"/>
+        <location filename="../../wgets/image.py" line="1071"/>
         <source>Print</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Could not process image. Translation is not completed.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="717"/>
+        <location filename="../../wgets/transformation.py" line="701"/>
         <source>All Images</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="717"/>
+        <location filename="../../wgets/transformation.py" line="701"/>
         <source>PNG Image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="717"/>
+        <location filename="../../wgets/transformation.py" line="701"/>
         <source>BMP Image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="717"/>
+        <location filename="../../wgets/transformation.py" line="701"/>
         <source>JPG Image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="717"/>
+        <location filename="../../wgets/transformation.py" line="701"/>
         <source>TIF Image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Could not process image. The size of image is not suitable.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/image.py" line="1076"/>
+        <location filename="../../wgets/image.py" line="1078"/>
         <source>Could not process image. This image is invalid.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../wgets/image.py" line="1071"/>
+        <source>Cover</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>Info</name>
     <message>
-        <location filename="../../wgets/depot.py" line="95"/>
+        <location filename="../../wgets/depot.py" line="96"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="95"/>
+        <location filename="../../wgets/depot.py" line="96"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="95"/>
+        <location filename="../../wgets/depot.py" line="96"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="200"/>
+        <location filename="../../wgets/depot.py" line="201"/>
         <source>DigiPale Color Set</source>
         <translation></translation>
     </message>
@@ -584,7 +589,7 @@
     <message>
         <location filename="../design/main_window.py" line="240"/>
         <source>Script.</source>
-        <translation>Apply filter, crop, zoom and snap processes to image.</translation>
+        <translation>Apply filter, snap, crop and zoom processes to image.</translation>
     </message>
     <message>
         <location filename="../design/main_window.py" line="242"/>
@@ -618,165 +623,175 @@
 <context>
     <name>Operation</name>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color file error. Color file is broken.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color version error. Version does not match.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color version error. Version does not exist.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color set error. Color set is broken.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color set error. HSV tags do not exist.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color set error. Color tags do not exist.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import harmony rule error. Rule does not match.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import harmony rule error. Rule does not exist.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Export Color file error. Extension does not match.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color format error. Data is not in dict type.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color type error. Type does not match.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color type error. Type does not exist.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color depot error.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import some color sets into depot error. These color sets are discarded.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Detail:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color type error. This is a color set file, please use &apos;Import&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>Import color type error. This is a color depot file, please use &apos;Open&apos;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="501"/>
+        <location filename="../../wgets/operation.py" line="521"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="493"/>
+        <location filename="../../wgets/operation.py" line="511"/>
         <source>DigiPale Json File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="493"/>
+        <location filename="../../wgets/operation.py" line="511"/>
         <source>Plain Text File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="493"/>
+        <location filename="../../wgets/operation.py" line="511"/>
         <source>Adobe Swatch File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="493"/>
+        <location filename="../../wgets/operation.py" line="511"/>
         <source>DigiPale Set File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/operation.py" line="493"/>
+        <location filename="../../wgets/operation.py" line="511"/>
         <source>DigiPale Depot File</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../wgets/operation.py" line="511"/>
+        <source>GIMP Palette File</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../wgets/operation.py" line="511"/>
+        <source>Pencil Palette File</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>Rule</name>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Analogous</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Monochromatic</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Triad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Tetrad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Pentad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Complementary</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Shades</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/depot.py" line="105"/>
+        <location filename="../../wgets/depot.py" line="106"/>
         <source>Custom</source>
         <translation></translation>
     </message>
@@ -1558,77 +1573,77 @@
 <context>
     <name>Transformation</name>
     <message>
-        <location filename="../../wgets/transformation.py" line="690"/>
+        <location filename="../../wgets/transformation.py" line="674"/>
         <source>Move</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="690"/>
+        <location filename="../../wgets/transformation.py" line="674"/>
         <source>Zoom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="690"/>
+        <location filename="../../wgets/transformation.py" line="674"/>
         <source>Replace</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Enhance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="699"/>
+        <location filename="../../wgets/transformation.py" line="683"/>
         <source>Replace RGB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="699"/>
+        <location filename="../../wgets/transformation.py" line="683"/>
         <source>Replace HSV</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="699"/>
+        <location filename="../../wgets/transformation.py" line="683"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Link</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Factor - {:.1f}%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Reserve Result</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Inverse</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Space - {:.1f}%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Width - {:.1f}%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Spread - {:.1f}%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wgets/transformation.py" line="705"/>
+        <location filename="../../wgets/transformation.py" line="689"/>
         <source>Cover</source>
         <translation></translation>
     </message>

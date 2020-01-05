@@ -147,7 +147,7 @@ class CubeTable(QWidget):
         self.setMinimumSize(640, 10)
 
         cube_grid_layout = QGridLayout(self)
-        cube_grid_layout.setContentsMargins(1, 1, 1, 1)
+        cube_grid_layout.setContentsMargins(0, 0, 0, 0)
 
         scroll_area = QScrollArea(self)
         scroll_area.setFrameShape(QFrame.Box)
@@ -243,7 +243,7 @@ class CubeTable(QWidget):
                 try:
                     value = Color.fmt_hec(value)
 
-                except:
+                except Exception as err:
                     return
 
             self._updated_colors = True

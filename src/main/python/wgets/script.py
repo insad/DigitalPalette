@@ -184,7 +184,7 @@ class Script(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(185, 230)
+        return QSize(185, 145)
 
     def update_zoom(self):
         """

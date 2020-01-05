@@ -74,7 +74,7 @@ class Mode(QWidget):
     # ---------- ---------- ---------- Public Funcs ---------- ---------- ---------- #
 
     def sizeHint(self):
-        return QSize(185, 90)
+        return QSize(185, 60)
 
     def modify_state(self, tag):
         """

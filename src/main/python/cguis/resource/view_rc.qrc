@@ -3,5 +3,7 @@
     <file>images/icon_128.png</file>
     <file>images/icon_full_128.png</file>
     <file>images/icon_grey_1024.png</file>
+    <file>images/file_set_128.png</file>
+    <file>images/file_depot_128.png</file>
   </qresource>
 </RCC>

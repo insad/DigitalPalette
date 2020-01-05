@@ -5,7 +5,7 @@ import binascii
 
 def export_swatch(color_list):
     """
-    Export color set list in swatch type (for Adobe and GIMP exchange).
+    Export color set list in swatch type (for Adobe exchange).
 
     Args:
         color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
@@ -36,6 +36,50 @@ def export_swatch(color_list):
     swatch_chars = swatch_chars_v1 + swatch_chars_v2
 
     return binascii.a2b_hex(swatch_chars)
+
+def export_gpl(color_list):
+    """
+    Export color set list in gpl type (for GIMP exchange).
+
+    Args:
+        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+
+    Returns:
+        Plain text strings.
+    """
+
+    gpl_chars = "GIMP Palette\n"
+
+    for idx in range(len(color_list)):
+        for i in (2, 1, 0, 3, 4):
+            r, g, b = color_list[idx][0][i].rgb
+            name = "DigiPale-{}-{}".format(idx, i)
+            gpl_chars += "{:<5}{:<5}{:<5}{}\n".format(r, g, b, name)
+
+    return gpl_chars
+
+def export_xml(color_list):
+    """
+    Export color set list in xml type (for Pencil exchange).
+
+    Args:
+        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+
+    Returns:
+        Plain text strings.
+    """
+
+    xml_chars = "<!DOCTYPE PencilPalette>\n<palette>\n"
+
+    for idx in range(len(color_list)):
+        for i in (2, 1, 0, 3, 4):
+            r, g, b = color_list[idx][0][i].rgb
+            name = "DigiPale-{}-{}".format(idx, i)
+            xml_chars += "    <Colour red='{}' green='{}' blue='{}' alpha='255' name='{}'/>\n".format(r, g, b, name)
+
+    xml_chars += "</palette>\n"
+
+    return xml_chars
 
 def export_text(color_list):
     """

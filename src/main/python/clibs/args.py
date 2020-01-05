@@ -5,6 +5,7 @@ import json
 import re
 import time
 from clibs.color_set import ColorSet
+from PyQt5.QtCore import QTemporaryDir
 
 
 class Args(object):
@@ -16,6 +17,9 @@ class Args(object):
         """
         Init Args object.
         """
+
+        # temporary dir.
+        self.global_temp_dir = QTemporaryDir()
 
         # global args.
         self.global_hm_rules = (
@@ -61,6 +65,16 @@ class Args(object):
         self.lang = "default"
         self.usr_langs = tuple(lang_paths)
 
+        # software informations.
+        self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
+        self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
+        self.info_version_zh = "v2.2.3-开发版"
+        self.info_version_en = "v2.2.3-dev"
+        self.info_author_zh = "本征喵"
+        self.info_author_en = "Eigenmiao"
+        self.info_date_zh = "2020年1月5日"
+        self.info_date_en = "Jan. 5th, 2020"
+
         # init settings.
         self.usr_store = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette"))
         self.resources = resources
@@ -77,16 +91,6 @@ class Args(object):
 
         else:
             self.load_settings(os.sep.join((self.usr_store, "settings.json")))
-
-        # software informations.
-        self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
-        self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_version_zh = "v2.2.3-开发版"
-        self.info_version_en = "v2.2.3-dev"
-        self.info_author_zh = "本征喵"
-        self.info_author_en = "Eigenmiao"
-        self.info_date_zh = "2020年1月1日"
-        self.info_date_en = "Jan. 1st, 2020"
 
         # special system settings.
         self.sys_activated_idx = 0
@@ -118,7 +122,7 @@ class Args(object):
                     if isinstance(uss, dict) and "store_loc" in uss:
                         self.store_loc = bool(uss["store_loc"])
 
-            except:
+            except Exception as err:
                 pass
 
         # need verify and mkdirs.
@@ -151,23 +155,23 @@ class Args(object):
         self.cubic_ratio = 0.9
         self.coset_ratio = 0.8
 
-        self.s_tag_radius = 0.08
-        self.v_tag_radius = 0.08
+        self.s_tag_radius = 0.09
+        self.v_tag_radius = 0.09
 
         self.rev_direct = True
 
         self.zoom_step = 1.1
         self.move_step = 5
 
-        self.circle_dist = 10
+        self.circle_dist = 12
 
         self.positive_wid = 3
         self.negative_wid = 2
         self.wheel_ed_wid = 2
 
         self.positive_color = (80, 80, 80)
-        self.negative_color = (200, 200, 200)
-        self.wheel_ed_color = (240, 240, 240)
+        self.negative_color = (245, 245, 245)
+        self.wheel_ed_color = (200, 200, 200)
 
     def save_settings(self):
         """
@@ -273,7 +277,7 @@ class Args(object):
                 with open(settings_file, "r") as sf:
                     uss = json.load(sf)
 
-            except:
+            except Exception as err:
                 pass
 
         if isinstance(uss, dict):
@@ -444,3 +448,17 @@ class Args(object):
                 print(err)
 
         return False
+
+    def check_temp_dir(self):
+        """
+        Check if temporary directory valid.
+        """
+
+        return self.global_temp_dir.isValid() and os.path.isdir(self.global_temp_dir.path())
+
+    def remove_temp_dir(self):
+        """
+        Remove temporary directory.
+        """
+
+        self.global_temp_dir.remove()

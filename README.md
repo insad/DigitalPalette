@@ -16,4 +16,4 @@ Copyright © 2019-2020. All Rights Reserved.
 DigitalPalette is a free software, which is distributed in the hope that it will be useful, but **without any warranty**. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. See the GNU General Public License for more details.
 
 # Updates
-* 2020.1.1 (v2.2.3-dev): Add cover method.
+* 2020.1.5 (v2.2.3-dev): Add extract method.
