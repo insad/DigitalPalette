@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import time
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QShortcut, QApplication
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QSize, pyqtSignal, QMimeData, QPoint, QUrl
@@ -182,7 +183,7 @@ class Wheel(QWidget):
     def mousePressEvent(self, event):
         if self._press_key == 1 and event.button() == Qt.LeftButton:
             color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "set"}
-            color_dict["palettes"] = export_list([(self._args.sys_color_set, self._args.hm_rule, "", ""),])
+            color_dict["palettes"] = export_list([(self._args.sys_color_set, self._args.hm_rule, "", "", (time.time(), time.time())),])
             color_path = os.sep.join((self._args.global_temp_dir.path(), "DigiPale_Set_{}.dps".format(abs(hash(str(color_dict))))))
 
             with open(color_path, "w", encoding='utf-8') as f:

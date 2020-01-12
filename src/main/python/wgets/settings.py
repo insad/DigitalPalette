@@ -115,6 +115,7 @@ class Settings(QDialog, Ui_SettingsDialog):
         self.zoom_step_dp.setValue(self._args.zoom_step)
         self.move_step_dp.setValue(self._args.move_step)
 
+        self.rand_num_sp.setValue(self._args.rand_num)
         self.circle_dist_sp.setValue(self._args.circle_dist)
 
         self.positive_wid_sp.setValue(self._args.positive_wid)
@@ -179,6 +180,7 @@ class Settings(QDialog, Ui_SettingsDialog):
         self._args.modify_settings("zoom_step", self.zoom_step_dp.value())
         self._args.modify_settings("move_step", self.move_step_dp.value())
 
+        self._args.modify_settings("rand_num", self.rand_num_sp.value())
         self._args.modify_settings("circle_dist", self.circle_dist_sp.value())
 
         self._args.modify_settings("positive_wid", self.positive_wid_sp.value())

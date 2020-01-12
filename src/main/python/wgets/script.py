@@ -18,6 +18,7 @@ class Script(QWidget):
     ps_crop = pyqtSignal(bool)
     ps_freeze = pyqtSignal(bool)
     ps_print = pyqtSignal(bool)
+    ps_extract = pyqtSignal(int)
 
     def __init__(self, wget, args):
         """
@@ -56,7 +57,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._filter_gbox, 0, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._filter_gbox, 1, 1, 1, 1)
 
         self._filter_btns = []
         for i in range(10):
@@ -106,7 +107,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._zoom_gbox, 3, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._zoom_gbox, 4, 1, 1, 1)
 
         self.lab_zoom = QLabel(self._zoom_gbox)
         gbox_grid_layout.addWidget(self.lab_zoom, 0, 1, 1, 1)
@@ -139,7 +140,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._crop_gbox, 2, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._crop_gbox, 3, 1, 1, 1)
 
         self.btn_crop = QPushButton(self._crop_gbox)
         gbox_grid_layout.addWidget(self.btn_crop, 0, 1, 1, 1)
@@ -162,7 +163,7 @@ class Script(QWidget):
         gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
         gbox_grid_layout.setHorizontalSpacing(8)
         gbox_grid_layout.setVerticalSpacing(12)
-        scroll_grid_layout.addWidget(self._snap_gbox, 1, 1, 1, 1)
+        scroll_grid_layout.addWidget(self._snap_gbox, 2, 1, 1, 1)
 
         self.btn_freeze = QPushButton(self._snap_gbox)
         gbox_grid_layout.addWidget(self.btn_freeze, 0, 1, 1, 1)
@@ -178,6 +179,44 @@ class Script(QWidget):
         gbox_grid_layout.addItem(spacer, 2, 0, 1, 1)
         spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
         gbox_grid_layout.addItem(spacer, 2, 2, 1, 1)
+
+        # extract functional region.
+        self._extract_gbox = QGroupBox(scroll_contents)
+        gbox_grid_layout = QGridLayout(self._extract_gbox)
+        gbox_grid_layout.setContentsMargins(8, 8, 8, 8)
+        gbox_grid_layout.setHorizontalSpacing(8)
+        gbox_grid_layout.setVerticalSpacing(12)
+        scroll_grid_layout.addWidget(self._extract_gbox, 0, 1, 1, 1)
+
+        self._extract_btns = []
+        for i in range(6):
+            btn = QPushButton(self._extract_gbox)
+            self._extract_btns.append(btn)
+
+        gbox_grid_layout.addWidget(self._extract_btns[0], 0, 1, 1, 1)
+        self._extract_btns[0].clicked.connect(lambda x: self.ps_extract.emit(0))
+
+        gbox_grid_layout.addWidget(self._extract_btns[1], 1, 1, 1, 1)
+        self._extract_btns[1].clicked.connect(lambda x: self.ps_extract.emit(1))
+
+        gbox_grid_layout.addWidget(self._extract_btns[2], 2, 1, 1, 1)
+        self._extract_btns[2].clicked.connect(lambda x: self.ps_extract.emit(2))
+
+        gbox_grid_layout.addWidget(self._extract_btns[3], 3, 1, 1, 1)
+        self._extract_btns[3].clicked.connect(lambda x: self.ps_extract.emit(3))
+
+        gbox_grid_layout.addWidget(self._extract_btns[4], 4, 1, 1, 1)
+        self._extract_btns[4].clicked.connect(lambda x: self.ps_extract.emit(4))
+
+        gbox_grid_layout.addWidget(self._extract_btns[5], 5, 1, 1, 1)
+        self._extract_btns[5].clicked.connect(lambda x: self.ps_extract.emit(5))
+
+        spacer = QSpacerItem(5, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        gbox_grid_layout.addItem(spacer, 6, 1, 1, 1)
+        spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        gbox_grid_layout.addItem(spacer, 6, 0, 1, 1)
+        spacer = QSpacerItem(5, 5, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        gbox_grid_layout.addItem(spacer, 6, 2, 1, 1)
 
         self.update_text()
 
@@ -221,6 +260,11 @@ class Script(QWidget):
         self.btn_freeze.setText(self._snap_descs[0])
         self.btn_print.setText(self._snap_descs[1])
 
+        self._extract_gbox.setTitle(self._gbox_descs[4])
+
+        for i in range(6):
+            self._extract_btns[i].setText(self._extract_descs[i])
+
     def _func_tr_(self):
         _translate = QCoreApplication.translate
 
@@ -229,6 +273,16 @@ class Script(QWidget):
             _translate("Script", "Zoom"),
             _translate("Script", "Crop"),
             _translate("Script", "Snap"),
+            _translate("Script", "Extract"),
+        )
+
+        self._extract_descs = (
+            _translate("Script", "Bright Colorful"),
+            _translate("Script", "Light Colorful"),
+            _translate("Script", "Dark Colorful"),
+            _translate("Script", "Bright"),
+            _translate("Script", "Light"),
+            _translate("Script", "Dark"),
         )
 
         self._filter_descs = (

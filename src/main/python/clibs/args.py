@@ -39,7 +39,7 @@ class Args(object):
             "repeat",
         )
 
-        self.global_log = True
+        self.global_log = False
 
         # load languages.
         all_langs = (
@@ -68,12 +68,12 @@ class Args(object):
         # software informations.
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_version_zh = "v2.2.3-开发版"
-        self.info_version_en = "v2.2.3-dev"
+        self.info_version_zh = "v2.2.4-开发版"
+        self.info_version_en = "v2.2.4-dev"
         self.info_author_zh = "本征喵"
         self.info_author_en = "Eigenmiao"
-        self.info_date_zh = "2020年1月5日"
-        self.info_date_en = "Jan. 5th, 2020"
+        self.info_date_zh = "2020年1月12日"
+        self.info_date_en = "Jan. 12th, 2020"
 
         # init settings.
         self.usr_store = os.sep.join((os.path.expanduser('~'), "Documents", "DigitalPalette"))
@@ -163,6 +163,7 @@ class Args(object):
         self.zoom_step = 1.1
         self.move_step = 5
 
+        self.rand_num = 10000
         self.circle_dist = 12
 
         self.positive_wid = 3
@@ -178,6 +179,7 @@ class Args(object):
         Save settings to file.
         """
 
+        # saving args.
         settings = {
             "version": self.info_version_en,
             "site": self.info_main_site,
@@ -188,7 +190,7 @@ class Args(object):
             "usr_color", "usr_image", "press_act", "store_loc", "hm_rule", "overflow", "lang", "press_move",
             "show_rgb", "show_hsv", "h_range", "s_range", "v_range",
             "wheel_ratio", "volum_ratio", "cubic_ratio", "coset_ratio",
-            "rev_direct", "s_tag_radius", "v_tag_radius", "zoom_step", "move_step", "circle_dist",
+            "rev_direct", "s_tag_radius", "v_tag_radius", "zoom_step", "move_step", "rand_num", "circle_dist",
             "positive_wid", "negative_wid", "wheel_ed_wid",
             "positive_color", "negative_color", "wheel_ed_color",
             "stab_column",
@@ -202,28 +204,46 @@ class Args(object):
             else:
                 settings[item] = value
 
+        # saving color depot.
         stab_ucells = []
 
-        for cslst in self.stab_ucells:
-            colors = []
+        for unit_cell in self.stab_ucells[:-1]:
+            if unit_cell != None:
+                hsv_set = [
+                    unit_cell.color_set[0].hsv.tolist(),
+                    unit_cell.color_set[1].hsv.tolist(),
+                    unit_cell.color_set[2].hsv.tolist(),
+                    unit_cell.color_set[3].hsv.tolist(),
+                    unit_cell.color_set[4].hsv.tolist(),
+                ]
 
-            for i in range(5):
-                colors.append([float(x) for x in cslst[0][i]])
-
-            stab_ucells.append([colors, str(cslst[1]), str(cslst[2]), str(cslst[3])])
+                stab_ucells.append([hsv_set, str(unit_cell.hm_rule), str(unit_cell.name), str(unit_cell.desc), list(unit_cell.cr_time)])
 
         settings["stab_ucells"] = stab_ucells
 
+        # storing.
         if self.store_loc:
-            with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
-                json.dump(settings, sf, indent=4)
+            try:
+                with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
+                    json.dump(settings, sf, indent=4)
 
-        else:
-            with open(os.sep.join((self.usr_store, "settings.json")), "w") as sf:
-                json.dump(settings, sf, indent=4)
+            except Exception as err:
+                if self.global_log:
+                    print(err)
 
-            with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
-                json.dump({"store_loc": False}, sf, indent=4)
+                self.store_loc = False
+
+        if not self.store_loc:
+            try:
+                with open(os.sep.join((self.usr_store, "settings.json")), "w") as sf:
+                    json.dump(settings, sf, indent=4)
+
+                with open(os.sep.join((self.resources, "settings.json")), "w") as sf:
+                    json.dump({"store_loc": False}, sf, indent=4)
+
+            except Exception as err:
+                if self.global_log:
+                    print(err)
 
     def modify_settings(self, item, value):
         items = {
@@ -249,6 +269,7 @@ class Args(object):
             "v_tag_radius": lambda vl: self.pfmt_num_in_scope(vl, (0.0, 0.2), float, self.v_tag_radius),
             "zoom_step": lambda vl: self.pfmt_num_in_scope(vl, (1.0, 10.0), float, self.zoom_step),
             "move_step": lambda vl: self.pfmt_num_in_scope(vl, (1, 100), int, self.move_step),
+            "rand_num": lambda vl: self.pfmt_num_in_scope(vl, (0, 1000000000), int, self.rand_num),
             "circle_dist": lambda vl: self.pfmt_num_in_scope(vl, (0, 50), int, self.circle_dist),
             "positive_wid": lambda vl: self.pfmt_num_in_scope(vl, (0, 20), int, self.positive_wid),
             "negative_wid": lambda vl: self.pfmt_num_in_scope(vl, (0, 20), int, self.negative_wid),
@@ -423,9 +444,10 @@ class Args(object):
                     hm_rule = ""
 
                 if len(colors) == 5 and hm_rule:
-                    name = "" if len(cslst) < 3 else str(cslst[2])
-                    desc = "" if len(cslst) < 4 else str(cslst[3])
-                    stab_ucells.append((tuple(colors), hm_rule, name, desc))
+                    cr_name = "" if len(cslst) < 3 else str(cslst[2])
+                    cr_desc = "" if len(cslst) < 4 else str(cslst[3])
+                    cr_time = (-1.0, -1.0) if len(cslst) < 5 else (float(cslst[4][0]), float(cslst[4][1]))
+                    stab_ucells.append((tuple(colors), hm_rule, cr_name, cr_desc, cr_time))
 
         except Exception as err:
             if self.global_log:
@@ -461,4 +483,16 @@ class Args(object):
         Remove temporary directory.
         """
 
+        temp_dir = self.global_temp_dir.path()
         self.global_temp_dir.remove()
+
+        if os.path.isdir(temp_dir):
+            try:
+                for doc in os.listdir(temp_dir):
+                    os.remove(os.sep.join((temp_dir, doc)))
+
+                os.rmdir(temp_dir)
+
+            except Exception as err:
+                if self.global_log:
+                    print(err)

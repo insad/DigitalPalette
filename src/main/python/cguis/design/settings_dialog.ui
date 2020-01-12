@@ -66,6 +66,12 @@
        </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="setti_scroll_area">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -835,6 +841,12 @@
        </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="rule_scroll_area">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -844,7 +856,7 @@
             <x>0</x>
             <y>0</y>
             <width>530</width>
-            <height>553</height>
+            <height>577</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -967,7 +979,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>s_range</string>
+                 <string>s range</string>
                 </property>
                </widget>
               </item>
@@ -1052,7 +1064,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>v_range</string>
+                 <string>v range</string>
                 </property>
                </widget>
               </item>
@@ -1387,7 +1399,45 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="3">
+              <item row="2" column="0">
+               <widget class="QLabel" name="rand_num_label">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>rand num</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="rand_num_sp">
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>60</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="maximum">
+                 <number>1000000000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="3">
                <widget class="QWidget" name="color_image_inner_space" native="true">
                 <property name="minimumSize">
                  <size>
@@ -1403,7 +1453,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="3">
+              <item row="4" column="0" colspan="3">
                <widget class="QCheckBox" name="rev_direct_cbox">
                 <property name="minimumSize">
                  <size>
@@ -1418,7 +1468,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>rev_direct</string>
+                 <string>rev direct</string>
                 </property>
                 <property name="checked">
                  <bool>false</bool>
@@ -1522,6 +1572,12 @@
        </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="system_scroll_area">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -1784,6 +1840,12 @@
        </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="shortcuts_scroll_area">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -1792,7 +1854,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>509</width>
+            <width>530</width>
             <height>751</height>
            </rect>
           </property>

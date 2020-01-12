@@ -192,8 +192,26 @@ class Operation(QWidget):
                     for i in range(5):
                         hsv_set.append(tuple(Color.fmt_hsv(color["color_{}".format(i)]["hsv"]).tolist()))
 
-                    if color["rule"] in self._args.global_hm_rules:
-                        color_list.append((tuple(hsv_set), color["rule"], str(color["name"]), str(color["desc"])))
+                    if "name" in color:
+                        cr_name = str(color["name"])
+
+                    else:
+                        cr_name = ""
+
+                    if "desc" in color:
+                        cr_desc = str(color["desc"])
+
+                    else:
+                        cr_desc = ""
+
+                    if "time" in color:
+                        cr_time = [float(color["time"][0]), float(color["time"][1])]
+
+                    else:
+                        cr_time = (-1.0, -1.0)
+
+                    if "rule" in color and color["rule"] in self._args.global_hm_rules:
+                        color_list.append((tuple(hsv_set), color["rule"], cr_name, cr_desc, cr_time))
 
                     else:
                         finished_errs.append("unknown rule: {}.".format(color["rule"]))
@@ -244,7 +262,7 @@ class Operation(QWidget):
 
         for unit_cell in self._args.stab_ucells[:-1]:
             if unit_cell != None:
-                color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.name, unit_cell.desc))
+                color_list.append((unit_cell.color_set, unit_cell.hm_rule, unit_cell.name, unit_cell.desc, unit_cell.cr_time))
 
         # process start.
         if depot_file.split(".")[-1].lower() == "dpc":
@@ -257,7 +275,9 @@ class Operation(QWidget):
         elif depot_file.split(".")[-1].lower() == "txt":
             with open(depot_file, "w") as f:
                 f.write("# DigitalPalette Color Depot Export\n")
-                f.write("# Version: {}\n\n".format(self._args.info_version_en))
+                f.write("# Please refer to website {} for more information.\n".format(self._args.info_main_site))
+                f.write("# Version: {}\n".format(self._args.info_version_en))
+                f.write("# Total: {}\n\n".format(len(color_list)))
                 f.write(export_text(color_list))
 
         elif depot_file.split(".")[-1].lower() == "aco":
@@ -408,19 +428,23 @@ class Operation(QWidget):
         if isinstance(value, bool):
             color_set = self._args.sys_color_set
             hm_rule = self._args.hm_rule
-            name = ""
-            desc = ""
+            cr_name = ""
+            cr_desc = ""
+            cr_time = (time.time(), time.time())
 
         else:
             color_set = self._args.stab_ucells[value].color_set
             hm_rule = self._args.stab_ucells[value].hm_rule
-            name = self._args.stab_ucells[value].name
-            desc = self._args.stab_ucells[value].desc
+            cr_name = self._args.stab_ucells[value].name
+            cr_desc = self._args.stab_ucells[value].desc
+            cr_time = self._args.stab_ucells[value].cr_time
+
+        color_list = [(color_set, hm_rule, cr_name, cr_desc, cr_time),]
 
         # process start.
         if set_file.split(".")[-1].lower() == "dps":
             color_dict = {"version": self._args.info_version_en, "site": self._args.info_main_site, "type": "set"}
-            color_dict["palettes"] = export_list([(color_set, hm_rule, name, desc),])
+            color_dict["palettes"] = export_list(color_list)
 
             with open(set_file, "w", encoding='utf-8') as f:
                 json.dump(color_dict, f, indent=4)
@@ -428,20 +452,22 @@ class Operation(QWidget):
         elif set_file.split(".")[-1].lower() == "txt":
             with open(set_file, "w") as f:
                 f.write("# DigitalPalette Color Set Export\n")
-                f.write("# Version: {}\n\n".format(self._args.info_version_en))
-                f.write(export_text([(color_set, hm_rule, name, desc),]))
+                f.write("# Please refer to website {} for more information.\n".format(self._args.info_main_site))
+                f.write("# Version: {}\n".format(self._args.info_version_en))
+                f.write("# Total: {}\n\n".format(len(color_list)))
+                f.write(export_text(color_list))
 
         elif set_file.split(".")[-1].lower() == "aco":
             with open(set_file, "wb") as f:
-                f.write(export_swatch([(color_set, hm_rule, name, desc),]))
+                f.write(export_swatch(color_list))
 
         elif set_file.split(".")[-1].lower() == "gpl":
             with open(set_file, "w") as f:
-                f.write(export_gpl([(color_set, hm_rule, name, desc),]))
+                f.write(export_gpl(color_list))
 
         elif set_file.split(".")[-1].lower() == "xml":
             with open(set_file, "w") as f:
-                f.write(export_xml([(color_set, hm_rule, name, desc),]))
+                f.write(export_xml(color_list))
 
         else:
             self.warning(self._operation_errs[10])

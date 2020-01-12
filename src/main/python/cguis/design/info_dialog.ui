@@ -14,18 +14,18 @@
    <string notr="true">Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" rowspan="3">
+   <item row="0" column="0" rowspan="4">
     <widget class="QWidget" name="colors" native="true">
      <property name="minimumSize">
       <size>
        <width>240</width>
-       <height>160</height>
+       <height>180</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>240</width>
-       <height>160</height>
+       <height>180</height>
       </size>
      </property>
     </widget>
@@ -125,22 +125,60 @@
     <widget class="QLabel" name="hm_rule_label">
      <property name="minimumSize">
       <size>
-       <width>150</width>
+       <width>200</width>
        <height>30</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>150</width>
+       <width>200</width>
        <height>30</height>
       </size>
      </property>
      <property name="text">
-      <string>hm_rule</string>
+      <string notr="true">hm_rule</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="3" column="1">
+    <widget class="QLabel" name="time_label">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>60</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Time:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="cr_time_label">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="text">
+      <string notr="true">cr_time</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="desc_label">
      <property name="minimumSize">
       <size>
@@ -159,10 +197,10 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="4">
+   <item row="5" column="0" colspan="4">
     <widget class="QTextEdit" name="desc_tedit"/>
    </item>
-   <item row="5" column="0" colspan="4">
+   <item row="6" column="0" colspan="4">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 import binascii
 
 
@@ -8,7 +9,7 @@ def export_swatch(color_list):
     Export color set list in swatch type (for Adobe exchange).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc, cr_time), ...]}
 
     Returns:
         Binary strings.
@@ -42,7 +43,7 @@ def export_gpl(color_list):
     Export color set list in gpl type (for GIMP exchange).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc, cr_time), ...]}
 
     Returns:
         Plain text strings.
@@ -63,7 +64,7 @@ def export_xml(color_list):
     Export color set list in xml type (for Pencil exchange).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc, cr_time), ...]}
 
     Returns:
         Plain text strings.
@@ -86,7 +87,7 @@ def export_text(color_list):
     Export color set list in plain text (for directly reading).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc, cr_time), ...]}
 
     Returns:
         Plain text strings.
@@ -95,15 +96,31 @@ def export_text(color_list):
     plain_text = ""
 
     for idx in range(len(color_list)):
+        rule_str = color_list[idx][1]
+        rule_str = rule_str[0].upper() + rule_str[1:].lower()
+
+        if color_list[idx][4][0] < 0:
+            time_str = "Unknown"
+
+        else:
+            time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(color_list[idx][4][0]))
+
+        if color_list[idx][4][1] < 0:
+            time_str += "; Unknown"
+
+        else:
+            time_str += "; {}".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(color_list[idx][4][1])))
+
         plain_text += "# Name: {}\n".format("DigiPale-{}".format(idx))
-        plain_text += "# Rule: {}\n".format(color_list[idx][1])
-        plain_text += "{:<8}{:<8}{:<8}{:<8}{:<8}{:<8}{:<8}{:<8}\n".format("# Index", "R", "G", "B", "H", "S", "V", "Hex Code")
+        plain_text += "# Rule: {}\n".format(rule_str)
+        plain_text += "# Time: {}\n".format(time_str)
+        plain_text += "{:<8}{:<8}{:<8}{:<8}{:<10}{:<10}{:<10}{:<8}\n".format("# Index", "R", "G", "B", "H", "S", "V", "Hex Code")
 
         for i in (2, 1, 0, 3, 4):
             r, g, b = color_list[idx][0][i].rgb
             h, s, v = color_list[idx][0][i].hsv
             hex_code = "#{}".format(color_list[idx][0][i].hec)
-            plain_text += "  {:<6}{:<8}{:<8}{:<8}{:<8.2f}{:<8.2f}{:<8.2f}{:<8}\n".format(i, r, g, b, h, s, v, hex_code)
+            plain_text += "  {:<6}{:<8}{:<8}{:<8}{:<10.3f}{:<10.3f}{:<10.3f}{:<8}\n".format(i, r, g, b, h, s, v, hex_code)
 
         plain_text += "\n"
 
@@ -114,7 +131,7 @@ def export_list(color_list):
     Export color set list in list type (for DigitalPalette output).
 
     Args:
-        color_list (tuple or list): [(color_set, hm_rule, name, desc), ...]}
+        color_list (tuple or list): [(color_set, hm_rule, name, desc, cr_time), ...]}
 
     Returns:
         Json List.
@@ -123,7 +140,7 @@ def export_list(color_list):
     expt_list = []
 
     for color in color_list:
-        color_dict = {"rule": color[1], "name": color[2], "desc": color[3]}
+        color_dict = {"rule": color[1], "name": color[2], "desc": color[3], "time": list(color[4])}
 
         for i in (2, 1, 0, 3, 4):
             color_dict["color_{}".format(i)] = color[0][i].export()

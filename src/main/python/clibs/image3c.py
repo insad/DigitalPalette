@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import os
+import random
+import numpy as np
+from PIL import Image, ImageFilter
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QImage
-from PIL import Image, ImageFilter
 from clibs.color import Color
-import numpy as np
-import os
 
 
 class Image3C(QThread):
@@ -27,12 +28,21 @@ class Image3C(QThread):
         1: r or h channel data;
         2: g or s channel data;
         3: b or v channel data.
+
+    Extract type:
+        0: bright colorful
+        1: light colorful
+        2: dark colorful
+        3: bright
+        4: light
+        5: dark
     """
 
     ps_proceses = pyqtSignal(int)
     ps_describe = pyqtSignal(int)
     ps_finished = pyqtSignal(int)
     ps_enhanced = pyqtSignal(int)
+    ps_extracts = pyqtSignal(list)
 
     def __init__(self, temp_dir):
         """
@@ -531,6 +541,9 @@ class Image3C(QThread):
                 self.ori_display_data = np.array(img_data, dtype=np.uint8)
                 self.display = QImage(self.ori_display_data, self.ori_display_data.shape[1], self.ori_display_data.shape[0], self.ori_display_data.shape[1] * 3, QImage.Format_RGB888)
 
+                self.res_display_data = self.ori_display_data
+                self.rev_display_data = None
+
             except Exception as err:
                 self.display = None
 
@@ -542,7 +555,7 @@ class Image3C(QThread):
         Enhance rgb display by factor. Modify r, g or (and) b values to enhance the contrast of image.
 
         Args:
-            values (tuple or list): (region, separation, factor, reserve)
+            values (tuple or list): (region, separation, factor, reserve).
         """
 
         if not isinstance(self.ori_display_data, np.ndarray):
@@ -594,12 +607,7 @@ class Image3C(QThread):
 
             display_data[:, :, k] = data
 
-        if res:
-            self.res_display_data = display_data
-
-        else:
-            self.res_display_data = None
-
+        self.res_display_data = display_data
         self.rev_display_data = None
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
@@ -610,7 +618,7 @@ class Image3C(QThread):
         Enhance hsv display by factor. Modify h, s or (and) v values to enhance the contrast of image.
 
         Args:
-            values (tuple or list): (region, separation, factor, reserve)
+            values (tuple or list): (region, separation, factor, reserve).
         """
 
         if not isinstance(self.ori_display_data, np.ndarray):
@@ -670,17 +678,11 @@ class Image3C(QThread):
 
             display_data[:, :, k] = data
 
-        if res:
-            self.rev_display_data = display_data
-
-        else:
-            self.res_display_data = None
-            self.rev_display_data = None
+        self.rev_display_data = display_data
 
         display_data = Color.hsv2rgb_array(display_data)
 
-        if res:
-            self.res_display_data = display_data
+        self.res_display_data = display_data
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
@@ -690,7 +692,7 @@ class Image3C(QThread):
         Inverse rgb display. Modify r, g or (and) b values to inverse the contrast of image.
 
         Args:
-            values (tuple or list): (region, reserve)
+            values (tuple or list): (region, reserve).
         """
 
         if not isinstance(self.ori_display_data, np.ndarray):
@@ -707,12 +709,7 @@ class Image3C(QThread):
         for k in reg:
             display_data[:, :, k] = 255 - display_data[:, :, k]
 
-        if res:
-            self.res_display_data = display_data
-
-        else:
-            self.res_display_data = None
-
+        self.res_display_data = display_data
         self.rev_display_data = None
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
@@ -723,7 +720,7 @@ class Image3C(QThread):
         Inverse hsv display. Modify h, s or (and) v values to inverse the contrast of image.
 
         Args:
-            values (tuple or list): (region, reserve)
+            values (tuple or list): (region, reserve).
         """
 
         if not isinstance(self.ori_display_data, np.ndarray):
@@ -747,17 +744,11 @@ class Image3C(QThread):
             else:
                 display_data[:, :, k] = 1.0 - display_data[:, :, k]
 
-        if res:
-            self.rev_display_data = display_data
-
-        else:
-            self.res_display_data = None
-            self.rev_display_data = None
+        self.rev_display_data = display_data
 
         display_data = Color.hsv2rgb_array(display_data)
 
-        if res:
-            self.res_display_data = display_data
+        self.res_display_data = display_data
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
@@ -767,7 +758,7 @@ class Image3C(QThread):
         Cover rgb display. Modify r, g or (and) b values to cover the channel of image.
 
         Args:
-            values (tuple or list): (region, reserve, path)
+            values (tuple or list): (region, reserve, path).
         """
 
         if not isinstance(self.ori_display_data, np.ndarray):
@@ -799,12 +790,7 @@ class Image3C(QThread):
         else:
             self.ps_enhanced.emit(3)
 
-        if res:
-            self.res_display_data = display_data
-
-        else:
-            self.res_display_data = None
-
+        self.res_display_data = display_data
         self.rev_display_data = None
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
@@ -815,7 +801,7 @@ class Image3C(QThread):
         Cover hsv display. Modify h, s or (and) v values to cover the channel of image.
 
         Args:
-            values (tuple or list): (region, reserve, path)
+            values (tuple or list): (region, reserve, path).
         """
 
         if not isinstance(self.ori_display_data, np.ndarray):
@@ -852,17 +838,158 @@ class Image3C(QThread):
         else:
             self.ps_enhanced.emit(3)
 
-        if res:
-            self.rev_display_data = display_data
-
-        else:
-            self.res_display_data = None
-            self.rev_display_data = None
+        self.rev_display_data = display_data
 
         display_data = Color.hsv2rgb_array(display_data)
 
-        if res:
-            self.res_display_data = display_data
+        self.res_display_data = display_data
 
         self.display = QImage(display_data, display_data.shape[1], display_data.shape[0], display_data.shape[1] * 3, QImage.Format_RGB888)
         self.ps_enhanced.emit(1)
+
+    def run_extract(self, process_scope, values):
+        """
+        Cover hsv display. Modify h, s or (and) v values to cover the channel of image.
+
+        Args:
+            values (tuple or list): (random number, color type).
+        """
+
+        if not isinstance(self.ori_display_data, np.ndarray):
+            return
+
+        rand_num, color_type = values
+
+        if isinstance(self.res_display_data, np.ndarray):
+            display_data = self.res_display_data
+
+        else:
+            display_data = self.ori_display_data
+
+        if rand_num > 0 and (display_data.shape[0] * display_data.shape[1]) > rand_num:
+            data_pos = ((np.random.rand(rand_num) * display_data.shape[0]).astype(int), (np.random.rand(rand_num) * display_data.shape[1]).astype(int))
+            data = display_data[data_pos]
+
+        else:
+            data = np.vstack(display_data)
+
+        data_pos = np.where(np.logical_not(((data[:, 0] < 25) & (data[:, 1] < 25) & (data[:, 2] < 25)) | ((data[:, 0] > 225) & (data[:, 1] > 225) & (data[:, 2] > 225))))
+
+        if len(data_pos[0]) > 120:
+            data = data[data_pos]
+
+        data = Color.rgb2hsv_array(np.array([data,]))[0]
+
+        s_range = (data[:, 1].min(), data[:, 1].max())
+        v_range = (data[:, 2].min(), data[:, 2].max())
+
+        if color_type == 0:
+            data_pos = np.where((data[:, 1] > s_range[0] + (s_range[1] - s_range[0]) * 0.1) & (data[:, 2] > v_range[0] + (v_range[1] - v_range[0]) * 0.1))
+
+        elif color_type == 1:
+            data_pos = np.where((data[:, 1] < s_range[1] - (s_range[1] - s_range[0]) * 0.1) & (data[:, 2] > v_range[0] + (v_range[1] - v_range[0]) * 0.1))
+
+        elif color_type == 2:
+            data_pos = np.where(data[:, 2] < v_range[1] - (v_range[1] - v_range[0]) * 0.1)
+
+        elif color_type == 3:
+            data_pos = np.where((data[:, 1] > s_range[0] + (s_range[1] - s_range[0]) * 0.2) & (data[:, 2] > v_range[0] + (v_range[1] - v_range[0]) * 0.2))
+
+        elif color_type == 4:
+            data_pos = np.where((data[:, 1] < s_range[1] - (s_range[1] - s_range[0]) * 0.2) & (data[:, 2] > v_range[0] + (v_range[1] - v_range[0]) * 0.2))
+
+        else:
+            data_pos = np.where(data[:, 2] < v_range[1] - (v_range[1] - v_range[0]) * 0.2)
+
+        if len(data_pos[0]) > 100:
+            data = data[data_pos]
+
+        data_samples = []
+        s_samples = []
+        v_samples = []
+        extracts = []
+
+        h_range = (data[:, 0].min(), data[:, 0].max())
+        h_range = (h_range[0], h_range[1] - 1 / 12 * (h_range[1] - h_range[0]))
+
+        for idx in range(5):
+            mu = h_range[0] + (h_range[1] - h_range[0]) / 4 * idx
+            sigma = (h_range[1] - h_range[0]) / 5
+
+            for ext in (0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0):
+                data_pos = np.where((data[:, 0] > (mu - sigma - ext * (mu - sigma - h_range[0]) - 1E-3)) & (data[:, 0] < (mu + sigma + ext * (h_range[1] - mu - sigma) + 1E-3)))
+
+                if len(data_pos[0]) > 25:
+                    break
+
+            sample = data[data_pos]
+            data_samples.append(sample)
+
+            if color_type == 0:
+                s_samples.append(sample[:, 1].max())
+                v_samples.append(sample[:, 2].max())
+
+            elif color_type == 1:
+                s_samples.append(sample[:, 1].min())
+                v_samples.append(sample[:, 2].max())
+
+            elif color_type == 2:
+                s_samples.append(sample[:, 1].min())
+                v_samples.append(sample[:, 2].min())
+
+            else:
+                s_samples.append(0)
+                v_samples.append(0)
+
+        for idx in range(5):
+            sample = data_samples[idx]
+
+            s_range = (sample[:, 1].min(), sample[:, 1].max())
+            v_range = (sample[:, 2].min(), sample[:, 2].max())
+
+            if color_type == 0:
+                s_mu = s_range[0] + (s_range[1] - s_range[0]) / 5 * (5 - sorted(s_samples)[::-1].index(s_samples[idx]))
+                v_mu = v_range[0] + (v_range[1] - v_range[0]) / 5 * (5 - sorted(v_samples)[::-1].index(v_samples[idx]))
+
+            elif color_type == 1:
+                s_mu = s_range[0] + (s_range[1] - s_range[0]) / 5 * (4 - sorted(s_samples)[::-1].index(s_samples[idx]))
+                v_mu = v_range[0] + (v_range[1] - v_range[0]) / 5 * (5 - sorted(v_samples)[::-1].index(v_samples[idx]))
+
+            elif color_type == 2:
+                s_mu = s_range[0] + (s_range[1] - s_range[0]) * 0.5
+                v_mu = v_range[0] + (v_range[1] - v_range[0]) / 5 * (4 - sorted(v_samples)[::-1].index(v_samples[idx]))
+
+            elif color_type == 3:
+                s_mu = s_range[0] + (s_range[1] - s_range[0]) * 0.8
+                v_mu = v_range[0] + (v_range[1] - v_range[0]) * 0.8
+
+            elif color_type == 4:
+                s_mu = s_range[0] + (s_range[1] - s_range[0]) * 0.2
+                v_mu = v_range[0] + (v_range[1] - v_range[0]) * 0.8
+
+            else:
+                s_mu = s_range[0] + (s_range[1] - s_range[0]) * 0.5
+                v_mu = v_range[0] + (v_range[1] - v_range[0]) * 0.2
+
+            s_sigma = (s_range[1] - s_range[0]) / 5
+            v_sigma = (v_range[1] - v_range[0]) / 5
+
+            for ext in (0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0):
+                sample_pos = np.where((sample[:, 1] > (s_mu - s_sigma - ext * (s_mu - s_sigma - s_range[0]) - 1E-5)) & (sample[:, 1] < (s_mu + s_sigma + ext * (s_range[1] - s_mu - s_sigma) + 1E-5)) & (sample[:, 2] > (v_mu - v_sigma - ext * (v_mu - v_sigma - v_range[0]) - 1E-5)) & (sample[:, 2] < (v_mu + v_sigma + ext * (v_range[1] - v_mu - v_sigma) + 1E-5)))
+
+                if len(sample_pos[0]) > 5:
+                    break
+
+            sample = sample[sample_pos]
+            sample = sample[int(np.random.random() * sample.shape[0])]
+            sample = Color.hsv2rgb(sample)
+
+            sample_pos = np.where((display_data[:, :, 0] == sample[0]) & (display_data[:, :, 1] == sample[1]) & (display_data[:, :, 2] == sample[2]))
+
+            if len(sample_pos[0]) < 1:
+                sample_pos = np.where((display_data[:, :, 0] > sample[0] - 3) & (display_data[:, :, 0] < sample[0] + 3) & (display_data[:, :, 1] > sample[1] - 3) & (display_data[:, :, 1] < sample[1] + 3) & (display_data[:, :, 2] > sample[2] - 3) & (display_data[:, :, 2] < sample[2] + 3))
+
+            pos = int(np.random.random() * len(sample_pos[0]))
+            extracts.append((sample_pos[1][pos] / (display_data.shape[1] - 1), sample_pos[0][pos] / (display_data.shape[0] - 1)))
+
+        self.ps_extracts.emit(extracts)

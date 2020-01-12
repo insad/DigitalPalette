@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "DigitalPalette"
-!define PRODUCT_VERSION "2.2.3"
+!define PRODUCT_VERSION "2.2.4"
 !define PRODUCT_PUBLISHER "本征喵"
 !define PRODUCT_WEB_SITE "https://liujiacode.github.io/DigitalPalette"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\DigitalPalette.exe"
@@ -80,18 +80,18 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
-Section -DPCfile
-  WriteRegStr HKCR ".dpc" "" "DPCfile"
-  WriteRegStr HKCR "DPCfile" "" "DigiPale 色彩仓库文档"
-  WriteRegStr HKCR "DPCfile\DefaultIcon" "" "$INSTDIR\icons\depot.ico"
-  WriteRegStr HKCR "DPCfile\shell\open\command" "" '"$INSTDIR\DigitalPalette.exe" "%1"'
+Section -DigiPaleCfile
+  WriteRegStr HKCR ".dpc" "" "DigiPaleCfile"
+  WriteRegStr HKCR "DigiPaleCfile" "" "DigiPale 色彩仓库文档"
+  WriteRegStr HKCR "DigiPaleCfile\DefaultIcon" "" "$INSTDIR\icons\depot.ico"
+  WriteRegStr HKCR "DigiPaleCfile\shell\open\command" "" '"$INSTDIR\DigitalPalette.exe" "%1"'
 SectionEnd
 
-Section -DPSfile
-  WriteRegStr HKCR ".dps" "" "DPSfile"
-  WriteRegStr HKCR "DPSfile" "" "DigiPale 色彩组文档"
-  WriteRegStr HKCR "DPSfile\DefaultIcon" "" "$INSTDIR\icons\set.ico"
-  WriteRegStr HKCR "DPSfile\shell\open\command" "" '"$INSTDIR\DigitalPalette.exe" "%1"'
+Section -DigiPaleSfile
+  WriteRegStr HKCR ".dps" "" "DigiPaleSfile"
+  WriteRegStr HKCR "DigiPaleSfile" "" "DigiPale 色彩组文档"
+  WriteRegStr HKCR "DigiPaleSfile\DefaultIcon" "" "$INSTDIR\icons\set.ico"
+  WriteRegStr HKCR "DigiPaleSfile\shell\open\command" "" '"$INSTDIR\DigitalPalette.exe" "%1"'
 SectionEnd
 
 
@@ -117,8 +117,8 @@ Section Uninstall
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   DeleteRegKey HKCR ".dpc"
-  DeleteRegKey HKCR "DPCfile"
+  DeleteRegKey HKCR "DigiPaleCfile"
   DeleteRegKey HKCR ".dps"
-  DeleteRegKey HKCR "DPSfile"
+  DeleteRegKey HKCR "DigiPaleSfile"
   SetAutoClose true
 SectionEnd

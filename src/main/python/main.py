@@ -17,7 +17,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.2.3-dev
+v2.2.4-dev
 """
 
 __AUTHOR__ = """
@@ -25,7 +25,7 @@ Eigenmiao
 """
 
 __DATE__ = """
-Jan. 5th, 2020
+Jan. 12th, 2020
 """
 
 import os
@@ -275,6 +275,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         rule_grid_layout.addWidget(self._wget_rule)
 
         self._wget_rule.ps_rule_changed.connect(lambda x: self._wget_cube_table.modify_rule())
+        self._wget_image.ps_modify_rule.connect(lambda x: self._wget_rule.update_rule())
 
     def _setup_mode(self):
         """
@@ -330,6 +331,7 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         self._wget_script.ps_crop.connect(self._wget_image.crop_image)
         self._wget_script.ps_freeze.connect(self._wget_image.freeze_image)
         self._wget_script.ps_print.connect(self._wget_image.print_image)
+        self._wget_script.ps_extract.connect(self._wget_image.extract_image)
 
     def _setup_channel(self):
         """
@@ -613,9 +615,12 @@ class DigitalPalette(QMainWindow, Ui_MainWindow):
         Actions before close DigitalPalette.
         """
 
-        self._wget_depot.close()
         self._args.save_settings()
         self._args.remove_temp_dir()
+
+        self._wget_wheel.close()
+        self._wget_image.close()
+        self._wget_depot.close()
 
         event.accept()
 

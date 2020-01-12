@@ -45,7 +45,10 @@ class OverLabel(QLabel):
         painter.setRenderHint(QPainter.TextAntialiasing, True)
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
-        for idx in range(5):
+        idx_seq = list(range(5))
+        idx_seq = idx_seq[self._args.sys_activated_idx + 1: ] + idx_seq[: self._args.sys_activated_idx + 1]
+
+        for idx in idx_seq:
             if self.locations[idx]:
                 pt_xy = np.array((self.locations[idx][0] * self.width(), self.locations[idx][1] * self.height()))
                 pt_box = get_outer_box(pt_xy, self._args.circle_dist)
@@ -115,9 +118,17 @@ class OverLabel(QLabel):
             event.ignore()
             return
 
-        if event.button() == Qt.LeftButton:
-            point = np.array((event.x(), event.y()))
+        point = np.array((event.x(), event.y()))
+        already_accepted = False
 
+        for idx in range(5):
+            if self.locations[idx] and np.linalg.norm(point - np.array(self.locations[idx]) * np.array((self.width(), self.height()))) < self._args.circle_dist:
+                self._args.sys_activated_idx = idx
+                already_accepted = True
+
+                break
+
+        if event.button() == Qt.LeftButton and (self._args.press_move or already_accepted or (not self.locations[self._args.sys_activated_idx])):
             loc = [point[0] / self.width(), point[1] / self.height()]
             loc[0] = 0.0 if loc[0] < 0.0 else loc[0]
             loc[0] = 1.0 if loc[0] > 1.0 else loc[0]
@@ -246,8 +257,9 @@ class Image(QWidget):
 
     ps_color_changed = pyqtSignal(bool)
     ps_image_changed = pyqtSignal(bool)
-    ps_recover_channel = pyqtSignal(bool)
     ps_status_changed = pyqtSignal(tuple)
+    ps_recover_channel = pyqtSignal(bool)
+    ps_modify_rule = pyqtSignal(bool)
 
     def __init__(self, wget, args):
         """
@@ -289,6 +301,7 @@ class Image(QWidget):
         self._image3c.ps_proceses.connect(self.update_loading_bar)
         self._image3c.ps_finished.connect(self.loading_finished)
         self._image3c.ps_enhanced.connect(self.enhance_finished)
+        self._image3c.ps_extracts.connect(self.extract_finished)
 
         self.overlabel_display = OverLabel(self, self._args)
         self.overlabel_display.ps_circle_moved.connect(lambda x: self.modify_color_loc())
@@ -770,6 +783,24 @@ class Image(QWidget):
 
         self.update()
 
+    def extract_image(self, values):
+        """
+        Modify r, g or (and) b values to enhance or inverse the contrast of image.
+        """
+
+        if not (self.isVisible() and self.overlabel_display.isVisible() and self._image3c.display):
+            return
+
+        if self._image3c.isRunning():
+            self.warning(self._image_errs[1])
+            return
+
+        self._image3c.run_args = (self._args.rand_num, values)
+        self._image3c.run_category = "extract"
+        self._image3c.start()
+
+        self.update()
+
     def enhance_image(self, values):
         """
         Modify r, g or (and) b values to enhance or inverse the contrast of image.
@@ -929,6 +960,29 @@ class Image(QWidget):
         self.overlabel_display.croping = False
         self.overlabel_display.locating = False
         self._resizing_image = True
+
+        self.update()
+
+    def extract_finished(self, value):
+        """
+        Enhance finished.
+        """
+
+        self._args.hm_rule = "custom"
+        self.ps_modify_rule.emit(True)
+
+        self.overlabel_display.locations = value
+
+        for i in range(5):
+            rgb = self._image3c.rgb_data[int(value[i][1] * (self._image3c.rgb_data.shape[0] - 1))][int(value[i][0] * (self._image3c.rgb_data.shape[1] - 1))]
+
+            color = Color(rgb, tp="rgb", overflow=self._args.sys_color_set.get_overflow())
+            self._args.sys_color_set.modify(self._args.hm_rule, i, color)
+
+        self.ps_color_changed.emit(True)
+        # similar to modify_color_loc,
+        # update_color_loc() is completed by 
+        # self._wget_image.ps_color_changed.connect(lambda x: self._wget_cube_table.update_color()) in main.py.
 
         self.update()
 
