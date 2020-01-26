@@ -361,6 +361,10 @@ class Image(QWidget):
             self._tip_label.hide()
             self.overlabel_display.show()
 
+            if not self._image3c.display:
+                self._image3c.load_image(self._args.sys_category, self._args.sys_channel)
+                self._resizing_image = True
+
             if self._image3c.display:
                 if not self._move_pos:
                     self.home()
@@ -418,12 +422,6 @@ class Image(QWidget):
 
                 else:
                     self.ps_status_changed.emit((self._image3c.rgb_data.shape[1], self._image3c.rgb_data.shape[0]))
-
-            else:
-                self._image3c.load_image(self._args.sys_category, self._args.sys_channel)
-                self._resizing_image = True
-
-                self.update()
 
     # ---------- ---------- ---------- Mouse Event Funcs ---------- ---------- ---------- #
 

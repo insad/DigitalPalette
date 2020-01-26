@@ -17,7 +17,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.2.4-dev
+v2.2.5-dev
 """
 
 __AUTHOR__ = """
@@ -25,7 +25,7 @@ Eigenmiao
 """
 
 __DATE__ = """
-Jan. 12th, 2020
+Jan. 26th, 2020
 """
 
 import os

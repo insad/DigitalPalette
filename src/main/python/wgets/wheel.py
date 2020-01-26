@@ -127,11 +127,11 @@ class Wheel(QWidget):
         self._tag_center = [None] * 5
         self._tag_radius = min(self.width(), self.height()) * self._args.s_tag_radius / 2
 
-        idx_seq = list(range(5))
-        idx_seq = idx_seq[self._args.sys_activated_idx + 1: ] + idx_seq[: self._args.sys_activated_idx + 1]
+        self._idx_seq = list(range(5))
+        self._idx_seq = self._idx_seq[self._args.sys_activated_idx + 1: ] + self._idx_seq[: self._args.sys_activated_idx + 1]
 
         # lines.
-        for idx in idx_seq:
+        for idx in self._idx_seq:
             color_center = np.array([self._args.sys_color_set[idx].s * self._radius, 0]) + self._center
             color_center = rotate_point_center(self._center, color_center, self._args.sys_color_set[idx].h)
             self._tag_center[idx] = color_center
@@ -151,7 +151,7 @@ class Wheel(QWidget):
         painter.drawEllipse(*dot_box)
 
         # circles.
-        for idx in idx_seq:
+        for idx in self._idx_seq:
             color_box = get_outer_box(self._tag_center[idx], self._tag_radius)
 
             if idx == self._args.sys_activated_idx:
@@ -212,7 +212,7 @@ class Wheel(QWidget):
             if np.linalg.norm(point - self._center) < self._radius:
                 already_accepted = False
 
-                for idx in range(5):
+                for idx in self._idx_seq[::-1]:
                     if np.linalg.norm(point - self._tag_center[idx]) < self._tag_radius:
                         self._args.sys_activated_idx = idx
 
