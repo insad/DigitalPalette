@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+"""
+DigitalPalette is a free software, which is distributed in the hope 
+that it will be useful, but WITHOUT ANY WARRANTY. You can redistribute 
+it and/or modify it under the terms of the GNU General Public License 
+as published by the Free Software Foundation. See the GNU General Public 
+License for more details. 
+
+Please visit https://liujiacode.github.io/DigitalPalette for more 
+infomation about DigitalPalette.
+
+Copyright © 2019-2020 by Eigenmiao. All Rights Reserved.
+"""
+
 from PyQt5.QtWidgets import QWidget, QRadioButton, QGridLayout, QScrollArea, QFrame, QSpacerItem, QSizePolicy, QGroupBox
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 
