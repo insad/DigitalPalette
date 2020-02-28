@@ -9,7 +9,7 @@ License for more details.
 """
 
 __COPYRIGHT__ = """
-Copyright © 2019-2020. All Rights Reserved.
+Copyright © 2019-2020 by Eigenmiao. All Rights Reserved.
 """
 
 __WEBSITE__ = """
@@ -17,7 +17,7 @@ https://liujiacode.github.io/DigitalPalette
 """
 
 __VERSION__ = """
-v2.2.5-dev
+v2.2.5-pre
 """
 
 __AUTHOR__ = """
@@ -26,6 +26,10 @@ Eigenmiao
 
 __DATE__ = """
 Jan. 26th, 2020
+"""
+
+__CODE__ = """
+CARROT - 2020.02.28 - SHA256 - F6751CD5DB23027E3C4C419523FBA1637FC4C1C5BD1964B1B2E1C7B49AF34414 - CRC64 - 94C4E8E74B9B25F6
 """
 
 import os

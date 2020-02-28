@@ -81,8 +81,8 @@ class Args(object):
         # software informations.
         self.info_main_site = "https://liujiacode.github.io/DigitalPalette"
         self.info_update_site = "https://github.com/liujiacode/DigitalPalette/releases"
-        self.info_version_zh = "v2.2.5-开发版"
-        self.info_version_en = "v2.2.5-dev"
+        self.info_version_zh = "v2.2.5-预览版"
+        self.info_version_en = "v2.2.5-pre"
         self.info_author_zh = "本征喵"
         self.info_author_en = "Eigenmiao"
         self.info_date_zh = "2020年1月26日"
