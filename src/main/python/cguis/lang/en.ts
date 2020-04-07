@@ -1708,4 +1708,65 @@
         <translation></translation>
     </message>
 </context>
+<context>
+    <name>QColorDialog</name>
+    <message>
+        <source>Hu&amp;e:</source>
+        <translation>H: </translation>
+    </message>
+    <message>
+        <source>&amp;Sat:</source>
+        <translation>S: </translation>
+    </message>
+    <message>
+        <source>&amp;Val:</source>
+        <translation>V: </translation>
+    </message>
+    <message>
+        <source>&amp;Red:</source>
+        <translation>R: </translation>
+    </message>
+    <message>
+        <source>&amp;Green:</source>
+        <translation>G: </translation>
+    </message>
+    <message>
+        <source>Bl&amp;ue:</source>
+        <translation>B: </translation>
+    </message>
+    <message>
+        <source>A&amp;lpha channel:</source>
+        <translation>A: </translation>
+    </message>
+    <message>
+        <source>&amp;HTML:</source>
+        <translation>HTML: </translation>
+    </message>
+    <message>
+        <source>Cursor at %1, %2
+Press ESC to cancel</source>
+        <translation>Cursor at: %1 x %2.
+Press ESC to cancel.</translation>
+    </message>
+    <message>
+        <source>Select Color</source>
+        <translation>Select Color</translation>
+    </message>
+    <message>
+        <source>&amp;Pick Screen Color</source>
+        <translation>Pick Screen Color</translation>
+    </message>
+    <message>
+        <source>&amp;Basic colors</source>
+        <translation>Basic colors</translation>
+    </message>
+    <message>
+        <source>&amp;Custom colors</source>
+        <translation>Custom colors</translation>
+    </message>
+    <message>
+        <source>&amp;Add to Custom Colors</source>
+        <translation>Add to Custom Colors</translation>
+    </message>
+</context>
 </TS>
