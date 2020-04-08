@@ -1758,11 +1758,11 @@ Press ESC to cancel.</translation>
     </message>
     <message>
         <source>&amp;Basic colors</source>
-        <translation>Basic colors</translation>
+        <translation>Basic Colors</translation>
     </message>
     <message>
         <source>&amp;Custom colors</source>
-        <translation>Custom colors</translation>
+        <translation>Custom Colors</translation>
     </message>
     <message>
         <source>&amp;Add to Custom Colors</source>
