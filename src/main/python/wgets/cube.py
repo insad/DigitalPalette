@@ -193,13 +193,13 @@ class CubeTable(QWidget):
                 obj = getattr(self._cubes[idx], "hs_rgb_{}".format(ctp))
                 obj.valueChanged.connect(self.modify_color(idx, "direct", ctp))
                 obj = getattr(self._cubes[idx], "sp_rgb_{}".format(ctp))
-                obj.valueChanged.connect(self.modify_color(idx, "direct", ctp))
+                obj.valueChanged.connect(self.modify_color(idx, "frdire", ctp))
 
             for ctp in ("h", "s", "v"):
                 obj = getattr(self._cubes[idx], "hs_hsv_{}".format(ctp))
                 obj.valueChanged.connect(self.modify_color(idx, "indire", ctp))
                 obj = getattr(self._cubes[idx], "dp_hsv_{}".format(ctp))
-                obj.valueChanged.connect(self.modify_color(idx, "direct", ctp))
+                obj.valueChanged.connect(self.modify_color(idx, "frdire", ctp))
 
             self._cubes[idx].le_hec.textChanged.connect(self.modify_color(idx, "direct", "hec"))
 
@@ -262,20 +262,25 @@ class CubeTable(QWidget):
             self._updated_colors = True
 
             color = Color(self._args.sys_color_set[idx], tp="color", overflow=self._args.sys_color_set.get_overflow())
-            if kword == "direct":
+            if kword == "direct" or kword == "frdire":
                 color.setti(value, ctp)
 
             else:
                 color.setti(value / 1E3, ctp)
 
             self._args.sys_color_set.modify(self._args.hm_rule, idx, color)
-            self.update_color()
+
+            if kword == "frdire":
+                self.update_color(skip_dp=(idx, ctp))
+
+            else:
+                self.update_color()
 
             self._updated_colors = False
 
         return _func_
 
-    def update_color(self):
+    def update_color(self, skip_dp=None):
         """
         Update all colors.
         """
@@ -286,14 +291,18 @@ class CubeTable(QWidget):
             for lc_ctp in ("r", "g", "b"):
                 obj = getattr(self._cubes[lc_idx], "hs_rgb_{}".format(lc_ctp))
                 obj.setValue(self._args.sys_color_set[lc_idx].getti(lc_ctp))
-                obj = getattr(self._cubes[lc_idx], "sp_rgb_{}".format(lc_ctp))
-                obj.setValue(self._args.sys_color_set[lc_idx].getti(lc_ctp))
+
+                if not (skip_dp and skip_dp[0] == lc_idx and skip_dp[1] == lc_ctp):
+                    obj = getattr(self._cubes[lc_idx], "sp_rgb_{}".format(lc_ctp))
+                    obj.setValue(self._args.sys_color_set[lc_idx].getti(lc_ctp))
 
             for lc_ctp in ("h", "s", "v"):
                 obj = getattr(self._cubes[lc_idx], "hs_hsv_{}".format(lc_ctp))
                 obj.setValue(self._args.sys_color_set[lc_idx].getti(lc_ctp) * 1E3)
-                obj = getattr(self._cubes[lc_idx], "dp_hsv_{}".format(lc_ctp))
-                obj.setValue(self._args.sys_color_set[lc_idx].getti(lc_ctp))
+
+                if not (skip_dp and skip_dp[0] == lc_idx and skip_dp[1] == lc_ctp):
+                    obj = getattr(self._cubes[lc_idx], "dp_hsv_{}".format(lc_ctp))
+                    obj.setValue(self._args.sys_color_set[lc_idx].getti(lc_ctp))
 
             self._cubes[lc_idx].le_hec.setText(self._args.sys_color_set[lc_idx].getti("hec"))
 
